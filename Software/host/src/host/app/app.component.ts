@@ -1,5 +1,5 @@
 ﻿import { Component } from '@angular/core';
-import "malihu-custom-scrollbar-plugin/mCustomScrollBar";
+import "malihu-custom-scrollbar-plugin/jquery.mCustomScrollBar";
 
 declare var $: any;
 
