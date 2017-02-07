@@ -14,3 +14,4 @@ import 'rxjs';
 import 'jquery';
 import 'jqueryui';
 import 'igniteui-angular2';
+import 'malihu-custom-scrollbar-plugin'

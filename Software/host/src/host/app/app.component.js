@@ -16,7 +16,7 @@ AppComponent = __decorate([
     core_1.Component({
         selector: 'eventBus-app',
         styles: [require('to-string!./app.component.css')],
-        template: require('to-string!./app.component.html')
+        templateUrl: 'app.component.html'
     })
 ], AppComponent);
 exports.AppComponent = AppComponent;

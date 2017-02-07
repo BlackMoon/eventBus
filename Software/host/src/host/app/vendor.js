@@ -11,4 +11,6 @@ require("rxjs");
 // Other vendors for example jQuery, Lodash or Bootstrap
 // You can import js, ts, css, sass, ...
 require("jquery");
+require("jqueryui");
+require("igniteui-angular2");
 //# sourceMappingURL=vendor.js.map

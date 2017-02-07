@@ -1,4 +1,7 @@
 ﻿import { Component } from '@angular/core';
+import "malihu-custom-scrollbar-plugin/mCustomScrollBar";
+
+declare var $: any;
 
 @Component({
     selector: 'eventBus-app',
@@ -7,4 +10,9 @@
 })
 export class AppComponent {
     title = "Angular 2 Test";
+    
+    ngAfterViewInit() {
+       
+        $("#pm-dashboard").draggable();
+    }
 }

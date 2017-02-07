@@ -6,7 +6,7 @@ var helpers = require('./helpers');
 module.exports = {
     context: helpers.root('./app'),
     entry: {
-        'app': './main.ts',
+        'app': './index.ts',
         'polyfills': './polyfills.ts',
         'vendor': './vendor.ts'
     },
