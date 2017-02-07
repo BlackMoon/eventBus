@@ -6,10 +6,7 @@
     "noEmitOnError": true,
     "noImplicitAny": true,
     "sourceMap": true,
-    "target": "es5",
-    "typeRoots": [ "./node_modules/@types" ]
+    "target": "es5"    
   },
-  "exclude": [ "node_modules" ],
-  "files": [ "igniteui.d.ts" ],
-  "include": [ "wwwroot/ts/**/*.ts" ]
+  "exclude": [ "node_modules" ]    
 }

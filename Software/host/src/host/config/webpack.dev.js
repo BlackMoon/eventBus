@@ -20,7 +20,7 @@ module.exports = webpackMerge(commonConfig, {
           moduleFilenameTemplate: '[absolute-resource-path]',
           fallbackModuleFilenameTemplate: '[resource-path]?[hash]',
           filename: "[file].map"
-      }),
+      })
     ],
 
     devServer: {

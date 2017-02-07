@@ -4,10 +4,11 @@ var ExtractTextPlugin = require('extract-text-webpack-plugin');
 var helpers = require('./helpers');
 
 module.exports = {
+    context: helpers.root('./app'),
     entry: {
+        'app': './main.ts',
         'polyfills': './polyfills.ts',
-        'vendor': './vendor.ts',
-        'app': './app/main.ts'
+        'vendor': './vendor.ts'
     },
 
     resolve: {
@@ -47,7 +48,7 @@ module.exports = {
       }),
 
       new HtmlWebpackPlugin({
-          template: 'app/index.html'
+          template: 'index.html'
       }),
 
       new webpack.ProvidePlugin({
