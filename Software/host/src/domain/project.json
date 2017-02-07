@@ -1,0 +1,12 @@
+﻿{
+  "version": "1.0.0-*",
+  "dependencies": {
+    "Kit.Dal.Postgre": "1.0.0-*",
+    "System.Runtime": "4.3.0",
+    "System.Runtime.InteropServices": "4.3.0"
+  },
+  "frameworks": {
+    "netcoreapp1.0": {
+    }
+  }
+}

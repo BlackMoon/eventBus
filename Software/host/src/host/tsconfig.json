@@ -1,0 +1,15 @@
+{
+  "compilerOptions": {
+    "experimentalDecorators": true,
+    "module": "commonjs",
+    "moduleResolution": "node",
+    "noEmitOnError": true,
+    "noImplicitAny": true,
+    "sourceMap": true,
+    "target": "es5",
+    "typeRoots": [ "./node_modules/@types" ]
+  },
+  "exclude": [ "node_modules" ],
+  "files": [ "igniteui.d.ts" ],
+  "include": [ "wwwroot/ts/**/*.ts" ]
+}
