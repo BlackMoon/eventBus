@@ -1,6 +1,6 @@
 ﻿var webpack = require('webpack');
-var HtmlWebpackPlugin = require('html-webpack-plugin');
 var ExtractTextPlugin = require('extract-text-webpack-plugin');
+var HtmlWebpackPlugin = require('html-webpack-plugin');
 var helpers = require('./helpers');
 
 module.exports = {
@@ -12,6 +12,7 @@ module.exports = {
     },
 
     resolve: {
+        alias: { 'jquery-ui': 'jquery-ui-bundle' },
         extensions: ['', '.ts', '.js'] // Try .ts first, otherwise map will reference .js file.
     },
 

@@ -1,18 +1,27 @@
 ﻿import { Component } from '@angular/core';
-import "malihu-custom-scrollbar-plugin/jquery.mCustomScrollBar";
 
 declare var $: any;
 
 @Component({
     selector: 'eventBus-app',
     styles: [require('to-string!./app.component.css')],
-    templateUrl: './app.component.html'
+    template: require('to-string!./app.component.html')
 })
 export class AppComponent {
     title = "Angular 2 Test";
-    
+
+    private options: any;
+
+    constructor() {
+        this.options = {
+            headerText: "Foo",
+            height: "325px"
+        };
+    }
+
     ngAfterViewInit() {
-       
-        $("#pm-dashboard").draggable();
+        debugger;
+        var $el = $("#pm-dashboard");
+        $el.mCustomScrollbar();
     }
 }

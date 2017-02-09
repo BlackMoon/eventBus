@@ -67,7 +67,7 @@ namespace Host
             container.RegisterInstance(Configuration.GetConnectionString("DefaultConnection"), serviceKey: "ConnectionString");
             container.RegisterInstance(Configuration["Data:DefaultConnection:ProviderName"], serviceKey: "ProviderName");
             container.Register(
-                reuse: Reuse.InWebRequest,
+                reuse: Reuse.Singleton,
                 made: Made.Of(() => DbManagerFactory.CreateDbManager(Arg.Of<string>("ProviderName"), Arg.Of<string>("ConnectionString")), requestIgnored => string.Empty)
                 );
 

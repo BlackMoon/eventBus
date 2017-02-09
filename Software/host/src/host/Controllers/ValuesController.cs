@@ -21,6 +21,9 @@ namespace Host.Controllers
         [HttpGet]
         public IEnumerable<string> Get()
         {
+            _dbManager.AddParameter("pid", 10);
+            _dbManager.ExecuteNonQuery(CommandType.StoredProcedure, "adk_group_objects.group_delete_by_id");
+
             return new string[] { "value1", "value2" };
         }
 
