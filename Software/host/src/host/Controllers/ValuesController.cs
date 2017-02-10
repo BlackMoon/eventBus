@@ -21,8 +21,9 @@ namespace Host.Controllers
         [HttpGet]
         public IEnumerable<string> Get()
         {
-            _dbManager.AddParameter("pid", 10);
-            _dbManager.ExecuteNonQuery(CommandType.StoredProcedure, "adk_group_objects.group_delete_by_id");
+            IDataReader r = _dbManager.ExecuteReader(CommandType.Text, "SELECT id, application_id, name, type, settings FROM adk_application.application_adapters");
+            r.Read();
+            _dbManager.CloseReader();
 
             return new string[] { "value1", "value2" };
         }

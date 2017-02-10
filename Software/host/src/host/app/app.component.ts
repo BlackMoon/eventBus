@@ -4,9 +4,10 @@ declare var $: any;
 
 @Component({
     selector: 'eventBus-app',
-    styles: [require('to-string!./app.component.css')],
-    template: require('to-string!./app.component.html')
+    styleUrls: ['app.component.css'],
+    templateUrl: 'app.component.html'
 })
+
 export class AppComponent {
     title = "Angular 2 Test";
 
@@ -22,6 +23,6 @@ export class AppComponent {
     ngAfterViewInit() {
         debugger;
         var $el = $("#pm-dashboard");
-        $el.mCustomScrollbar();
+        //$el.mCustomScrollbar();
     }
 }
