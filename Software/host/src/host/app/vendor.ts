@@ -14,7 +14,7 @@ import 'rxjs';
 // You can import js, ts, css, sass, ...
 import 'jquery';
 import 'jquery-ui';
-//import 'malihu-custom-scrollbar-plugin';
+import 'malihu-custom-scrollbar-plugin';
 
 // IgniteUI
 import 'igniteui/css/infragistics.css';

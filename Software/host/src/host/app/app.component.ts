@@ -1,4 +1,5 @@
-﻿import { Component } from '@angular/core';
+﻿import { Component, AfterViewInit, ViewChild } from '@angular/core';
+import { LoginComponent } from './components/login.component';
 
 declare var $: any;
 
@@ -8,21 +9,15 @@ declare var $: any;
     templateUrl: 'app.component.html'
 })
 
-export class AppComponent {
-    title = "Angular 2 Test";
+export class AppComponent implements AfterViewInit {
+    @ViewChild(LoginComponent) loginComponent: LoginComponent;
 
-    private options: any;
-
-    constructor() {
-        this.options = {
-            headerText: "Foo",
-            height: "325px"
-        };
+    ngOnInit() {
+        
     }
 
-    ngAfterViewInit() {
-        //debugger;
-        var $el = $("#pm-dashboard");
-        //$el.mCustomScrollbar();
+    ngAfterViewInit() {    
+        this.loginComponent.show();
+        $("#pm-dashboard").mCustomScrollbar();        
     }
 }
