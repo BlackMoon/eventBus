@@ -12,7 +12,13 @@ import 'rxjs';
 
 // Other vendors for example jQuery, Lodash or Bootstrap
 // You can import js, ts, css, sass, ...
-//import "jquery";
-//import "jquery-ui";
+import 'jquery';
+import 'jquery-ui';
 //import 'malihu-custom-scrollbar-plugin';
-//import 'igniteui-angular2';
+
+// IgniteUI
+import 'igniteui/css/infragistics.css';
+import 'igniteui/css/infragistics.theme.css';
+import 'igniteui/js/infragistics.core.js';
+import 'igniteui/js/infragistics.lob.js';
+import 'igniteui-angular2';

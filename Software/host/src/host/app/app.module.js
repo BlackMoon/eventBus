@@ -17,9 +17,8 @@ var AppModule = (function () {
 AppModule = __decorate([
     core_1.NgModule({
         imports: [platform_browser_1.BrowserModule],
-        declarations: [app_component_1.AppComponent, igniteui_angular2_1.IgGridComponent],
-        bootstrap: [app_component_1.AppComponent],
-        providers: []
+        declarations: [app_component_1.AppComponent, igniteui_angular2_1.IgDialogComponent],
+        bootstrap: [app_component_1.AppComponent]
     })
 ], AppModule);
 exports.AppModule = AppModule;

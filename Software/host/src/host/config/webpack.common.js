@@ -1,14 +1,14 @@
 ﻿var webpack = require('webpack');
-var CopyWebpackPlugin = require('copy-webpack-plugin');
 var ExtractTextPlugin = require('extract-text-webpack-plugin');
 var HtmlWebpackPlugin = require('html-webpack-plugin');
 var helpers = require('./helpers');
 
 module.exports = {
+    context: helpers.root('./app'),
     entry: {
-        'app': './app/index.ts',
-        'polyfills': './app/polyfills.ts',
-        'vendor': './app/vendor.ts'
+        'app': './index.ts',
+        'polyfills': './polyfills.ts',
+        'vendor': './vendor.ts'
     },
 
     resolve: {
@@ -42,15 +42,15 @@ module.exports = {
           name: ['app', 'vendor', 'polyfills']
       }),
 
-      new CopyWebpackPlugin([
+      /*new CopyWebpackPlugin([
           { from: './node_modules/jquery/dist/jquery.min.js' },
           { from: './node_modules/jquery-ui-bundle/jquery-ui.min.js' },
           { from: './node_modules/ignite-ui/js/infragistics.core-lite.js' },
           { from: './node_modules/ignite-ui/js/infragistics.lob-lite.js' }
-      ]),
+      ]),*/
 
       new HtmlWebpackPlugin({
-          template: './app/index.html'
+          template: './index.html'
       }),
 
       new webpack.ProvidePlugin({
