@@ -32,7 +32,7 @@ module.exports = {
           },
           {
               test: /\.css$/,
-              loader: 'to-string!css-loader'
+              loader: 'to-string!style!css'
           }
         ]
     },
@@ -41,13 +41,6 @@ module.exports = {
       new webpack.optimize.CommonsChunkPlugin({
           name: ['app', 'vendor', 'polyfills']
       }),
-
-      /*new CopyWebpackPlugin([
-          { from: './node_modules/jquery/dist/jquery.min.js' },
-          { from: './node_modules/jquery-ui-bundle/jquery-ui.min.js' },
-          { from: './node_modules/ignite-ui/js/infragistics.core-lite.js' },
-          { from: './node_modules/ignite-ui/js/infragistics.lob-lite.js' }
-      ]),*/
 
       new HtmlWebpackPlugin({
           template: './index.html'

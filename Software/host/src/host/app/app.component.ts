@@ -21,7 +21,7 @@ export class AppComponent {
     }
 
     ngAfterViewInit() {
-        debugger;
+        //debugger;
         var $el = $("#pm-dashboard");
         //$el.mCustomScrollbar();
     }
