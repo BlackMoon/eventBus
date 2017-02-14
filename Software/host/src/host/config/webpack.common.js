@@ -8,6 +8,7 @@ module.exports = {
     entry: {
         'app': './index.ts',
         'polyfills': './polyfills.ts',
+        'theme': 'igniteui/css/themes/metro/infragistics.theme.css',
         'vendor': './vendor.ts'
     },
 
@@ -39,7 +40,7 @@ module.exports = {
 
     plugins: [
       new webpack.optimize.CommonsChunkPlugin({
-          name: ['app', 'vendor', 'polyfills']
+          name: ['app', 'theme', 'vendor', 'polyfills']
       }),
 
       new HtmlWebpackPlugin({

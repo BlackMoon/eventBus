@@ -1,13 +1,14 @@
-﻿import { Component, AfterViewInit } from '@angular/core';
+﻿import { AfterViewInit, Component, ViewChild } from '@angular/core';
 
 declare var $: any;
 
 @Component({
     selector: 'app-login',
+    styleUrls: ['login.component.css'],
     templateUrl: 'login.component.html'
 })
 
-export class LoginComponent implements AfterViewInit {   
+export class LoginComponent implements AfterViewInit {      
 
     private options: any;     
 
@@ -26,15 +27,19 @@ export class LoginComponent implements AfterViewInit {
     }    
 
     ngAfterViewInit() {
-        $("input[type=submit]").button();
-        $("input[type=reset]").button();
+        $("#ok").button();
+        $("#cancel").button();
     }
 
-    show() {        
+    authenticate() {
+        this.close();
+    }
+
+    open() {        
         this.options.state = 'opened';
     }
 
-    hide() {
+    close() {
         this.options.state = 'closed';
     }
 }

@@ -1,4 +1,4 @@
-﻿import { Component, AfterViewInit, ViewChild } from '@angular/core';
+﻿import { AfterViewInit, Component, ViewChild } from '@angular/core';
 import { LoginComponent } from './components/login.component';
 
 declare var $: any;
@@ -10,14 +10,10 @@ declare var $: any;
 })
 
 export class AppComponent implements AfterViewInit {
-    @ViewChild(LoginComponent) loginComponent: LoginComponent;
-
-    ngOnInit() {
-        
-    }
+    @ViewChild(LoginComponent) loginComponent: LoginComponent;    
 
     ngAfterViewInit() {    
-        this.loginComponent.show();
+        this.loginComponent.open();
         $("#pm-dashboard").mCustomScrollbar();        
     }
 }

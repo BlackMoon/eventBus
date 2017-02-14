@@ -17,8 +17,7 @@ import 'jquery-ui';
 import 'malihu-custom-scrollbar-plugin';
 
 // IgniteUI
-import 'igniteui/css/infragistics.css';
-import 'igniteui/css/infragistics.theme.css';
+import 'igniteui/css/structure/infragistics.css';
 import 'igniteui/js/infragistics.core.js';
 import 'igniteui/js/infragistics.lob.js';
 import 'igniteui-angular2';

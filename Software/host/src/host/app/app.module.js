@@ -8,6 +8,8 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 var core_1 = require("@angular/core");
 var platform_browser_1 = require("@angular/platform-browser");
 var app_component_1 = require("./app.component");
+var login_component_1 = require("./components/login.component");
+var igniteui_angular2_1 = require("igniteui-angular2/igniteui.angular2");
 var AppModule = (function () {
     function AppModule() {
     }
@@ -16,7 +18,7 @@ var AppModule = (function () {
 AppModule = __decorate([
     core_1.NgModule({
         imports: [platform_browser_1.BrowserModule],
-        declarations: [app_component_1.AppComponent],
+        declarations: [igniteui_angular2_1.IgDialogComponent, igniteui_angular2_1.IgTextEditorComponent, login_component_1.LoginComponent, app_component_1.AppComponent],
         bootstrap: [app_component_1.AppComponent]
     })
 ], AppModule);
