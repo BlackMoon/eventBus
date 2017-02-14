@@ -8,7 +8,7 @@ module.exports = {
     entry: {
         'app': './index.ts',
         'polyfills': './polyfills.ts',
-        'theme': 'igniteui/css/themes/metro/infragistics.theme.css',
+        'theme': 'igniteui/css/themes/flatly/infragistics.theme.css',
         'vendor': './vendor.ts'
     },
 
