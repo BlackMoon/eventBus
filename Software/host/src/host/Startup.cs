@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Text;
 using DryIoc;
 using Kit.Core;
 using Kit.Core.CQRS.Job;
@@ -9,14 +10,15 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using Kit.Core.Web.Middleware.DebugMode;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.IdentityModel.Tokens;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 
 namespace Host
 {
-    public class Startup : DryIocStartup
+    public partial class Startup : DryIocStartup
     {
         public IConfigurationRoot Configuration { get; }
 
@@ -83,10 +85,7 @@ namespace Host
         {
             loggerFactory.AddConsole(Configuration.GetSection("Logging"));
             loggerFactory.AddDebug();
-
-            // check development (debug) mode
-            app.CheckDebugMode();
-
+            
             // exception handlers
             app.UseStatusCodePagesWithReExecute("/error/{0}");
 
@@ -96,7 +95,25 @@ namespace Host
             }
             else
                 app.UseExceptionHandler("/error");
-            
+
+            // Token Generation
+            byte[] key = Encoding.UTF8.GetBytes("401b09eab3c013d4ca54922bb802bec8fd5318192b0a75f201d8b3727429090fb337591abd3e44453b954555b7a0812e1081c39b740293f765eae731f5a65ed1");
+
+            JwtBearerOptions options = new JwtBearerOptions()
+            {
+                AuthenticationScheme = JwtBearerDefaults.AuthenticationScheme,
+                TokenValidationParameters = {
+                   ValidIssuer = "ExampleIssuer",
+                   ValidAudience = "ExampleAudience",
+                   IssuerSigningKey = new SymmetricSecurityKey(key),
+                   ValidateIssuerSigningKey = true,
+                   ValidateLifetime = true,
+                   ClockSkew = TimeSpan.Zero
+                }
+            };
+
+            app.UseJwtBearerAuthentication(options); 
+
             app.UseFileServer();
             app.UseMvc();
         }
