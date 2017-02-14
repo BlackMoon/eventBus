@@ -1,13 +1,13 @@
 ﻿<ig-dialog id="app-login" [options]="options">
     <div class="group-fields">
         <label for="login">Пользователь</label>
-        <ig-text-editor></ig-text-editor>
+        <ig-text-editor width="100%"></ig-text-editor>
     </div>
     <div class="group-fields">
         <label for="password">Пароль</label>
-        <ig-text-editor textMode="password" placeHolder="********"></ig-text-editor>
+        <ig-text-editor textMode="password" placeHolder="********" width="100%"></ig-text-editor>
     </div>
-        <div class="ui-dialog-buttonpane">
+        <div class="ui-dialog-buttonpane" style="float:right">
             <button id="ok" (click)="authenticate()">Вход</button>
             <button id="cancel" (click)="close()">Отмена</button>
         </div>

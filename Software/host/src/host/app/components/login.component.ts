@@ -20,8 +20,8 @@ export class LoginComponent implements AfterViewInit {
             resizable: false,
             showCloseButton: false,
             showFooter: true,
-            height: 300,
-            width: 400,
+            height: 280,
+            width: 320,
             state: "closed"
         }
     }    
