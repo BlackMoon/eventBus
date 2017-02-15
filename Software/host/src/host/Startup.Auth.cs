@@ -1,12 +1,13 @@
 ﻿using System;
+using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Security.Principal;
 using System.Text;
 using System.Threading.Tasks;
 using domain.Login;
 using Host.TokenProvider;
+using Kit.Core.Extensions;
 using Kit.Core.CQRS.Command;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
@@ -30,7 +31,7 @@ namespace Host
                 dispatcher.Dispatch(new LoginCommand() { UserName = u, Password = p });
 
                 ClaimsIdentity identity = new ClaimsIdentity(new GenericIdentity(u, "Token"), new Claim[] {});
-                return Task.FromResult<ClaimsIdentity>(identity);
+                return Task.FromResult(identity);
             };
             
             app.UseSimpleTokenProvider(tokenOptions);

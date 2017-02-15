@@ -77,7 +77,7 @@ namespace Host.TokenProvider
 
             // Specifically add the jti (nonce), iat (issued timestamp), and sub (subject/user) claims.
             // You can add other claims here, if you want:
-            Claim[] claims = new[]
+            Claim[] claims = 
             {
                 new Claim(JwtRegisteredClaimNames.Sub, username),
                 new Claim(JwtRegisteredClaimNames.Jti, await _options.NonceGenerator()),
