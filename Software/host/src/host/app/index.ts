@@ -6,6 +6,8 @@ if (process.env.ENV === 'production') {
     enableProdMode();
 }
 
-window.addEventListener('DOMContentLoaded', function () {
+let boot = document.addEventListener('DOMContentLoaded', () => {
     platformBrowserDynamic().bootstrapModule(AppModule);
 });
+
+module.exports = boot;
