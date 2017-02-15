@@ -1,6 +1,6 @@
 ﻿using System;
-using System.Text;
 using DryIoc;
+using Host.TokenProvider;
 using Kit.Core;
 using Kit.Core.CQRS.Job;
 using Kit.Core.Web.Binders;
@@ -10,9 +10,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.IdentityModel.Tokens;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 
@@ -47,12 +45,13 @@ namespace Host
             services.AddApplicationInsightsTelemetry(Configuration);
             services.AddOptions();
 
+            services.Configure<TokenProviderOptions>(Configuration.GetSection("TokenAuthentication"));
+
             // for the UI
             services
                 .AddMvc(options =>
                 {
                     options.ModelBinderProviders.Insert(0, new EncryptModelBinderProvider());
-                    options.CacheProfiles.Add("1hour", new CacheProfile() { Duration = 3600 });
                 })
                 .AddJsonOptions(option =>
                 {
@@ -63,7 +62,7 @@ namespace Host
             services.AddRouting(options => options.LowercaseUrls = true);
 
             // Add dependencies
-            IContainer container = ConfigureDependencies(services, "Kit.Core", "Kit.Dal", "Kit.Dal.Postgre");
+            IContainer container = ConfigureDependencies(services, "domain", "Kit.Core", "Kit.Dal", "Kit.Dal.Postgre");
 
             // IDbManager
             container.RegisterInstance(Configuration.GetConnectionString("DefaultConnection"), serviceKey: "ConnectionString");
@@ -95,24 +94,8 @@ namespace Host
             }
             else
                 app.UseExceptionHandler("/error");
-
-            // Token Generation
-            byte[] key = Encoding.UTF8.GetBytes("401b09eab3c013d4ca54922bb802bec8fd5318192b0a75f201d8b3727429090fb337591abd3e44453b954555b7a0812e1081c39b740293f765eae731f5a65ed1");
-
-            JwtBearerOptions options = new JwtBearerOptions()
-            {
-                AuthenticationScheme = JwtBearerDefaults.AuthenticationScheme,
-                TokenValidationParameters = {
-                   ValidIssuer = "ExampleIssuer",
-                   ValidAudience = "ExampleAudience",
-                   IssuerSigningKey = new SymmetricSecurityKey(key),
-                   ValidateIssuerSigningKey = true,
-                   ValidateLifetime = true,
-                   ClockSkew = TimeSpan.Zero
-                }
-            };
-
-            app.UseJwtBearerAuthentication(options); 
+            
+            ConfigureAuth(app);
 
             app.UseFileServer();
             app.UseMvc();
