@@ -12,9 +12,7 @@ declare var $: any;
 
 export class LoginComponent implements AfterViewInit, OnInit {      
 
-    private model: any = {};
-    private loading = false;
-    private returnUrl: string;
+    private model: any = {};        
     private options: any;     
 
     constructor(
@@ -43,17 +41,18 @@ export class LoginComponent implements AfterViewInit, OnInit {
         this.authenticationService.logout();
     }
 
-    login() {
-        this.loading = true;
-        debugger;
+    login() {        
+        
         this.authenticationService.login(this.model.username, this.model.password)
             .subscribe(
             data => {
-                this.router.navigate([this.returnUrl]);
+                this.router.navigate(['/']);
+                this.close();
             },
             error => {
+                console.log(error);
                 //this.alertService.error(error);
-                this.loading = false;
+                this.close();
             });
     }
 

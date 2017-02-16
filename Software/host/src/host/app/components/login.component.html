@@ -1,5 +1,5 @@
 ﻿<ig-dialog id="app-login" [options]="options">
-    <form role="form" (ngSubmit)="login()">
+    <form role="form" (ngSubmit)="login()" (ngReset) ="close()">
         <div class="group-fields">
             <label for="login">Пользователь</label>
             <ig-text-editor width="100%" [(ngModel)]="model.username" name="username" ></ig-text-editor>

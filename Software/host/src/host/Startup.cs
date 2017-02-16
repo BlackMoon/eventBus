@@ -2,6 +2,7 @@
 using DryIoc;
 using Host.TokenProvider;
 using Kit.Core;
+using Kit.Core.Identity;
 using Kit.Core.CQRS.Job;
 using Kit.Core.Web.Binders;
 using Kit.Dal.DbManager;
@@ -10,9 +11,11 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
+using Microsoft.AspNetCore.Http;
+using Kit.Dal.Configuration;
+using Microsoft.Extensions.Options;
 
 namespace Host
 {
@@ -45,6 +48,7 @@ namespace Host
             services.AddApplicationInsightsTelemetry(Configuration);
             services.AddOptions();
 
+            services.Configure<ConnectionSettings>(Configuration.GetSection("Data:DefaultConnection"));
             services.Configure<TokenProviderOptions>(Configuration.GetSection("TokenAuthentication"));
 
             // for the UI
@@ -65,12 +69,29 @@ namespace Host
             IContainer container = ConfigureDependencies(services, "domain", "Kit.Core", "Kit.Dal", "Kit.Dal.Postgre");
 
             // IDbManager
-            container.RegisterInstance(Configuration.GetConnectionString("DefaultConnection"), serviceKey: "ConnectionString");
+            container.RegisterDelegate(delegate (IResolver r)
+            {
+                HttpContext httpContext = r.Resolve<IHttpContextAccessor>().HttpContext;
+                ConnectionSettings options = r.Resolve<IOptions<ConnectionSettings>>().Value;
+                
+                return httpContext.User
+                    .ToString($"User Id={{{ConnectionClaimTypes.UserId}}};Password={{{ConnectionClaimTypes.Password}}};" +
+                              $"Host={options.Server};Port={options.Port};Database={options.DataSource};Pooling=true;");
+
+            }, serviceKey: "ConnectionString"); 
+                       
             container.RegisterInstance(Configuration["Data:DefaultConnection:ProviderName"], serviceKey: "ProviderName");
+
+            // глобальный dbManager
+            string connStr = Configuration.GetConnectionString("AdminConnection");
             container.Register(
                 reuse: Reuse.Singleton,
-                made: Made.Of(() => DbManagerFactory.CreateDbManager(Arg.Of<string>("ProviderName"), Arg.Of<string>("ConnectionString")), requestIgnored => string.Empty)
-                );
+                made: Made.Of(() => DbManagerFactory.CreateDbManager(Arg.Of<string>("ProviderName"), connStr), requestIgnored => string.Empty));
+
+            // dbManager для текущего пользователя (веб)
+            container.Register(
+                reuse: Reuse.InWebRequest,
+                made: Made.Of(() => DbManagerFactory.CreateDbManager(Arg.Of<string>("ProviderName"), Arg.Of<string>("ConnectionString")), requestIgnored => string.Empty));
 
             // Startup Jobs
             IJobDispatcher dispatcher = container.Resolve<IJobDispatcher>(IfUnresolved.ReturnDefault);

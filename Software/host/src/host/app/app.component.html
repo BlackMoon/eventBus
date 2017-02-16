@@ -1,2 +1,27 @@
 ﻿<app-login></app-login>
-<button id="openDialog" (click)="this.loginComponent.open()">Show</button>
+ <!-- START PM NAVIGATION PANEL -->
+<div id="pm-dashboard" class="lang-@UICulture.Split('-')[0]">
+    <div id="pm-navigation" class="collapsed navigation-slide">
+        <div class="expand-container"><a href="#" class="btn-expand"><i class="icon-md icon-menu">Expand Navigation</i></a></div>
+        <div class="profile table">
+            <div class="userinfo row">
+                <span class="picture cell valign-mid"></span>
+                <span class="user cell valign-mid hidden-closed">Richard Kevinson<small class="discipline">@Resources.Main.Nav_UserDiscipline</small></span>
+            </div>
+            <div class="date today row-group">
+                <span class="cell">Main.Nav_Today</span>
+                <time class="row" datetime=""><span class="date cell">--/--</span><span class="time cell hidden-closed">--:-- -- EST</span></time>
+            </div>
+        </div>
+        <section class="projects current">
+            <h3>Monitor</h3>            
+        </section>
+        <section class="projects upcoming">
+            <h3>Users</h3>            
+        </section>
+    </div>
+</div>
+ <!-- END PM NAVIGATION PANEL -->
+<!-- START PROJECT PANEL -->
+<div id="project-panel" class="content" ng-view></div>
+<!-- END PROJECT PANEL -->

@@ -10,6 +10,7 @@
     "@angular/router": "^3.4.7",
     "@angular/upgrade": "^2.4.7",
     "angular-in-memory-web-api": "^0.2.4",
+    "angular2-jwt": "^0.1.28",
     "core-js": "^2.4.1",
     "igniteui": "0.0.5",
     "igniteui-angular2": "^1.1.3",

@@ -1,17 +1,16 @@
 ﻿using System;
-using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Security.Principal;
 using System.Text;
 using System.Threading.Tasks;
 using domain.Login;
 using Host.TokenProvider;
-using Kit.Core.Extensions;
 using Kit.Core.CQRS.Command;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
+using Kit.Core.Identity;
 
 namespace Host
 {
@@ -30,7 +29,9 @@ namespace Host
                 ICommandDispatcher dispatcher = app.ApplicationServices.GetRequiredService<ICommandDispatcher>();
                 dispatcher.Dispatch(new LoginCommand() { UserName = u, Password = p });
 
-                ClaimsIdentity identity = new ClaimsIdentity(new GenericIdentity(u, "Token"), new Claim[] {});
+                Claim[] claims = { new Claim(ConnectionClaimTypes.UserId, u), new Claim(ConnectionClaimTypes.Password, p) };
+
+                ClaimsIdentity identity = new ClaimsIdentity(new GenericIdentity(u, "Token"), claims);
                 return Task.FromResult(identity);
             };
             

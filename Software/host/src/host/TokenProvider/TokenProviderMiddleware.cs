@@ -47,7 +47,7 @@ namespace Host.TokenProvider
             // If the request path doesn't match, skip
             if (!context.Request.Path.Equals(_options.Path, StringComparison.Ordinal))
                 return _next(context);
-
+            
             // Request must be POST with Content-Type: application/x-www-form-urlencoded
             if (!context.Request.Method.Equals("POST") || !context.Request.HasFormContentType)
             {
@@ -77,18 +77,17 @@ namespace Host.TokenProvider
 
             // Specifically add the jti (nonce), iat (issued timestamp), and sub (subject/user) claims.
             // You can add other claims here, if you want:
-            Claim[] claims = 
-            {
+            identity.AddClaims(new []{
                 new Claim(JwtRegisteredClaimNames.Sub, username),
                 new Claim(JwtRegisteredClaimNames.Jti, await _options.NonceGenerator()),
                 new Claim(JwtRegisteredClaimNames.Iat, ToUnixEpochDate(now).ToString(), ClaimValueTypes.Integer64)
-            };
+            });
 
             // Create the JWT and write it to a string
             JwtSecurityToken jwt = new JwtSecurityToken(
                 issuer: _options.Issuer,
                 audience: _options.Audience,
-                claims: claims,
+                claims: identity.Claims,
                 notBefore: now,
                 expires: now.Add(_options.Expiration),
                 signingCredentials: _options.SigningCredentials);
