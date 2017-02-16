@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Net;
 using DryIoc;
 using Host.TokenProvider;
 using Kit.Core;
@@ -15,6 +16,7 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 using Microsoft.AspNetCore.Http;
 using Kit.Dal.Configuration;
+using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.Extensions.Options;
 
 namespace Host
@@ -23,7 +25,7 @@ namespace Host
     {
         public IConfigurationRoot Configuration { get; }
 
-        public Startup(IHostingEnvironment env) 
+        public Startup(IHostingEnvironment env)
         {
             var builder = new ConfigurationBuilder()
                 .SetBasePath(env.ContentRootPath)
@@ -39,7 +41,7 @@ namespace Host
             builder.AddEnvironmentVariables();
             Configuration = builder.Build();
         }
-        
+
 
         // This method gets called by the runtime. Use this method to add services to the container
         public IServiceProvider ConfigureServices(IServiceCollection services)
@@ -48,7 +50,7 @@ namespace Host
             services.AddApplicationInsightsTelemetry(Configuration);
             services.AddOptions();
 
-            services.Configure<ConnectionSettings>(Configuration.GetSection("Data:DefaultConnection"));
+            services.Configure<ConnectionOptions>(Configuration.GetSection("Data:DefaultConnection"));
             services.Configure<TokenProviderOptions>(Configuration.GetSection("TokenAuthentication"));
 
             // for the UI
@@ -72,21 +74,24 @@ namespace Host
             container.RegisterDelegate(delegate (IResolver r)
             {
                 HttpContext httpContext = r.Resolve<IHttpContextAccessor>().HttpContext;
-                ConnectionSettings options = r.Resolve<IOptions<ConnectionSettings>>().Value;
-                
+                ConnectionOptions options = r.Resolve<IOptions<ConnectionOptions>>().Value;
+
                 return httpContext.User
                     .ToString($"User Id={{{ConnectionClaimTypes.UserId}}};Password={{{ConnectionClaimTypes.Password}}};" +
                               $"Host={options.Server};Port={options.Port};Database={options.DataSource};Pooling=true;");
 
-            }, serviceKey: "ConnectionString"); 
-                       
+            }, serviceKey: "ConnectionString");
+
             container.RegisterInstance(Configuration["Data:DefaultConnection:ProviderName"], serviceKey: "ProviderName");
 
             // глобальный dbManager
             string connStr = Configuration.GetConnectionString("AdminConnection");
             container.Register(
                 reuse: Reuse.Singleton,
-                made: Made.Of(() => DbManagerFactory.CreateDbManager(Arg.Of<string>("ProviderName"), connStr), requestIgnored => string.Empty));
+                made: Made.Of(() => DbManagerFactory.CreateDbManager(Arg.Of<string>("ProviderName"), connStr), requestIgnored => string.Empty),
+                serviceKey: "AdminDbManager");
+
+            container.RegisterInitializer<IDbManager>((m, r) => m.Notification = (sender, args) => { }, info => Equals(info.ServiceKey, "AdminDbManager"));
 
             // dbManager для текущего пользователя (веб)
             container.Register(
@@ -96,7 +101,7 @@ namespace Host
             // Startup Jobs
             IJobDispatcher dispatcher = container.Resolve<IJobDispatcher>(IfUnresolved.ReturnDefault);
             dispatcher?.Dispatch<IStartupJob>();
-           
+
             return container.Resolve<IServiceProvider>();
         }
 
@@ -105,17 +110,24 @@ namespace Host
         {
             loggerFactory.AddConsole(Configuration.GetSection("Logging"));
             loggerFactory.AddDebug();
-            
-            // exception handlers
-            app.UseStatusCodePagesWithReExecute("/error/{0}");
 
-            if (env.IsDevelopment())
+            // exception handlers
+            app.UseExceptionHandler(builder =>
             {
-                app.UseDeveloperExceptionPage();
-            }
-            else
-                app.UseExceptionHandler("/error");
-            
+                builder.Run(async context => 
+                {
+                    context.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
+                    context.Response.ContentType = "application/json";
+
+                    IExceptionHandlerFeature ex = context.Features.Get<IExceptionHandlerFeature>();
+                    if (ex != null)
+                    {
+                        string error = JsonConvert.SerializeObject(new { ex.Error.Message });
+                        await context.Response.WriteAsync(error).ConfigureAwait(false);
+                    }
+                });
+            });
+
             ConfigureAuth(app);
 
             app.UseFileServer();

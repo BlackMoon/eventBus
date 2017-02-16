@@ -23,7 +23,7 @@ namespace Host.Controllers
         {
             IDataReader r = _dbManager.ExecuteReader(CommandType.Text, "SELECT id, application_id, name, type, settings FROM adk_application.application_adapters");
             r.Read();
-            _dbManager.CloseReader();
+            _dbManager.CloseReader();            
             
             return new string[] { "value1", "value2" };
         }

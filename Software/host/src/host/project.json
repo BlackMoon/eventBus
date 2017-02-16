@@ -3,9 +3,9 @@
     "domain": "1.0.0-*",
     "Kit.Core.Web": "1.0.0-*",
     "Kit.Dal": "1.0.0-*",
-    "Microsoft.ApplicationInsights.AspNetCore": "2.0.0",    
+    "Microsoft.ApplicationInsights.AspNetCore": "2.0.0",
     "Microsoft.AspNetCore.Authentication.JwtBearer": "1.1.0",
-    "Microsoft.AspNetCore.Diagnostics": "1.1.0",    
+    "Microsoft.AspNetCore.Diagnostics": "1.1.0",
     "Microsoft.AspNetCore.Mvc": "1.1.1",
     "Microsoft.AspNetCore.Routing": "1.1.0",
     "Microsoft.AspNetCore.Server.IISIntegration": "1.1.0",
@@ -56,15 +56,14 @@
 
   "publishOptions": {
     "include": [
-      "wwwroot",
-      "**/*.cshtml",
+      "wwwroot",      
       "appsettings.json",
       "web.config"
     ]
   },
 
   "scripts": {
-    "prepublish": [ "npm install", "SET NODE_ENV=development&& webpack" ],
+    "prepublish": [ "npm install", "webpack --config config/webpack.dev.js" ],
     "postpublish": [ "dotnet publish-iis --publish-folder %publish:OutputPath% --framework %publish:FullTargetFramework%" ]
   }
 }

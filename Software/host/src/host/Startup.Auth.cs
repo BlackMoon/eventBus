@@ -6,30 +6,52 @@ using System.Threading.Tasks;
 using domain.Login;
 using Host.TokenProvider;
 using Kit.Core.CQRS.Command;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Http.Authentication;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using Kit.Core.Identity;
+using Kit.Dal.Configuration;
 
 namespace Host
 {
     public partial class Startup
     {
+        private const byte xor = 128;
+
         private void ConfigureAuth(IApplicationBuilder app)
-        {
-            IOptions<TokenProviderOptions> options = app.ApplicationServices.GetRequiredService<IOptions<TokenProviderOptions>>();
-            TokenProviderOptions tokenOptions = options.Value;
+        {   
+            TokenProviderOptions tokenOptions = app.ApplicationServices.GetRequiredService<IOptions<TokenProviderOptions>>().Value;
 
             SymmetricSecurityKey signingKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(tokenOptions.SecretKey));
 
             tokenOptions.SigningCredentials = new SigningCredentials(signingKey, SecurityAlgorithms.HmacSha256Signature);
             tokenOptions.IdentityResolver = (u, p) =>
             {
+                ConnectionOptions connOptions = app.ApplicationServices.GetRequiredService<IOptions<ConnectionOptions>>().Value;
                 ICommandDispatcher dispatcher = app.ApplicationServices.GetRequiredService<ICommandDispatcher>();
-                dispatcher.Dispatch(new LoginCommand() { UserName = u, Password = p });
 
-                Claim[] claims = { new Claim(ConnectionClaimTypes.UserId, u), new Claim(ConnectionClaimTypes.Password, p) };
+                dispatcher.Dispatch(
+                    new LoginCommand()
+                    {
+                        Host = connOptions.Server,
+                        Port = connOptions.Port,
+                        DataBase = connOptions.DataSource,
+                        UserName = u,
+                        Password = p
+                    });
+
+                // password encryption with XOR (value ^ 128) operator
+                char[] buff = p.ToCharArray();
+                for (int i = 0; i < p.Length; ++i)
+                {
+                    buff[i] = (char)(p[i] ^ xor);
+                }
+
+                Claim[] claims = { new Claim(ConnectionClaimTypes.UserId, u), new Claim(ConnectionClaimTypes.Password, new string(buff)) };
 
                 ClaimsIdentity identity = new ClaimsIdentity(new GenericIdentity(u, "Token"), claims);
                 return Task.FromResult(identity);
@@ -41,6 +63,39 @@ namespace Host
             {
                 AutomaticAuthenticate = true,
                 AutomaticChallenge = true,
+                Events = new JwtBearerEvents() {                    
+                    OnChallenge = ctx =>
+                    {
+                        // prevent 404 status code instead of 401
+                        return Task.FromResult(0);
+                    }, 
+                    OnTokenValidated = ctx =>
+                    {
+                        ClaimsPrincipal cp = ctx.Ticket.Principal;
+
+                        ClaimsIdentity ci = cp.Identity as ClaimsIdentity;
+                        if (ci != null)
+                        {
+                            Claim claim = ci.FindFirst(ConnectionClaimTypes.Password);
+                            string psw = claim.Value;
+
+                            // password decryption with XOR (value ^ 128) operator
+                            char[] buff = psw.ToCharArray();
+                            for (int i = 0; i < psw.Length; ++i)
+                            {
+                                buff[i] = (char)(psw[i] ^ xor);
+                            }
+
+                            ci.TryRemoveClaim(claim);
+                            ci.AddClaim(new Claim(ConnectionClaimTypes.Password, new string(buff)));
+
+                            ctx.Ticket = new AuthenticationTicket(cp, new AuthenticationProperties(), ctx.Options.AuthenticationScheme);
+                        }
+
+                        return Task.FromResult(0);
+                    }
+                },
+
                 TokenValidationParameters = new TokenValidationParameters
                 {
                     // The signing key must match!
@@ -60,7 +115,7 @@ namespace Host
 
                     // If you want to allow a certain amount of clock drift, set that here:
                     ClockSkew = TimeSpan.Zero
-                }
+                }                
             });
         }
     }

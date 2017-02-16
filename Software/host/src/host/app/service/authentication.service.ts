@@ -22,8 +22,8 @@ export class AuthenticationService {
         let headers = new Headers({ 'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8' });
         let options = new RequestOptions({ headers: headers });        
 
-        return new Observable<void>();
-        /*
+        ///return new Observable<void>();
+        
         return this.http
             .post('api/token', body, options)                
             .map((response: Response) => {
@@ -36,7 +36,7 @@ export class AuthenticationService {
                     sessionStorage.setItem(tokenKey, obj.access_token);
                     sessionStorage.setItem(tokenExpiresKey, obj.expires_in);                    
                 }
-            });*/
+            });
     }
 
     logout() {

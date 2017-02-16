@@ -45,11 +45,12 @@ export class LoginComponent implements AfterViewInit, OnInit {
         
         this.authenticationService.login(this.model.username, this.model.password)
             .subscribe(
-            data => {
+            data => {                
                 this.router.navigate(['/']);
                 this.close();
             },
             error => {
+                debugger;
                 console.log(error);
                 //this.alertService.error(error);
                 this.close();
