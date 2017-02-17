@@ -34,26 +34,35 @@ namespace Host
                 ConnectionOptions connOptions = app.ApplicationServices.GetRequiredService<IOptions<ConnectionOptions>>().Value;
                 ICommandDispatcher dispatcher = app.ApplicationServices.GetRequiredService<ICommandDispatcher>();
 
-                dispatcher.Dispatch(
-                    new LoginCommand()
-                    {
-                        Host = connOptions.Server,
-                        Port = connOptions.Port,
-                        DataBase = connOptions.DataSource,
-                        UserName = u,
-                        Password = p
-                    });
-
-                // password encryption with XOR (value ^ 128) operator
-                char[] buff = p.ToCharArray();
-                for (int i = 0; i < p.Length; ++i)
+                ClaimsIdentity identity = null;
+                try
                 {
-                    buff[i] = (char)(p[i] ^ xor);
+                    dispatcher.Dispatch(
+                        new LoginCommand()
+                        {
+                            Host = connOptions.Server,
+                            Port = connOptions.Port,
+                            DataBase = connOptions.DataSource,
+                            UserName = u,
+                            Password = p
+                        });
+
+                    // password encryption with XOR (value ^ 128) operator
+                    char[] buff = p.ToCharArray();
+                    for (int i = 0; i < p.Length; ++i)
+                    {
+                        buff[i] = (char)(p[i] ^ xor);
+                    }
+
+                    Claim[] claims = { new Claim(ConnectionClaimTypes.Password, new string(buff)) };
+
+                    identity = new ClaimsIdentity(new GenericIdentity(u, "Token"), claims);
+                }
+                catch
+                {
+                    // ignored
                 }
 
-                Claim[] claims = { new Claim(ConnectionClaimTypes.UserId, u), new Claim(ConnectionClaimTypes.Password, new string(buff)) };
-
-                ClaimsIdentity identity = new ClaimsIdentity(new GenericIdentity(u, "Token"), claims);
                 return Task.FromResult(identity);
             };
             

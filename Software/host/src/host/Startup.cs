@@ -18,6 +18,7 @@ using Microsoft.AspNetCore.Http;
 using Kit.Dal.Configuration;
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.Extensions.Options;
+using System.Security.Claims;
 
 namespace Host
 {
@@ -76,9 +77,11 @@ namespace Host
                 HttpContext httpContext = r.Resolve<IHttpContextAccessor>().HttpContext;
                 ConnectionOptions options = r.Resolve<IOptions<ConnectionOptions>>().Value;
 
-                return httpContext.User
-                    .ToString($"User Id={{{ConnectionClaimTypes.UserId}}};Password={{{ConnectionClaimTypes.Password}}};" +
-                              $"Host={options.Server};Port={options.Port};Database={options.DataSource};Pooling=true;");
+                ClaimsPrincipal cp = httpContext.User;
+                string pswd = cp.FindFirst(ConnectionClaimTypes.Password).Value,
+                       userId = cp.Identity.Name;                       
+
+                return $"User Id={userId};Password={pswd};Host={options.Server};Port={options.Port};Database={options.DataSource};Pooling=true;";                
 
             }, serviceKey: "ConnectionString");
 

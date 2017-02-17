@@ -1,6 +1,7 @@
 ﻿import { AfterViewInit, Component, OnInit, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
-import { AuthenticationService } from '../service/index';
+import { AuthHttp } from 'angular2-jwt';
+import { AuthenticationService } from '../services/index';
 
 declare var $: any;
 
@@ -16,8 +17,9 @@ export class LoginComponent implements AfterViewInit, OnInit {
     private options: any;     
 
     constructor(
-        private router: Router,
-        private authenticationService: AuthenticationService) {
+        private authenticationService: AuthenticationService,
+        private http: AuthHttp,
+        private router: Router) {
 
             this.options = {
                 headerText: "Войти в систему",
@@ -45,9 +47,20 @@ export class LoginComponent implements AfterViewInit, OnInit {
         
         this.authenticationService.login(this.model.username, this.model.password)
             .subscribe(
-            data => {                
-                this.router.navigate(['/']);
-                this.close();
+            next => {                
+                debugger;
+
+                this.http.get("/api/values").subscribe(
+                    next => {
+                        debugger;
+                    },
+                    error => {
+                        debugger;
+                    });
+
+
+                //this.router.navigate(['/']);
+                //this.close();
             },
             error => {
                 debugger;
