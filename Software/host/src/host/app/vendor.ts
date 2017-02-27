@@ -7,6 +7,9 @@ import '@angular/platform-browser';
 import '@angular/platform-browser-dynamic';
 import '@angular/router';
 
+// CryptoJS
+import 'crypto-js';
+
 // RxJS
 import 'rxjs';
 

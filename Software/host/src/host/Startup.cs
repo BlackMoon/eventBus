@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Net;
 using DryIoc;
-using Host.TokenProvider;
 using Kit.Core;
 using Kit.Core.Identity;
 using Kit.Core.CQRS.Job;
@@ -19,6 +18,10 @@ using Kit.Dal.Configuration;
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.Extensions.Options;
 using System.Security.Claims;
+using CacheManager.Core;
+using Host.Security;
+using Host.Security.SecretProvider;
+using Host.Security.TokenProvider;
 
 namespace Host
 {
@@ -28,7 +31,7 @@ namespace Host
 
         public Startup(IHostingEnvironment env)
         {
-            var builder = new ConfigurationBuilder()
+            var builder = new Microsoft.Extensions.Configuration.ConfigurationBuilder()
                 .SetBasePath(env.ContentRootPath)
                 .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
                 .AddJsonFile($"appsettings.{env.EnvironmentName}.json", optional: true);
@@ -52,6 +55,7 @@ namespace Host
             services.AddOptions();
 
             services.Configure<ConnectionOptions>(Configuration.GetSection("Data:DefaultConnection"));
+            services.Configure<SecretProviderOptions>(Configuration.GetSection("SecretGeneration"));
             services.Configure<TokenProviderOptions>(Configuration.GetSection("TokenAuthentication"));
 
             // for the UI
@@ -67,6 +71,10 @@ namespace Host
                 });
 
             services.AddRouting(options => options.LowercaseUrls = true);
+
+            // Add secret's caching
+            ICacheManagerConfiguration cacheConfiguration = Configuration.GetCacheConfiguration("secretCache");
+            services.AddSingleton(p => CacheFactory.FromConfiguration<SecretItem>("secretCache", cacheConfiguration)); 
 
             // Add dependencies
             IContainer container = ConfigureDependencies(services, "domain", "Kit.Core", "Kit.Dal", "Kit.Dal.Postgre");
@@ -94,6 +102,7 @@ namespace Host
                 made: Made.Of(() => DbManagerFactory.CreateDbManager(Arg.Of<string>("ProviderName"), connStr), requestIgnored => string.Empty),
                 serviceKey: "AdminDbManager");
 
+            // todo - check IDbManager'a initialiazation
             container.RegisterInitializer<IDbManager>((m, r) => m.Notification = (sender, args) => { }, info => Equals(info.ServiceKey, "AdminDbManager"));
 
             // dbManager для текущего пользователя (веб)
@@ -101,6 +110,9 @@ namespace Host
                 reuse: Reuse.InWebRequest,
                 made: Made.Of(() => DbManagerFactory.CreateDbManager(Arg.Of<string>("ProviderName"), Arg.Of<string>("ConnectionString")), requestIgnored => string.Empty));
 
+            // 
+            container.Register<SecretStorage>(Reuse.Singleton);
+            
             // Startup Jobs
             IJobDispatcher dispatcher = container.Resolve<IJobDispatcher>(IfUnresolved.ReturnDefault);
             dispatcher?.Dispatch<IStartupJob>();

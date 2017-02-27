@@ -49,7 +49,7 @@ export class LoginComponent implements AfterViewInit, OnInit {
             .subscribe(
             next => {                
                 debugger;
-
+                let b = this.authenticationService.isAuthenticated();
                 this.http.get("/api/values").subscribe(
                     next => {
                         debugger;

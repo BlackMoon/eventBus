@@ -3,14 +3,18 @@
 
 using System;
 using System.IdentityModel.Tokens.Jwt;
+using System.IO;
+using System.Linq;
 using System.Security.Claims;
+using System.Security.Cryptography;
 using System.Threading.Tasks;
+using Host.Security.SecretProvider;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
 
-namespace Host.TokenProvider
+namespace Host.Security.TokenProvider
 {
     /// <summary>
     /// Token generator middleware component which is added to an HTTP pipeline.
@@ -21,17 +25,20 @@ namespace Host.TokenProvider
     public class TokenProviderMiddleware
     {
         private readonly RequestDelegate _next;
+        private readonly SecretStorage _storage;
         private readonly TokenProviderOptions _options;
         private readonly ILogger _logger;
         private readonly JsonSerializerSettings _serializerSettings;
 
         public TokenProviderMiddleware(
             RequestDelegate next,
-            IOptions<TokenProviderOptions> options,
+            SecretStorage storage,
+            IOptions<TokenProviderOptions> options,            
             ILoggerFactory loggerFactory)
         {
             _next = next;
             _logger = loggerFactory.CreateLogger<TokenProviderMiddleware>();
+            _storage = storage;
 
             _options = options.Value;
             ThrowIfInvalidOptions(_options);
@@ -62,8 +69,43 @@ namespace Host.TokenProvider
 
         private async Task GenerateToken(HttpContext context)
         {
+            string secret = context.Request.Form["secret"];
+            byte [] data = string.IsNullOrEmpty(secret) ? new byte[] {} : Convert.FromBase64String(secret);
+
+            // Проверка секрета
             string username = context.Request.Form["username"];
+
+            SecretItem item = _storage.Get(username);
+            if (item == null || !data.SequenceEqual(item.Secret))
+            {
+                context.Response.StatusCode = 400;
+                await context.Response.WriteAsync("Invalid secret key.");
+                return;
+            }
+
+            // Аутентификация
             string password = context.Request.Form["password"];
+
+            #region decryption
+            using (Aes aes = Aes.Create())
+            {
+                aes.Key = _storage.Get(username)?.Secret;
+
+                data = Convert.FromBase64String(password);
+
+                using (MemoryStream msDecrypt = new MemoryStream(data))
+                {
+                    ICryptoTransform decryptor = aes.CreateDecryptor(aes.Key, aes.IV);
+                    using (CryptoStream csDecrypt = new CryptoStream(msDecrypt, decryptor, CryptoStreamMode.Read))
+                    {
+                        using (StreamReader srDecrypt = new StreamReader(csDecrypt))
+                        {
+                            password = srDecrypt.ReadToEnd();
+                        }
+                    }
+                }
+            }
+            #endregion 
 
             ClaimsIdentity identity = await _options.IdentityResolver(username, password);
             if (identity == null)
@@ -103,6 +145,9 @@ namespace Host.TokenProvider
             // Serialize and return the response
             context.Response.ContentType = "application/json";
             await context.Response.WriteAsync(JsonConvert.SerializeObject(response, _serializerSettings));
+
+            // Store authenticated user's password
+            _storage.Set(username, new SecretItem() { Password = password });
         }
 
         private static void ThrowIfInvalidOptions(TokenProviderOptions options)

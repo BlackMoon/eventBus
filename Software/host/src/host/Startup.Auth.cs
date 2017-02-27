@@ -4,7 +4,8 @@ using System.Security.Principal;
 using System.Text;
 using System.Threading.Tasks;
 using domain.Login;
-using Host.TokenProvider;
+using Host.Security.SecretProvider;
+using Host.Security.TokenProvider;
 using Kit.Core.CQRS.Command;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Http.Authentication;
@@ -20,10 +21,11 @@ namespace Host
 {
     public partial class Startup
     {
-        private const byte xor = 128;
-
         private void ConfigureAuth(IApplicationBuilder app)
-        {   
+        {
+            SecretProviderOptions secretOptions = app.ApplicationServices.GetRequiredService<IOptions<SecretProviderOptions>>().Value;
+            app.UseSimpleSecretProvider(secretOptions);
+
             TokenProviderOptions tokenOptions = app.ApplicationServices.GetRequiredService<IOptions<TokenProviderOptions>>().Value;
 
             SymmetricSecurityKey signingKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(tokenOptions.SecretKey));
@@ -47,16 +49,7 @@ namespace Host
                             Password = p
                         });
 
-                    // password encryption with XOR (value ^ 128) operator
-                    char[] buff = p.ToCharArray();
-                    for (int i = 0; i < p.Length; ++i)
-                    {
-                        buff[i] = (char)(p[i] ^ xor);
-                    }
-
-                    Claim[] claims = { new Claim(ConnectionClaimTypes.Password, new string(buff)) };
-
-                    identity = new ClaimsIdentity(new GenericIdentity(u, "Token"), claims);
+                    identity = new ClaimsIdentity(new GenericIdentity(u, "Token"), new Claim[]{});
                 }
                 catch
                 {
@@ -65,39 +58,25 @@ namespace Host
 
                 return Task.FromResult(identity);
             };
-            
+
             app.UseSimpleTokenProvider(tokenOptions);
             
             app.UseJwtBearerAuthentication(new JwtBearerOptions
             {
                 AutomaticAuthenticate = true,
                 AutomaticChallenge = true,
-                Events = new JwtBearerEvents() {                    
-                    OnChallenge = ctx =>
-                    {
-                        // prevent 404 status code instead of 401
-                        return Task.FromResult(0);
-                    }, 
+                Events = new JwtBearerEvents() {
+                    OnChallenge = ctx => Task.FromResult(0),            // prevent 404 status code instead of 401              
                     OnTokenValidated = ctx =>
                     {
+                        SecretStorage storage = app.ApplicationServices.GetRequiredService<SecretStorage>();
+
                         ClaimsPrincipal cp = ctx.Ticket.Principal;
 
                         ClaimsIdentity ci = cp.Identity as ClaimsIdentity;
                         if (ci != null)
                         {
-                            Claim claim = ci.FindFirst(ConnectionClaimTypes.Password);
-                            string psw = claim.Value;
-
-                            // password decryption with XOR (value ^ 128) operator
-                            char[] buff = psw.ToCharArray();
-                            for (int i = 0; i < psw.Length; ++i)
-                            {
-                                buff[i] = (char)(psw[i] ^ xor);
-                            }
-
-                            ci.TryRemoveClaim(claim);
-                            ci.AddClaim(new Claim(ConnectionClaimTypes.Password, new string(buff)));
-
+                            ci.AddClaim(new Claim(ConnectionClaimTypes.Password, storage.Get(ci.Name)?.Password));
                             ctx.Ticket = new AuthenticationTicket(cp, new AuthenticationProperties(), ctx.Options.AuthenticationScheme);
                         }
 
