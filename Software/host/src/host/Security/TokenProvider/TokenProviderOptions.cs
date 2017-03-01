@@ -4,8 +4,8 @@
 using System;
 using System.Security.Claims;
 using System.Threading.Tasks;
-using Host.Security.Encryption;
 using Microsoft.IdentityModel.Tokens;
+using Host.Security.Cipher;
 
 namespace Host.Security.TokenProvider
 {
