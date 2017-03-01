@@ -1,4 +1,5 @@
 ﻿var webpackMerge = require('webpack-merge');
+var CleanWebpackPlugin = require('clean-webpack-plugin');
 var ExtractTextPlugin = require('extract-text-webpack-plugin');
 var commonConfig = require('./webpack.common.js');
 var helpers = require('./helpers');
@@ -13,6 +14,11 @@ module.exports = webpackMerge(commonConfig, {
     },
 
     plugins: [
+      new CleanWebpackPlugin(['wwwroot/*'], {
+          root: helpers.root('./'),
+          verbose: true
+      }),
+
       new ExtractTextPlugin('[name].css'),
 
       new webpack.SourceMapDevToolPlugin({

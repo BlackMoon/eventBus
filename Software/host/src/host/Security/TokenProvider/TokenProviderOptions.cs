@@ -4,6 +4,7 @@
 using System;
 using System.Security.Claims;
 using System.Threading.Tasks;
+using Host.Security.Encryption;
 using Microsoft.IdentityModel.Tokens;
 
 namespace Host.Security.TokenProvider
@@ -13,6 +14,11 @@ namespace Host.Security.TokenProvider
     /// </summary>
     public class TokenProviderOptions
     {
+        /// <summary>
+        /// Encrypt credentials?
+        /// </summary>
+        public bool Encrypt { get; set; } = true;
+
         /// <summary>
         /// The relative request path to listen on.
         /// </summary>
@@ -39,6 +45,11 @@ namespace Host.Security.TokenProvider
         /// </summary>
         /// <remarks>The default is five minutes (300 seconds).</remarks>
         public TimeSpan Expiration { get; set; } = TimeSpan.FromMinutes(5);
+
+        /// <summary>
+        /// The cipher generation options for 2-factor authentication.
+        /// </summary>
+        public CipherOptions Encryption { get; set; } = new CipherOptions();
 
         /// <summary>
         /// The signing key to use when generating tokens.

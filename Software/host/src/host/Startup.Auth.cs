@@ -4,7 +4,7 @@ using System.Security.Principal;
 using System.Text;
 using System.Threading.Tasks;
 using domain.Login;
-using Host.Security.SecretProvider;
+using Host.Security;
 using Host.Security.TokenProvider;
 using Kit.Core.CQRS.Command;
 using Microsoft.AspNetCore.Authentication;
@@ -23,9 +23,6 @@ namespace Host
     {
         private void ConfigureAuth(IApplicationBuilder app)
         {
-            SecretProviderOptions secretOptions = app.ApplicationServices.GetRequiredService<IOptions<SecretProviderOptions>>().Value;
-            app.UseSimpleSecretProvider(secretOptions);
-
             TokenProviderOptions tokenOptions = app.ApplicationServices.GetRequiredService<IOptions<TokenProviderOptions>>().Value;
 
             SymmetricSecurityKey signingKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(tokenOptions.SecretKey));

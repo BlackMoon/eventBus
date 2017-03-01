@@ -1,4 +1,5 @@
 ﻿var webpack = require('webpack');
+var CleanWebpackPlugin = require('clean-webpack-plugin');
 var ExtractTextPlugin = require('extract-text-webpack-plugin');
 var HtmlWebpackPlugin = require('html-webpack-plugin');
 var helpers = require('./helpers');
@@ -38,7 +39,8 @@ module.exports = {
         ]
     },
 
-    plugins: [
+    plugins: [     
+
       new webpack.optimize.CommonsChunkPlugin({
           name: ['app', 'theme', 'vendor', 'polyfills']
       }),

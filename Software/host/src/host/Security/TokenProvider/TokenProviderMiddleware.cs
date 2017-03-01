@@ -8,14 +8,14 @@ using System.Linq;
 using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Threading.Tasks;
-using Host.Security.SecretProvider;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Serialization;
 
 namespace Host.Security.TokenProvider
-{
+{ 
     /// <summary>
     /// Token generator middleware component which is added to an HTTP pipeline.
     /// This class is not created by application code directly,
@@ -45,38 +45,90 @@ namespace Host.Security.TokenProvider
 
             _serializerSettings = new JsonSerializerSettings
             {
-                Formatting = Formatting.Indented
+                NullValueHandling = NullValueHandling.Ignore,
+                ContractResolver = new CamelCasePropertyNamesContractResolver()
             };
         }
 
         public Task Invoke(HttpContext context)
         {
-            // If the request path doesn't match, skip
-            if (!context.Request.Path.Equals(_options.Path, StringComparison.Ordinal))
-                return _next(context);
-            
+            // If the request encryptionPath match, generate cipher
+            if (_options.Encrypt)
+            {
+                if (context.Request.Path.Equals(_options.Encryption.Path, StringComparison.Ordinal))
+                    return GenerateCipher(context);
+            }
+
+            // If the request tokenPath match, generate token
+            if (context.Request.Path.Equals(_options.Path, StringComparison.Ordinal))
+                return GenerateToken(context);
+
+            return _next(context);
+        }
+
+        private async Task GenerateCipher(HttpContext context)
+        {
             // Request must be POST with Content-Type: application/x-www-form-urlencoded
             if (!context.Request.Method.Equals("POST") || !context.Request.HasFormContentType)
             {
                 context.Response.StatusCode = 400;
-                return context.Response.WriteAsync("Bad request.");
+                await context.Response.WriteAsync("Bad request.");
+                return;
             }
 
             _logger.LogInformation("Handling request: " + context.Request.Path);
 
-            return GenerateToken(context);
+            string username = context.Request.Form["username"];
+            if (string.IsNullOrWhiteSpace(username))
+            {
+                context.Response.StatusCode = 400;
+                await context.Response.WriteAsync("Invalid username.");
+                return;
+            }
+
+            byte[] data = new byte[_options.Encryption.KeySize / 4];
+            RandomNumberGenerator.Create().GetBytes(data);
+
+            SecretItem si = new SecretItem()
+            {
+                Algorithm = _options.Encryption.Algorithm,
+                Key = data
+            };
+
+            // Serialize and return the secret item
+            context.Response.ContentType = "application/json";
+            await context.Response.WriteAsync(JsonConvert.SerializeObject(si, _serializerSettings));
+            // Store authenticated item
+            _storage.Set(username, si);
         }
 
         private async Task GenerateToken(HttpContext context)
         {
-            string secret = context.Request.Form["secret"];
-            byte [] data = string.IsNullOrEmpty(secret) ? new byte[] {} : Convert.FromBase64String(secret);
+            // Request must be POST with Content-Type: application/x-www-form-urlencoded
+            if (!context.Request.Method.Equals("POST") || !context.Request.HasFormContentType)
+            {
+                context.Response.StatusCode = 400;
+                await context.Response.WriteAsync("Bad request.");
+                return;
+            }
+
+            _logger.LogInformation("Handling request: " + context.Request.Path);
 
             // Проверка секрета
             string username = context.Request.Form["username"];
+            // ReSharper disable once ConditionIsAlwaysTrueOrFalse
+            if (username == null)
+            {
+                context.Response.StatusCode = 400;
+                await context.Response.WriteAsync("Invalid username.");
+                return;
+            }
 
-            SecretItem item = _storage.Get(username);
-            if (item == null || !data.SequenceEqual(item.Secret))
+            string secret = context.Request.Form["secret"];
+            byte[] data = string.IsNullOrEmpty(secret) ? new byte[] { } : Convert.FromBase64String(secret.Replace(' ', '+'));
+
+            SecretItem si = _storage.Get(username);
+            if (si == null || !data.SequenceEqual(si.Key))
             {
                 context.Response.StatusCode = 400;
                 await context.Response.WriteAsync("Invalid secret key.");
@@ -87,20 +139,25 @@ namespace Host.Security.TokenProvider
             string password = context.Request.Form["password"];
 
             #region decryption
-            using (Aes aes = Aes.Create())
+            if (_options.Encrypt)
             {
-                aes.Key = _storage.Get(username)?.Secret;
-
-                data = Convert.FromBase64String(password);
-
-                using (MemoryStream msDecrypt = new MemoryStream(data))
+                using (Aes aes = Aes.Create())
                 {
-                    ICryptoTransform decryptor = aes.CreateDecryptor(aes.Key, aes.IV);
-                    using (CryptoStream csDecrypt = new CryptoStream(msDecrypt, decryptor, CryptoStreamMode.Read))
+                    aes.Key = si.Key;
+                    aes.IV = new byte[16];
+                    aes.Padding = PaddingMode.None;
+
+                    data = Convert.FromBase64String(password.Replace(' ', '+'));
+
+                    using (MemoryStream msDecrypt = new MemoryStream(data))
                     {
-                        using (StreamReader srDecrypt = new StreamReader(csDecrypt))
+                        ICryptoTransform decryptor = aes.CreateDecryptor(aes.Key, aes.IV);
+                        using (CryptoStream csDecrypt = new CryptoStream(msDecrypt, decryptor, CryptoStreamMode.Read))
                         {
-                            password = srDecrypt.ReadToEnd();
+                            using (StreamReader srDecrypt = new StreamReader(csDecrypt))
+                            {
+                                password = srDecrypt.ReadToEnd();
+                            }
                         }
                     }
                 }
@@ -179,6 +236,7 @@ namespace Host.Security.TokenProvider
         /// </summary>
         /// <param name="date">The date to convert.</param>
         /// <returns>Seconds since Unix epoch.</returns>
-        public static long ToUnixEpochDate(DateTime date) => new DateTimeOffset(date).ToUniversalTime().ToUnixTimeSeconds();
+        public static long ToUnixEpochDate(DateTime date) => new DateTimeOffset(date).ToUniversalTime().ToUnixTimeSeconds();           
+       
     }
 }

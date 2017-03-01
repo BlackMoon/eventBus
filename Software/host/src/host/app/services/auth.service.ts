@@ -49,6 +49,6 @@ export class AuthService {
 
     logout(): void {
         // clear token remove user from local storage to log user out        
-        storage.removeItem(TokenKey);
+        this.storage.removeItem(TokenKey);
     }
 }

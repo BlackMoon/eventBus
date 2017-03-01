@@ -26,6 +26,7 @@
     "@types/node": "^7.0.5",
     "angular2-template-loader": "^0.6.1",
     "awesome-typescript-loader": "^3.0.3",
+    "clean-webpack-plugin": "^0.1.15",
     "css-loader": "^0.26.1",
     "extract-text-webpack-plugin": "^1.0.1",
     "file-loader": "^0.10.0",

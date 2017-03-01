@@ -20,7 +20,6 @@ using Microsoft.Extensions.Options;
 using System.Security.Claims;
 using CacheManager.Core;
 using Host.Security;
-using Host.Security.SecretProvider;
 using Host.Security.TokenProvider;
 
 namespace Host
@@ -55,7 +54,6 @@ namespace Host
             services.AddOptions();
 
             services.Configure<ConnectionOptions>(Configuration.GetSection("Data:DefaultConnection"));
-            services.Configure<SecretProviderOptions>(Configuration.GetSection("SecretGeneration"));
             services.Configure<TokenProviderOptions>(Configuration.GetSection("TokenAuthentication"));
 
             // for the UI
@@ -65,7 +63,7 @@ namespace Host
                     options.ModelBinderProviders.Insert(0, new EncryptModelBinderProvider());
                 })
                 .AddJsonOptions(option =>
-                {
+                {   
                     option.SerializerSettings.NullValueHandling = NullValueHandling.Ignore;
                     option.SerializerSettings.ContractResolver = new CamelCasePropertyNamesContractResolver();
                 });

@@ -17,7 +17,7 @@ export class LoginComponent implements AfterViewInit, OnInit {
     private options: any;     
 
     constructor(
-        private authenticationService: AuthService,
+        private authService: AuthService,
         private http: AuthHttp,
         private router: Router) {
 
@@ -40,16 +40,16 @@ export class LoginComponent implements AfterViewInit, OnInit {
 
     ngOnInit() {
         // reset login status
-        this.authenticationService.logout();
+        this.authService.logout();
     }
 
     login() {        
         
-        this.authenticationService.login(this.model.username, this.model.password)
+        this.authService.login(this.model.username, this.model.password)
             .subscribe(
             next => {                
                 debugger;
-                let b = this.authenticationService.isAuthenticated();
+                let b = this.authService.isAuthenticated();
                 this.http.get("/api/values").subscribe(
                     next => {
                         debugger;
