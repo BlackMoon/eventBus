@@ -1,5 +1,4 @@
-﻿using Kit.Core.Web.Mvc.Converters;
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
 
 namespace Host.Security
 {
@@ -11,8 +10,8 @@ namespace Host.Security
         public string Algorithm { get; set; }
 
         [JsonIgnore]
-        public string Password { get; set; }
-       
+        public string Password { get; set; }       
+      
         public byte[] Key { get; set; }
     }
 }

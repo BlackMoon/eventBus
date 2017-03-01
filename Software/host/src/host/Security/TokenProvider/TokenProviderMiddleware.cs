@@ -13,6 +13,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
+using Kit.Core.Encryption;
 
 namespace Host.Security.TokenProvider
 { 
@@ -124,11 +125,11 @@ namespace Host.Security.TokenProvider
                 return;
             }
 
-            string secret = context.Request.Form["secret"];
-            byte[] data = string.IsNullOrEmpty(secret) ? new byte[] { } : Convert.FromBase64String(secret.Replace(' ', '+'));
+            string key = context.Request.Form["key"];
+            byte[] keyBytes = string.IsNullOrEmpty(key) ? new byte[] { } : Convert.FromBase64String(key.Replace(' ', '+'));
 
             SecretItem si = _storage.Get(username);
-            if (si == null || !data.SequenceEqual(si.Key))
+            if (si == null || !keyBytes.SequenceEqual(si.Key))
             {
                 context.Response.StatusCode = 400;
                 await context.Response.WriteAsync("Invalid secret key.");
@@ -143,15 +144,22 @@ namespace Host.Security.TokenProvider
             {
                 using (Aes aes = Aes.Create())
                 {
+                    byte [] pswdBytes = Convert.FromBase64String(password.Replace(' ', '+'));
+
                     aes.Key = si.Key;
-                    aes.IV = new byte[16];
-                    aes.Padding = PaddingMode.None;
+                    aes.IV = pswdBytes.Take(16).ToArray();                    
 
-                    data = Convert.FromBase64String(password.Replace(' ', '+'));
+                    
 
-                    using (MemoryStream msDecrypt = new MemoryStream(data))
+                    //ICryptoTransform decryptor = aes.CreateDecryptor(aes.Key, aes.IV);
+                    //byte[] plainBytes = decryptor.TransformFinalBlock(secretBytes, 16, secretBytes.Length - 16);
+                    
+                    
+                    using (MemoryStream msDecrypt = new MemoryStream(pswdBytes))
                     {
                         ICryptoTransform decryptor = aes.CreateDecryptor(aes.Key, aes.IV);
+                        byte[] plainBytes = decryptor.TransformFinalBlock(pswdBytes, 16, keyBytes.Length - 16);
+
                         using (CryptoStream csDecrypt = new CryptoStream(msDecrypt, decryptor, CryptoStreamMode.Read))
                         {
                             using (StreamReader srDecrypt = new StreamReader(csDecrypt))
