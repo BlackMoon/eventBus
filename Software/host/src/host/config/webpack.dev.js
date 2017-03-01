@@ -14,8 +14,8 @@ module.exports = webpackMerge(commonConfig, {
     },
 
     plugins: [
-      new CleanWebpackPlugin(['wwwroot/*'], {
-          root: helpers.root('./'),
+      new CleanWebpackPlugin(['*.map', '*.js'], {
+          root: helpers.root('./wwwroot'),
           verbose: true
       }),
 
