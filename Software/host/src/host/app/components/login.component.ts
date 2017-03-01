@@ -1,7 +1,7 @@
 ﻿import { AfterViewInit, Component, OnInit, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import { AuthHttp } from 'angular2-jwt';
-import { AuthenticationService } from '../services/index';
+import { AuthService } from '../services/index';
 
 declare var $: any;
 
@@ -17,7 +17,7 @@ export class LoginComponent implements AfterViewInit, OnInit {
     private options: any;     
 
     constructor(
-        private authenticationService: AuthenticationService,
+        private authenticationService: AuthService,
         private http: AuthHttp,
         private router: Router) {
 
