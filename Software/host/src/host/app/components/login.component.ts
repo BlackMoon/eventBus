@@ -65,8 +65,7 @@ export class LoginComponent implements AfterViewInit, OnInit {
             error => {
                 debugger;
                 console.log(error);
-                //this.alertService.error(error);
-                this.close();
+                //this.alertService.error(error);                
             });
     }
 

@@ -57,7 +57,7 @@ namespace Host.Security.TokenProvider
             if (_options.Encrypt)
             {
                 if (context.Request.Path.Equals(_options.Encryption.Path, StringComparison.Ordinal))
-                    return GenerateCipher(context);
+                    return GenerateSecretKey(context);
             }
 
             // If the request tokenPath match, generate token
@@ -67,7 +67,7 @@ namespace Host.Security.TokenProvider
             return _next(context);
         }
 
-        private async Task GenerateCipher(HttpContext context)
+        private async Task GenerateSecretKey(HttpContext context)
         {
             // Request must be POST with Content-Type: application/x-www-form-urlencoded
             if (!context.Request.Method.Equals("POST") || !context.Request.HasFormContentType)
@@ -87,13 +87,13 @@ namespace Host.Security.TokenProvider
                 return;
             }
 
-            byte[] data = new byte[_options.Encryption.KeySize / 4];
-            RandomNumberGenerator.Create().GetBytes(data);
+            byte[] secretKey = new byte[_options.Encryption.KeySize / 4];
+            RandomNumberGenerator.Create().GetBytes(secretKey);
 
             SecretItem si = new SecretItem()
             {
                 Algorithm = _options.Encryption.Algorithm,
-                Key = data
+                Key = secretKey
             };
 
             // Serialize and return the secret item

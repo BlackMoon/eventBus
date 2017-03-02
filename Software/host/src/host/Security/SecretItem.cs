@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using Host.Security.Cryptography;
+using Newtonsoft.Json;
 
 namespace Host.Security
 {
@@ -7,7 +8,7 @@ namespace Host.Security
     /// </summary>
     public class SecretItem
     {
-        public string Algorithm { get; set; }
+        public AlgorithmKind Algorithm { get; set; }
 
         [JsonIgnore]
         public string Password { get; set; }       

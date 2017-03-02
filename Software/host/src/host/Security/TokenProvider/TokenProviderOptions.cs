@@ -4,8 +4,8 @@
 using System;
 using System.Security.Claims;
 using System.Threading.Tasks;
+using Host.Security.Cryptography;
 using Microsoft.IdentityModel.Tokens;
-using Host.Security.Cipher;
 
 namespace Host.Security.TokenProvider
 {
@@ -16,6 +16,7 @@ namespace Host.Security.TokenProvider
     {
         /// <summary>
         /// Encrypt credentials?
+        /// <para>If enabled use <see cref="Encryption"/> settings</para>
         /// </summary>
         public bool Encrypt { get; set; } = true;
 
@@ -36,9 +37,9 @@ namespace Host.Security.TokenProvider
         public string Audience { get; set; }
 
         /// <summary>
-        /// Secret key
+        /// Secret phrase
         /// </summary>
-        public string SecretKey { get; set; }
+        public string SecretPhrase { get; set; }
 
         /// <summary>
         /// The expiration time for the generated tokens.
@@ -49,7 +50,7 @@ namespace Host.Security.TokenProvider
         /// <summary>
         /// The cipher generation options for 2-factor authentication.
         /// </summary>
-        public CipherOptions Encryption { get; set; } = new CipherOptions();
+        public CryptoOptions Encryption { get; set; } = new CryptoOptions();
 
         /// <summary>
         /// The signing key to use when generating tokens.

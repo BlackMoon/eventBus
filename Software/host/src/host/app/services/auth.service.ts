@@ -26,18 +26,18 @@ export class AuthService {
         let headers = new Headers({ 'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8' });
         let options = new RequestOptions({ headers: headers });        
 
+        username = 'test';
+        password = 'test';
+
         return this.http.post(secretUrl, `username=${username}`, options)
             .map((r: Response) => r.json())
             .mergeMap(o => {
                 debugger;
-                var encrypted = CryptoJS.AES.encrypt(password, CryptoJS.enc.Base64.parse(o.key), {
-                    iv: CryptoJS.enc.Hex.parse('fedcba9876543210'),
-                    padding: CryptoJS.pad.NoPadding,
-                    mode: CryptoJS.mode.CBC
-                });
+                
+                let encrypted = CryptoJS.AES.encrypt(password, o.key);
 
                 return this.http
-                    .post(tokenUrl, "username=" + username + "&password=" + encrypted.ciphertext + "&secret=" + o.key, options)
+                    .post(tokenUrl, `username=${username}&password=${encrypted}&key=${o.key}`, options)
                     .map(function (r) {
                         var obj = r.json();
                         if (obj && obj.access_token) {
