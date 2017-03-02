@@ -7,6 +7,7 @@ using System.IO;
 using System.Linq;
 using System.Security.Claims;
 using System.Security.Cryptography;
+using System.Text;
 using System.Threading.Tasks;
 using Host.Security.Cryptography;
 using Microsoft.AspNetCore.Http;
@@ -88,18 +89,25 @@ namespace Host.Security.TokenProvider
                 return;
             }
 
-            byte[] secretKey = new byte[_options.Encryption.KeySize / 4];
-            RandomNumberGenerator.Create().GetBytes(secretKey);
+            byte[] key = new byte[_options.Encryption.KeySize / 4];
+            RandomNumberGenerator.Create().GetBytes(key);
+            
+            byte[] iv = new byte[16];
+            RandomNumberGenerator.Create().GetBytes(iv);
 
             SecretItem si = new SecretItem()
             {
                 Algorithm = _options.Encryption.Algorithm,
-                Key = secretKey
+                Mode = _options.Encryption.Mode,
+                Padding = _options.Encryption.Padding,
+                Key = key,
+                IV = iv
             };
 
             // Serialize and return the secret item
             context.Response.ContentType = "application/json";
             await context.Response.WriteAsync(JsonConvert.SerializeObject(si, _serializerSettings));
+            
             // Store authenticated item
             _storage.Set(username, si);
         }
@@ -148,27 +156,13 @@ namespace Host.Security.TokenProvider
                     byte[] pswdBytes = Convert.FromBase64String(password.Replace(' ', '+'));
 
                     sa.Key = si.Key;
-                    sa.IV = pswdBytes.Take(16).ToArray();
-                }
-
-
-                using (Aes aes = Aes.Create())
-                {
-                    byte[] pswdBytes = Convert.FromBase64String(password.Replace(' ', '+'));
-
-                    aes.Key = si.Key;
-                    aes.IV = pswdBytes.Take(16).ToArray();
-
-
-
-                    //ICryptoTransform decryptor = aes.CreateDecryptor(aes.Key, aes.IV);
-                    //byte[] plainBytes = decryptor.TransformFinalBlock(secretBytes, 16, secretBytes.Length - 16);
-
-
+                    sa.IV = si.IV;
+                    sa.Mode = si.Mode;
+                    sa.Padding = si.Padding;
+                    
                     using (MemoryStream msDecrypt = new MemoryStream(pswdBytes))
                     {
-                        ICryptoTransform decryptor = aes.CreateDecryptor(aes.Key, aes.IV);
-                        byte[] plainBytes = decryptor.TransformFinalBlock(pswdBytes, 16, keyBytes.Length - 16);
+                        ICryptoTransform decryptor = sa.CreateDecryptor(sa.Key, sa.IV);
 
                         using (CryptoStream csDecrypt = new CryptoStream(msDecrypt, decryptor, CryptoStreamMode.Read))
                         {

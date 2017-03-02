@@ -1,4 +1,5 @@
-﻿using Kit.Core.Encryption;
+﻿using System.Security.Cryptography;
+using Kit.Core.Encryption;
 
 namespace Host.Security.Cryptography
 {
@@ -16,6 +17,16 @@ namespace Host.Security.Cryptography
         /// Crypto algorithm
         /// </summary>
         public AlgorithmKind Algorithm { get; set; }
+
+        /// <summary>
+        /// Cipher mode
+        /// </summary>
+        public CipherMode Mode { get; set; } = CipherMode.CBC;
+
+        /// <summary>
+        /// Padding mode
+        /// </summary>
+        public PaddingMode Padding { get; set; } = PaddingMode.PKCS7;
 
         /// <summary>
         /// The relative request path to listen on.

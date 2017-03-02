@@ -16,34 +16,103 @@ export class AuthService {
         this.storage = Storage;   
     }
 
-    isAuthenticated = function () {
+    byteArrayToWordArray(ba: number[]) {
+        var wa = [],
+            i;
+        for (i = 0; i < ba.length; i++) {
+            wa[(i / 4) | 0] |= ba[i] << (24 - 8 * i);
+        }
+
+        return CryptoJS.lib.WordArray.create(wa, ba.length);    
+    }
+
+    wordToByteArray(word, length) : any[] {
+        var ba = [],
+            i,
+            xFF = 0xFF;
+        if (length > 0)
+            ba.push(word >>> 24);
+        if (length > 1)
+            ba.push((word >>> 16) & xFF);
+        if (length > 2)
+            ba.push((word >>> 8) & xFF);
+        if (length > 3)
+            ba.push(word & xFF);
+
+        return ba;
+    }
+
+    wordArrayToByteArray(wordArray, length) {
+        if (wordArray.hasOwnProperty("sigBytes") && wordArray.hasOwnProperty("words")) {
+            length = wordArray.sigBytes;
+            wordArray = wordArray.words;
+        }
+
+        var result = [],
+            bytes,
+            i = 0;
+        while (length > 0) {
+            bytes = this.wordToByteArray(wordArray[i], Math.min(4, length));
+            length -= bytes.length;
+            result.push(bytes);
+            i++;
+        }
+        return [].concat.call([], result);
+    }
+
+    isAuthenticated(): boolean {
         var token = this.storage.getItem(TokenKey);
         return (token !== null) && !new JwtHelper().isTokenExpired(token);
-    };
+    }
 
     login(username?: string, password?: string): Observable<any> {
 
         let headers = new Headers({ 'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8' });
-        let options = new RequestOptions({ headers: headers });        
+        let options = new RequestOptions({ headers: headers });   
 
-        username = 'test';
-        password = 'test';
-
+        var self = this;
         return this.http.post(secretUrl, `username=${username}`, options)
             .map((r: Response) => r.json())
             .mergeMap(o => {
                 debugger;
 
-                let encrypted = CryptoJS.AES.encrypt(password, o.key);
+                let cipher = CryptoJS[o.algorithm];
 
-                return this.http
-                    .post(tokenUrl, `username=${username}&password=${encrypted}&key=${o.key}`, options)
-                    .map(function(r) {
-                        var obj = r.json();
-                        if (obj && obj.access_token) {
-                            this.storage.setItem(TokenKey, obj.access_token);
-                        }
-                    });
+                if (cipher) {
+
+                    let key = CryptoJS.enc.Base64.parse(o.key),
+                        iv = CryptoJS.enc.Base64.parse(o.iv),
+                        mode = CryptoJS.mode[o.mode],
+                        pad = CryptoJS.pad.Pkcs7;
+
+                    switch (o.padding)
+                    {
+                        case 'None':
+                            pad = CryptoJS.pad.NoPadding;
+                            break;
+
+                        case 'PKCS7':
+                            pad = CryptoJS.pad.Pkcs7;
+                            break;
+
+                        case 'Zeros':
+                            pad = CryptoJS.pad.ZeroPadding;
+                            break;
+                    }
+
+                    let encrypted = cipher.encrypt(password, key, { iv: iv, mode: mode, padding: pad });
+
+                    return this.http
+                        .post(tokenUrl, `username=${username}&password=${encrypted}&key=${o.key}`, options)
+                        .map((r: Response) =>  {
+                            var obj = r.json();
+                            if (obj && obj.access_token) {
+                                self.storage.setItem(TokenKey, obj.access_token);
+                            }
+                        });
+                }
+
+                throw 'Unknown algorithm';
             });
     }
 
