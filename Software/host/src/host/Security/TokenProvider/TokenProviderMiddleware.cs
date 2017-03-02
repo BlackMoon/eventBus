@@ -8,6 +8,7 @@ using System.Linq;
 using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Threading.Tasks;
+using Host.Security.Cryptography;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
@@ -142,19 +143,28 @@ namespace Host.Security.TokenProvider
             #region decryption
             if (_options.Encrypt)
             {
+                using (SymmetricAlgorithm sa = AlgorithmFactory.GetSymmetricAlgorithm(_options.Encryption.Algorithm))
+                {
+                    byte[] pswdBytes = Convert.FromBase64String(password.Replace(' ', '+'));
+
+                    sa.Key = si.Key;
+                    sa.IV = pswdBytes.Take(16).ToArray();
+                }
+
+
                 using (Aes aes = Aes.Create())
                 {
-                    byte [] pswdBytes = Convert.FromBase64String(password.Replace(' ', '+'));
+                    byte[] pswdBytes = Convert.FromBase64String(password.Replace(' ', '+'));
 
                     aes.Key = si.Key;
-                    aes.IV = pswdBytes.Take(16).ToArray();                    
+                    aes.IV = pswdBytes.Take(16).ToArray();
 
-                    
+
 
                     //ICryptoTransform decryptor = aes.CreateDecryptor(aes.Key, aes.IV);
                     //byte[] plainBytes = decryptor.TransformFinalBlock(secretBytes, 16, secretBytes.Length - 16);
-                    
-                    
+
+
                     using (MemoryStream msDecrypt = new MemoryStream(pswdBytes))
                     {
                         ICryptoTransform decryptor = aes.CreateDecryptor(aes.Key, aes.IV);
@@ -237,6 +247,16 @@ namespace Host.Security.TokenProvider
 
             if (options.NonceGenerator == null)
                 throw new ArgumentNullException(nameof(TokenProviderOptions.NonceGenerator));
+
+            // CryptoOptions
+            if (options.Encrypt)
+            {
+                if (string.IsNullOrEmpty(options.Encryption.Path))
+                    throw new ArgumentNullException(nameof(CryptoOptions.Path));
+
+                if (options.Encryption.KeySize == 0)
+                    throw new ArgumentException("Must be a greater than zero KeySize.", nameof(CryptoOptions.KeySize));
+            }
         }
 
         /// <summary>

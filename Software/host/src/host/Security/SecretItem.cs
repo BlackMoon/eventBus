@@ -1,5 +1,6 @@
-﻿using Host.Security.Cryptography;
+﻿using Kit.Core.Encryption;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
 
 namespace Host.Security
 {
@@ -8,6 +9,7 @@ namespace Host.Security
     /// </summary>
     public class SecretItem
     {
+        [JsonConverter(typeof(StringEnumConverter))]
         public AlgorithmKind Algorithm { get; set; }
 
         [JsonIgnore]

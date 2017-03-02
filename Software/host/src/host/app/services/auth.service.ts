@@ -33,18 +33,18 @@ export class AuthService {
             .map((r: Response) => r.json())
             .mergeMap(o => {
                 debugger;
-                
+
                 let encrypted = CryptoJS.AES.encrypt(password, o.key);
 
                 return this.http
                     .post(tokenUrl, `username=${username}&password=${encrypted}&key=${o.key}`, options)
-                    .map(function (r) {
+                    .map(function(r) {
                         var obj = r.json();
                         if (obj && obj.access_token) {
                             this.storage.setItem(TokenKey, obj.access_token);
                         }
                     });
-            })
+            });
     }
 
     logout(): void {
