@@ -4,7 +4,6 @@
 using System;
 using System.Security.Claims;
 using System.Threading.Tasks;
-using Host.Security.Cryptography;
 using Microsoft.IdentityModel.Tokens;
 
 namespace Host.Security.TokenProvider
@@ -15,10 +14,10 @@ namespace Host.Security.TokenProvider
     public class TokenProviderOptions
     {
         /// <summary>
-        /// Encrypt credentials?
-        /// <para>If enabled use <see cref="Encryption"/> settings</para>
+        /// Use 2-factor authentication?
+        /// <para>If enabled use <see cref="TwoFactorAuthOptions"/> settings</para>
         /// </summary>
-        public bool Encrypt { get; set; } = true;
+        public bool TwoFactorAuth { get; set; }
 
         /// <summary>
         /// The relative request path to listen on.
@@ -50,7 +49,7 @@ namespace Host.Security.TokenProvider
         /// <summary>
         /// The cipher generation options for 2-factor authentication.
         /// </summary>
-        public CryptoOptions Encryption { get; set; } = new CryptoOptions();
+        public TwoFactorAuthOptions TwoFactorAuthOptions { get; set; } = new TwoFactorAuthOptions();
 
         /// <summary>
         /// The signing key to use when generating tokens.

@@ -1,12 +1,14 @@
-﻿using System.Security.Cryptography;
+﻿using System;
+using System.Security.Cryptography;
+using System.Threading.Tasks;
 using Kit.Core.Encryption;
 
-namespace Host.Security.Cryptography
+namespace Host.Security.TokenProvider
 {
     /// <summary>
-    /// Crypto options
+    /// 2-factor authentication options
     /// </summary>
-    public class CryptoOptions
+    public class TwoFactorAuthOptions
     {
         /// <summary>
         /// Key size: in bits
@@ -33,5 +35,10 @@ namespace Host.Security.Cryptography
         /// </summary>
         /// <remarks>The default path is <c>/secret</c>.</remarks>
         public string Path { get; set; } = "/secret";
+
+        /// <summary>
+        /// Resolves a secret key given a username.
+        /// </summary>
+        public Func<string, Task<byte[]>> SecretKeyResolver { get; set; }
     }
 }

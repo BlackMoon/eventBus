@@ -9,13 +9,13 @@ using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
-using Host.Security.Cryptography;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 using Kit.Core.Encryption;
+using Kit.Core.Encryption.Symmetric;
 
 namespace Host.Security.TokenProvider
 { 
@@ -56,9 +56,9 @@ namespace Host.Security.TokenProvider
         public Task Invoke(HttpContext context)
         {
             // If the request encryptionPath match, generate cipher
-            if (_options.Encrypt)
+            if (_options.TwoFactorAuth)
             {
-                if (context.Request.Path.Equals(_options.Encryption.Path, StringComparison.Ordinal))
+                if (context.Request.Path.Equals(_options.TwoFactorAuthOptions.Path, StringComparison.Ordinal))
                     return GenerateSecretKey(context);
             }
 
@@ -69,6 +69,11 @@ namespace Host.Security.TokenProvider
             return _next(context);
         }
 
+        /// <summary>
+        /// Генерация секретного ключа для 2х факторной аутентификации
+        /// </summary>
+        /// <param name="context"></param>
+        /// <returns></returns>
         private async Task GenerateSecretKey(HttpContext context)
         {
             // Request must be POST with Content-Type: application/x-www-form-urlencoded
@@ -89,17 +94,22 @@ namespace Host.Security.TokenProvider
                 return;
             }
 
-            byte[] key = new byte[_options.Encryption.KeySize / 4];
-            RandomNumberGenerator.Create().GetBytes(key);
-            
+            byte[] key = await _options.TwoFactorAuthOptions.SecretKeyResolver(username);
+            if (key == null)
+            {
+                context.Response.StatusCode = 401;
+                await context.Response.WriteAsync("Access denied.");
+                return;
+            }
+
             byte[] iv = new byte[16];
             RandomNumberGenerator.Create().GetBytes(iv);
 
             SecretItem si = new SecretItem()
             {
-                Algorithm = _options.Encryption.Algorithm,
-                Mode = _options.Encryption.Mode,
-                Padding = _options.Encryption.Padding,
+                Algorithm = _options.TwoFactorAuthOptions.Algorithm,
+                Mode = _options.TwoFactorAuthOptions.Mode,
+                Padding = _options.TwoFactorAuthOptions.Padding,
                 Key = key,
                 IV = iv
             };
@@ -112,6 +122,11 @@ namespace Host.Security.TokenProvider
             _storage.Set(username, si);
         }
 
+        /// <summary>
+        /// Генерация Jwt-токена
+        /// </summary>
+        /// <param name="context"></param>
+        /// <returns></returns>
         private async Task GenerateToken(HttpContext context)
         {
             // Request must be POST with Content-Type: application/x-www-form-urlencoded
@@ -149,29 +164,18 @@ namespace Host.Security.TokenProvider
             string password = context.Request.Form["password"];
 
             #region decryption
-            if (_options.Encrypt)
+            if (_options.TwoFactorAuth)
             {
-                using (SymmetricAlgorithm sa = AlgorithmFactory.GetSymmetricAlgorithm(_options.Encryption.Algorithm))
+                CipherOptions cipherOptions = new CipherOptions()
                 {
-                    byte[] pswdBytes = Convert.FromBase64String(password.Replace(' ', '+'));
+                    IV = si.IV,
+                    Mode = si.Mode,
+                    Padding = si.Padding
+                };
 
-                    sa.Key = si.Key;
-                    sa.IV = si.IV;
-                    sa.Mode = si.Mode;
-                    sa.Padding = si.Padding;
-                    
-                    using (MemoryStream msDecrypt = new MemoryStream(pswdBytes))
-                    {
-                        ICryptoTransform decryptor = sa.CreateDecryptor(sa.Key, sa.IV);
-
-                        using (CryptoStream csDecrypt = new CryptoStream(msDecrypt, decryptor, CryptoStreamMode.Read))
-                        {
-                            using (StreamReader srDecrypt = new StreamReader(csDecrypt))
-                            {
-                                password = srDecrypt.ReadToEnd();
-                            }
-                        }
-                    }
+                using (ICipher cipher = CipherFactory.GetCipher(_options.TwoFactorAuthOptions.Algorithm, cipherOptions))
+                {
+                    password = cipher.Decrypt(password.Replace(' ', '+'), si.Key);
                 }
             }
             #endregion 
@@ -243,13 +247,16 @@ namespace Host.Security.TokenProvider
                 throw new ArgumentNullException(nameof(TokenProviderOptions.NonceGenerator));
 
             // CryptoOptions
-            if (options.Encrypt)
+            if (options.TwoFactorAuth)
             {
-                if (string.IsNullOrEmpty(options.Encryption.Path))
-                    throw new ArgumentNullException(nameof(CryptoOptions.Path));
+                if (string.IsNullOrEmpty(options.TwoFactorAuthOptions.Path))
+                    throw new ArgumentNullException(nameof(TwoFactorAuthOptions.Path));
 
-                if (options.Encryption.KeySize == 0)
-                    throw new ArgumentException("Must be a greater than zero KeySize.", nameof(CryptoOptions.KeySize));
+                if (options.TwoFactorAuthOptions.KeySize == 0)
+                    throw new ArgumentException("KeySize must be greater than zero.", nameof(TwoFactorAuthOptions.KeySize));
+
+                if (options.TwoFactorAuthOptions.SecretKeyResolver == null)
+                    throw new ArgumentNullException(nameof(TwoFactorAuthOptions.SecretKeyResolver));
             }
         }
 

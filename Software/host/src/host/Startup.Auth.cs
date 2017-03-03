@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Security.Claims;
+using System.Security.Cryptography;
 using System.Security.Principal;
 using System.Text;
 using System.Threading.Tasks;
@@ -24,6 +25,21 @@ namespace Host
         private void ConfigureAuth(IApplicationBuilder app)
         {
             TokenProviderOptions tokenOptions = app.ApplicationServices.GetRequiredService<IOptions<TokenProviderOptions>>().Value;
+
+            if (tokenOptions.TwoFactorAuth)
+            {
+                tokenOptions.TwoFactorAuthOptions.SecretKeyResolver = u =>
+                {
+                    byte[] key;
+                    // todo валидация логина  
+                    if (true)
+                    {
+                        key = new byte[tokenOptions.TwoFactorAuthOptions.KeySize/4];
+                        RandomNumberGenerator.Create().GetBytes(key);
+                    }
+                    return Task.FromResult(key);
+                };
+            }
 
             SymmetricSecurityKey signingKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(tokenOptions.SecretPhrase));
 
