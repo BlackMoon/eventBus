@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using Kit.Core;
 using Kit.Core.CQRS.Command;
+using Kit.Core.Encryption;
 
 namespace domain.Login
 {

@@ -1,15 +1,15 @@
-﻿import { NgModule } from '@angular/core';
+﻿// ReSharper disable InconsistentNaming
+import { NgModule } from '@angular/core';
 import { Http, RequestOptions } from '@angular/http';
 import { AuthHttp, AuthConfig } from 'angular2-jwt';
+import { AuthService, Storage, TokenKey } from '../services/index';
 
-export const Storage = sessionStorage;
-export const TokenKey = 'token';
-
-function authHttpServiceFactory(http: Http, options: RequestOptions) {
+function authHttpServiceFactory(authService: AuthService, http: Http, options: RequestOptions) {
+    
     return new AuthHttp(new AuthConfig({
         tokenName: TokenKey,
-        tokenGetter: (() => Storage.getItem(TokenKey)),
-        globalHeaders: [{ 'Content-Type': 'application/json' }],
+        tokenGetter: (() => authService.isAuthenticated() ? Storage.getItem(TokenKey) : authService.login().toPromise()),
+        globalHeaders: [{ 'Content-Type': 'application/json' }]
     }), http, options);
 }
 
@@ -18,7 +18,7 @@ function authHttpServiceFactory(http: Http, options: RequestOptions) {
         {
             provide: AuthHttp,
             useFactory: authHttpServiceFactory,
-            deps: [Http, RequestOptions]
+            deps: [AuthService, Http, RequestOptions]
         }
     ]
 })

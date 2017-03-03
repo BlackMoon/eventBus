@@ -39,8 +39,6 @@ export class LoginComponent implements AfterViewInit, OnInit {
     }
 
     ngOnInit() {
-        // reset login status
-        this.authService.logout();
     }
 
     login() {        

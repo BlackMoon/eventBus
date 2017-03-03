@@ -3,12 +3,14 @@ import { Injectable } from '@angular/core';
 import { Http, Headers, RequestOptions, Response } from '@angular/http';
 import { JwtHelper } from 'angular2-jwt';
 import { Observable } from 'rxjs';
-import { Storage, TokenKey } from '../modules/auth.module';
 import * as CryptoJS from 'crypto-js';
 import { IDictionary } from '../utils';
 
 const secretUrl = '/secret';
 const tokenUrl = '/token';
+
+const passwordKey = 'pswd';
+const usernameKey = 'uname';
 
 /**
  * .net Cryptography.PaddingMode --> CryptoJS.pads mapping
@@ -21,6 +23,9 @@ class Pads implements IDictionary<any>
 
     [key: string]: Object;
 }
+
+export const Storage = sessionStorage;
+export const TokenKey = 'token';
 
 @Injectable()
 export class AuthService {
@@ -39,10 +44,14 @@ export class AuthService {
 
     login(username?: string, password?: string): Observable<any> {
 
-        let headers = new Headers({ 'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8' });
-        let options = new RequestOptions({ headers: headers });   
-
         var self = this;
+        
+        username = username || CryptoJS.enc.Base64.parse(self.storage.getItem(usernameKey)).toString(CryptoJS.enc.Utf8);
+        password = password || CryptoJS.enc.Base64.parse(self.storage.getItem(passwordKey)).toString(CryptoJS.enc.Utf8);
+
+        let headers = new Headers({ 'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8' });
+        let options = new RequestOptions({ headers: headers });  
+        
         return this.http.post(secretUrl, `username=${username}`, options)
             .map((r: Response) => r.json())
             .mergeMap(o => {
@@ -59,20 +68,26 @@ export class AuthService {
 
                     return this.http
                         .post(tokenUrl, `username=${username}&password=${encrypted}&key=${o.key}`, options)
-                        .map((r: Response) =>  {
-                            let obj = r.json();
-                            if (obj && obj.access_token) {
-                                self.storage.setItem(TokenKey, obj.access_token);
+                        .map((r: Response) => r.json())
+                        .mergeMap(o => {
+                            
+                            if (o.access_token) {
+                                self.storage.setItem(passwordKey, CryptoJS.enc.Base64.stringify(CryptoJS.enc.Utf8.parse(password)));
+                                self.storage.setItem(usernameKey, CryptoJS.enc.Base64.stringify(CryptoJS.enc.Utf8.parse(username)));
+                                self.storage.setItem(TokenKey, o.access_token);
                             }
+                            return Observable.of(o.access_token);
                         });
                 }
-
-                throw 'Unknown algorithm';
+                else
+                    throw 'Unknown algorithm';
             });
     }
 
     logout(): void {
         // clear token remove user from local storage to log user out        
+        this.storage.removeItem(passwordKey);
+        this.storage.removeItem(usernameKey);
         this.storage.removeItem(TokenKey);
     }
 }
