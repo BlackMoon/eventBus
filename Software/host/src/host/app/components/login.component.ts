@@ -1,4 +1,4 @@
-﻿import { AfterViewInit, Component, OnInit, ViewChild } from '@angular/core';
+﻿import { AfterViewInit, Component, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import { AuthHttp } from 'angular2-jwt';
 import { AuthService } from '../services/index';
@@ -11,7 +11,7 @@ declare var $: any;
     templateUrl: 'login.component.html'
 })
 
-export class LoginComponent implements AfterViewInit, OnInit {      
+export class LoginComponent implements AfterViewInit {      
 
     private model: any = {};        
     private options: any;     
@@ -36,9 +36,6 @@ export class LoginComponent implements AfterViewInit, OnInit {
 
     ngAfterViewInit() {
         $("#app-login button").button();        
-    }
-
-    ngOnInit() {
     }
 
     login() {        

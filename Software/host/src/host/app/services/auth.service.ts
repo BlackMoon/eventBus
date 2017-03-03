@@ -44,14 +44,14 @@ export class AuthService {
 
     login(username?: string, password?: string): Observable<any> {
 
-        var self = this;
-        
-        username = username || CryptoJS.enc.Base64.parse(self.storage.getItem(usernameKey)).toString(CryptoJS.enc.Utf8);
-        password = password || CryptoJS.enc.Base64.parse(self.storage.getItem(passwordKey)).toString(CryptoJS.enc.Utf8);
+        // username & password store in base64
+        username = username || CryptoJS.enc.Base64.parse(this.storage.getItem(usernameKey)).toString(CryptoJS.enc.Utf8);
+        password = password || CryptoJS.enc.Base64.parse(this.storage.getItem(passwordKey)).toString(CryptoJS.enc.Utf8);
 
         let headers = new Headers({ 'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8' });
         let options = new RequestOptions({ headers: headers });  
-        
+
+        var self = this;
         return this.http.post(secretUrl, `username=${username}`, options)
             .map((r: Response) => r.json())
             .mergeMap(o => {
