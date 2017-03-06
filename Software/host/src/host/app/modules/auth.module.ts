@@ -3,6 +3,8 @@ import { Http, RequestOptions } from '@angular/http';
 import { AuthHttp, AuthConfig } from 'angular2-jwt';
 import { AuthService, Storage, TokenKey } from '../services/index';
 
+export { LoginComponent } from "../components/login.component";
+
 function authHttpServiceFactory(authService: AuthService, http: Http, options: RequestOptions) {
     
     return new AuthHttp(new AuthConfig({

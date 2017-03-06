@@ -44,7 +44,7 @@ export class LoginComponent implements AfterViewInit {
             .subscribe(
             next => {                
                 debugger;
-                let b = this.authService.isAuthenticated();
+                
                 this.http.get("/api/values").subscribe(
                     next => {
                         debugger;

@@ -1,12 +1,12 @@
 ﻿<ig-dialog id="app-login" [options]="options">
-    <form role="form" (ngSubmit)="login()" (ngReset) ="close()">
+    <form role="form" (ngSubmit)="login()" (ngReset)="close()">
         <div class="group-fields">
             <label for="login">Пользователь</label>
-            <ig-text-editor width="100%" [(ngModel)]="model.username" name="username" ></ig-text-editor>
+            <ig-text-editor width="100%" [(ngModel)]="model.username" name="username" required></ig-text-editor>
         </div>
         <div class="group-fields">
             <label for="password">Пароль</label>
-            <ig-text-editor textMode="password" placeHolder="********" width="100%" [(ngModel)]="model.password" name="password"></ig-text-editor>
+            <ig-text-editor textMode="password" placeHolder="********" width="100%" [(ngModel)]="model.password" name="password" required></ig-text-editor>
         </div>
         <div class="ui-dialog-buttonpane" style="float:right">
             <button type="submit" >Вход</button>

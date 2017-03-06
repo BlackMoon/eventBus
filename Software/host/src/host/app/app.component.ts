@@ -1,5 +1,6 @@
 ﻿import { AfterViewInit, Component, ViewChild } from '@angular/core';
 import { LoginComponent } from './components/login.component';
+import { AuthService } from './services/index';
 
 declare var $: any;
 
@@ -10,10 +11,12 @@ declare var $: any;
 })
 
 export class AppComponent implements AfterViewInit {
-    @ViewChild(LoginComponent) loginComponent: LoginComponent;    
+    @ViewChild(LoginComponent) loginComponent: LoginComponent;
+
+    constructor(private authService: AuthService) { }
 
     ngAfterViewInit() {    
-        this.loginComponent.open();
+        !this.authService.isAuthenticated() && this.loginComponent.open();
         $("#pm-dashboard").mCustomScrollbar();        
     }
 }

@@ -3,16 +3,15 @@ import { HttpModule } from '@angular/http';
 import { BrowserModule } from "@angular/platform-browser";
 import { FormsModule } from '@angular/forms';
 
-import { AuthModule } from "./modules/auth.module";
+import { AuthModule, LoginComponent } from "./modules/auth.module";
 import { AppComponent } from "./app.component";
-import { LoginComponent } from "./components/login.component";
-import { IgDialogComponent, IgTextEditorComponent } from 'igniteui-angular2/igniteui.angular2';
+import { IgDialogComponent, IgTextEditorComponent, IgValidatorComponent } from 'igniteui-angular2/igniteui.angular2';
 import { AuthService } from './services/index';
 import { routing } from './app.routing';
 
 @NgModule({
     imports: [AuthModule, BrowserModule, FormsModule, HttpModule, routing],
-    declarations: [IgDialogComponent, IgTextEditorComponent, LoginComponent, AppComponent],
+    declarations: [AppComponent, IgDialogComponent, IgTextEditorComponent, IgValidatorComponent, LoginComponent],
     bootstrap: [AppComponent],
     providers: [AuthService]
 })
