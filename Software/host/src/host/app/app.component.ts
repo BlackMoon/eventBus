@@ -1,5 +1,5 @@
 ﻿import { AfterViewInit, Component, ViewChild } from '@angular/core';
-import { LoginComponent } from './components/login.component';
+import { LoginComponent } from "./modules/auth.module";
 import { AuthService } from './services/index';
 
 declare var $: any;

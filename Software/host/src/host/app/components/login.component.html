@@ -1,5 +1,5 @@
-﻿<ig-dialog id="app-login" [options]="options">
-    <form role="form" (ngSubmit)="login()" (ngReset)="close()">
+﻿<ig-dialog id="app-login" [options]="dialogOptions">
+    <form name="validator1" id="validator1" (ngSubmit)="login($event)">
         <div class="group-fields">
             <label for="login">Пользователь</label>
             <ig-text-editor width="100%" [(ngModel)]="model.username" name="username" required></ig-text-editor>
@@ -8,9 +8,10 @@
             <label for="password">Пароль</label>
             <ig-text-editor textMode="password" placeHolder="********" width="100%" [(ngModel)]="model.password" name="password" required></ig-text-editor>
         </div>
-        <div class="ui-dialog-buttonpane" style="float:right">
-            <button type="submit" >Вход</button>
-            <button type="reset" >Отмена</button>
+        <div class="ui-dialog-buttonpane" style="float: right">
+            <button type="submit">Вход</button>
+            <button type="reset" (click)="close()">Отмена</button>
         </div>
     </form>
+    <ig-validator [widgetId]='id' [options]="validatorOptions"></ig-validator>
 </ig-dialog>

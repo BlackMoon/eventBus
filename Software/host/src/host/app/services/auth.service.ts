@@ -45,8 +45,16 @@ export class AuthService {
     login(username?: string, password?: string): Observable<any> {
 
         // username & password store in base64
-        username = username || CryptoJS.enc.Base64.parse(this.storage.getItem(usernameKey)).toString(CryptoJS.enc.Utf8);
-        password = password || CryptoJS.enc.Base64.parse(this.storage.getItem(passwordKey)).toString(CryptoJS.enc.Utf8);
+        let item;
+        if (!username) {
+            item = this.storage.getItem(usernameKey);
+            item && (username = CryptoJS.enc.Base64.parse(item).toString(CryptoJS.enc.Utf8));
+        }
+
+        if (!password) {
+            item = this.storage.getItem(passwordKey);
+            item && (password = CryptoJS.enc.Base64.parse(item).toString(CryptoJS.enc.Utf8));
+        }
 
         let headers = new Headers({ 'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8' });
         let options = new RequestOptions({ headers: headers });  

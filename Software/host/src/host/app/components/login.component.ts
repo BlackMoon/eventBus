@@ -14,32 +14,44 @@ declare var $: any;
 export class LoginComponent implements AfterViewInit {      
 
     private model: any = {};        
-    private options: any;     
+    private dialogOptions: any;     
+    private validatorOptions: any;   
+    private id: string = 'validator1';
 
     constructor(
         private authService: AuthService,
         private http: AuthHttp,
         private router: Router) {
 
-            this.options = {
-                headerText: "Войти в систему",
-                modal: true,
-                openAnimation: "slide",
-                resizable: false,
-                showCloseButton: false,
-                showFooter: true,
-                height: 260,
-                width: 320,
-                state: "closed"
-            }
+        this.dialogOptions = {
+            headerText: "Войти в систему",
+            modal: true,
+            openAnimation: "slide",
+            resizable: false,
+            showCloseButton: false,
+            showFooter: true,
+            height: 260,
+            width: 320,
+            state: "closed"
+        };
+
+
+        this.validatorOptions = {
+            onsubmit: true,
+            successMessage: "Valid"
+
+        }
     }    
 
     ngAfterViewInit() {
         $("#app-login button").button();        
     }
 
-    login() {        
-        
+    login(e) {
+
+        e.preventDefault();
+
+        debugger;
         this.authService.login(this.model.username, this.model.password)
             .subscribe(
             next => {                
@@ -65,10 +77,10 @@ export class LoginComponent implements AfterViewInit {
     }
 
     open() {        
-        this.options.state = 'opened';
+        this.dialogOptions.state = 'opened';
     }
 
     close() {
-        this.options.state = 'closed';
+        this.dialogOptions.state = 'closed';
     }
 }
