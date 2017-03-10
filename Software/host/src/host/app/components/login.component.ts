@@ -2,6 +2,7 @@
 import { Router } from '@angular/router';
 import { AuthHttp } from 'angular2-jwt';
 import { AuthService } from '../services/index';
+import { IgValidatorComponent } from 'igniteui-angular2/igniteui.angular2';
 
 declare var $: any;
 
@@ -13,10 +14,15 @@ declare var $: any;
 
 export class LoginComponent implements AfterViewInit {      
 
+    @ViewChild('validator') validator: IgValidatorComponent;
+
     private model: any = {};        
     private dialogOptions: any;     
     private validatorOptions: any;   
-    private id: string = 'validator1';
+
+    private formId: string = 'loginForm';
+    private loginId: string = 'login';
+    private passwordId: string = 'pswd';    
 
     constructor(
         private authService: AuthService,
@@ -30,16 +36,23 @@ export class LoginComponent implements AfterViewInit {
             resizable: false,
             showCloseButton: false,
             showFooter: true,
-            height: 260,
+            height: 280,
             width: 320,
             state: "closed"
         };
 
-
         this.validatorOptions = {
-            onsubmit: true,
-            successMessage: "Valid"
-
+            onsubmit: true,          
+            required: true,
+           
+            fields: [{
+                errorMessage: "Введите имя пользователя",
+                selector: "#login"
+            },
+            {
+                errorMessage: "Введите пароль",
+                selector: "#pswd"
+            }]
         }
     }    
 
@@ -47,9 +60,7 @@ export class LoginComponent implements AfterViewInit {
         $("#app-login button").button();        
     }
 
-    login(e) {
-
-        e.preventDefault();
+    login() {       
 
         debugger;
         this.authService.login(this.model.username, this.model.password)
