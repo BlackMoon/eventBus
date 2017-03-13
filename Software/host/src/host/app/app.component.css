@@ -4,6 +4,7 @@ body {
   font-size: 12px;
   font-family: Helvetica, sans-serif;
   -ms-overflow-style: scrollbar;
+  margin: 0;
 }
 h1,h2,h3,h4 {
   font-family: 'Oswald', sans-serif;
@@ -14,7 +15,6 @@ h1,h2,h3,h4 {
 
 .ui-igtrialwatermark{display:none;}
 .disabled a, a.disabled, .past-week .action-adjust-hrs a, .past-week a.action {cursor:default;}
-
 
 body * {
 -webkit-tap-highlight-color: rgba(0,0,0,0);
@@ -75,7 +75,7 @@ GLYPHICONS
   /*margin-right: .3em;*/
   line-height: 14px;
   vertical-align: text-top;
-  /*background-image: url("images/igicons-pm-opt.png");*/
+  background-image: url("images/igicons-pm-opt.png");
   background-position: 14px 14px;
   background-repeat: no-repeat;
 }

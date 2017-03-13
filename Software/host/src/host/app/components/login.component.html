@@ -1,5 +1,5 @@
 ﻿<ig-dialog id="app-login" [options]="dialogOptions">    
-    <form id="loginForm" (ngSubmit)="login()" >
+    <form id="loginForm" (ngSubmit)="login()" (reset)="close()">
         <div class="group-fields">
             <label for="login">Пользователь</label>
             <ig-text-editor [widgetId]="loginId" width="100%" [(ngModel)]="model.username" name="login"></ig-text-editor>
@@ -10,7 +10,7 @@
         </div>
         <div class="ui-dialog-buttonpane" style="float: right">
             <button type="submit">Вход</button>
-            <button type="reset" (click)="close()">Отмена</button>
+            <button type="reset">Отмена</button>
         </div>
     </form>
     <ig-validator #validator [widgetId]='formId' [options]="validatorOptions"></ig-validator>

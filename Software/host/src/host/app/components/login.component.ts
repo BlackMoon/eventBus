@@ -53,15 +53,16 @@ export class LoginComponent implements AfterViewInit {
                 errorMessage: "Введите пароль",
                 selector: "#pswd"
             }]
-        }
+        }       
+        
     }    
 
     ngAfterViewInit() {
-        $("#app-login button").button();        
+        $("#app-login button").button();                
     }
 
     login() {       
-
+                
         debugger;
         this.authService.login(this.model.username, this.model.password)
             .subscribe(
@@ -93,5 +94,9 @@ export class LoginComponent implements AfterViewInit {
 
     close() {
         this.dialogOptions.state = 'closed';
+    }
+
+    validated() {
+        debugger;
     }
 }

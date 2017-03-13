@@ -10,13 +10,21 @@ declare var $: any;
     templateUrl: 'app.component.html'
 })
 
-export class AppComponent implements AfterViewInit {
+export class AppComponent implements AfterViewInit {    
     @ViewChild(LoginComponent) loginComponent: LoginComponent;
 
     constructor(private authService: AuthService) { }
 
     ngAfterViewInit() {    
-        !this.authService.isAuthenticated() && this.loginComponent.open();
+        
+        //!this.authService.isAuthenticated() && this.loginComponent.open();
+
         $("#pm-dashboard").mCustomScrollbar();        
+    }
+
+    toggleTaskBar(e) {
+        
+        e.preventDefault();
+        $('#pm-navigation').toggleClass('expanded');
     }
 }
