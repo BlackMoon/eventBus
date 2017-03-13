@@ -1,0 +1,1 @@
+﻿CREATE SCHEMA adk_core AUTHORIZATION postgres;

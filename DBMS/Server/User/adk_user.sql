@@ -1,0 +1,1 @@
+﻿CREATE SCHEMA adk_user AUTHORIZATION postgres;
