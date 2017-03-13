@@ -19,6 +19,7 @@ export class LoginComponent implements AfterViewInit {
     private model: any = {};        
     private dialogOptions: any;     
     private validatorOptions: any;   
+    private validatorRef: any;   
 
     private formId: string = 'loginForm';
     private loginId: string = 'login';
@@ -27,7 +28,10 @@ export class LoginComponent implements AfterViewInit {
     constructor(
         private authService: AuthService,
         private http: AuthHttp,
-        private router: Router) {
+        private router: Router)
+    {
+
+        let self = this;
 
         this.dialogOptions = {
             headerText: "Войти в систему",
@@ -44,7 +48,7 @@ export class LoginComponent implements AfterViewInit {
         this.validatorOptions = {
             onsubmit: true,          
             required: true,
-           
+            create: e => self.validatorRef = $(e.target).data("igValidator"),
             fields: [{
                 errorMessage: "Введите имя пользователя",
                 selector: "#login"
@@ -62,30 +66,21 @@ export class LoginComponent implements AfterViewInit {
     }
 
     login() {       
-                
-        debugger;
-        this.authService.login(this.model.username, this.model.password)
-            .subscribe(
-            next => {                
-                debugger;
-                
-                this.http.get("/api/values").subscribe(
-                    next => {
-                        debugger;
-                    },
-                    error => {
-                        debugger;
-                    });
 
-
-                //this.router.navigate(['/']);
-                //this.close();
-            },
-            error => {
-                debugger;
-                console.log(error);
-                //this.alertService.error(error);                
-            });
+        if (this.validatorRef.isValid()) {
+            
+            this.authService.login(this.model.username, this.model.password)
+                .subscribe(
+                next => {
+                    this.router.navigate(['/']);
+                    this.close();
+                },
+                error => {
+                    debugger;
+                    console.log(error);
+                    //this.logService.error(error);                
+                });
+        }
     }
 
     open() {        
@@ -94,9 +89,5 @@ export class LoginComponent implements AfterViewInit {
 
     close() {
         this.dialogOptions.state = 'closed';
-    }
-
-    validated() {
-        debugger;
-    }
+    }    
 }

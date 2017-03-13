@@ -1,16 +1,16 @@
 ﻿<app-login></app-login>
- <!-- START PM NAVIGATION PANEL -->
+<!-- START PM NAVIGATION PANEL -->
 <div id="pm-dashboard">
     <div id="pm-navigation" class="collapsed navigation-slide">
         <div class="expand-container">
-            <a href="#" class="btn-expand" (click)="toggleTaskBar($event)" touchstart="toggleTaskBar($event)">
+            <a href="#" class="btn-expand" (click)="toggleNavBar($event)" touchstart="toggleNavBar($event)">
                 <i class="icon-md icon-menu">Expand Navigation</i>
             </a>
         </div>
         <div class="profile table">
             <div class="userinfo row">
                 <span class="picture cell valign-mid">
-                    <img src="images/logo.png" class="img-circle" alt="Richard Kevinson" />
+                    <img src="images/logo.png" class="img-circle" alt="EventBus" />
                 </span>                
                 <span class="user cell valign-mid hidden-closed">
                     EventBus
@@ -18,23 +18,43 @@
                 </span>
             </div>
             <div class="row-group">
-                <span class="cell">EventBus</span>                
+                <span class="cell">Диспетчер</span>   
+                <div class="row">
+                    <span class="cell">событий</span>
+                </div>             
             </div>
         </div>
-        <section class="projects current">
-            <h3>ВХОД</h3>
-            <ul data-bind="foreach: currentProjects">
+        <section class="projects current" *ngIf="!this.authService.isAuthenticated()">           
+            <ul>
+                <li class="table" (click)="loginComponent.open()">
+                    <div class="essentials cell valign-mid">
+                        <div class="doughnut">
+                            <i class="icon-md icon-add-team"></i>
+                        </div>                        
+                        <span class="client abbr">Войти</span>
+                    </div>
+                    <div class="details cell valign-mid hidden-closed">
+                        <span class="client full">Войти в систему</span>
+                        <span class="projectID"></span>
+                    </div>
+                    <div class="details-btn cell valign-mid hidden-closed">                        
+                    </div>
+                </li>
+            </ul>
+        </section>        
+        <section class="projects logged" *ngIf="this.authService.isAuthenticated()">            
+            <ul>
                 <li class="table">
                     <div class="essentials cell valign-mid">
-                        <div class="doughnut"></div>
-                        <span class="client abbr"></span>
+                        <div class="doughnut">Вошел как</div>
+                        <span class="client abbr">TEST</span>
                     </div>
                     <div class="details cell valign-mid hidden-closed">
                         <span class="client full">Test</span>
-                        <span class="projectID">Test PostGre</span>
+                        <span class="projectID">#1002</span>
                     </div>
                     <div class="details-btn cell valign-mid hidden-closed">
-                        <i class="icon-sm icon-folder"></i>
+                        <i class="icon-md icon-remove" title="Выйти"></i>
                     </div>
                 </li>
             </ul>

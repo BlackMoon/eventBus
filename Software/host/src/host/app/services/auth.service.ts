@@ -27,20 +27,30 @@ class Pads implements IDictionary<any>
 export const Storage = sessionStorage;
 export const TokenKey = 'token';
 
+/**
+ * Служба аутентификации
+ */
 @Injectable()
 export class AuthService {
-    private pads: Pads;
+    private jwtHelper: JwtHelper = new JwtHelper();
+    private pads: Pads = new Pads();
     private storage: Storage;
 
     constructor(private http: Http) {
-        this.pads = new Pads();
+                
         this.storage = Storage;
     }
 
     isAuthenticated(): boolean {
         var token = this.storage.getItem(TokenKey);
-        return (token !== null) && !new JwtHelper().isTokenExpired(token);
+        return (token !== null) && !this.jwtHelper.isTokenExpired(token);
     }
+
+    getCredentials(): any {
+        var token = this.storage.getItem(TokenKey);
+                        
+        return (token != null) ? this.jwtHelper.decodeToken(token) : {};
+    } 
 
     login(username?: string, password?: string): Observable<any> {
 

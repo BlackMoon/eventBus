@@ -278,7 +278,7 @@ UTIL
 /*UTIL:::Modal*/
 .modal {
   background: #262626; color: #ccc;
-  position: fixed; top: 0; bottom: 0; left: 0; right: 0; z-index: 10010;
+  position: fixed; top: 0; bottom: 0; left: 0; right: 0; z-index: 110;
   padding: 10px; overflow:hidden;
 }
 
@@ -505,7 +505,7 @@ body #pm-navigation.expanded .cell.hidden-expanded {opacity: 0; display: none;}
   display: block;
   width: 100px;
   overflow-x: hidden;
-  position: fixed; top: 0; left: 0; bottom: 0; z-index: 10009;
+  position: fixed; top: 0; left: 0; bottom: 0; z-index: 109;
   -webkit-box-shadow: 10px 7px 45px 10px rgba(0,0,0,0.18);
   -moz-box-shadow: 10px 7px 45px 10px rgba(0,0,0,0.18);
   box-shadow: 10px 7px 45px 10px rgba(0,0,0,0.18);
@@ -591,6 +591,16 @@ body #pm-navigation.expanded .cell.hidden-expanded {opacity: 0; display: none;}
 #pm-navigation .projects.current {
   background: #2d2d2d;
 }
+
+#pm-navigation .projects.logged ul li:hover {  
+  cursor: default;
+}
+
+#pm-navigation .projects.logged div.details-btn {  
+  cursor: pointer;
+}
+
+
 #pm-navigation .projects.upcoming {
   background: #353535;
 }
@@ -831,7 +841,7 @@ text-transform: lowercase;}
   background: #532661;
 }
 
-#resource-overview #legend-help {background: #262626; display: none; padding: 5px 10px; position:absolute; top: 0; bottom: 0; left: 0; right: 0; z-index: 9998;}
+#resource-overview #legend-help {background: #262626; display: none; padding: 5px 10px; position:absolute; top: 0; bottom: 0; left: 0; right: 0; z-index: 98;}
 #resource-overview #legend-help h3 {font-size: 1.25em; /*20px*/}
 #resource-overview #legend-help a.action.close-help {color: #fff; font-size: 1.8em; font-weight: 300; position: absolute; right: 20px; top: 22px;}
 #resource-overview #legend-help a.action.close-help:hover {color: #a0a0a0; }
@@ -893,7 +903,7 @@ text-transform: lowercase;}
   border-left: none!important; border-bottom: 2px solid #333!important;
   cursor:default;
   font-size: 11.5px; line-height: 1.75em;/*2em*/ margin-left: 0!important;
-  position:absolute; left:0; top: auto; /*overflow: hidden;*/ z-index: 9998;
+  position:absolute; left:0; top: auto; /*overflow: hidden;*/ z-index: 98;
   text-transform: lowercase;
   width: 103px;
 }
@@ -930,7 +940,7 @@ text-transform: lowercase;}
 .notification.overage {
   color: #fff; font-size: 0.7em; /*11.2px*/ font-weight: bold; text-align:center;
   text-shadow: 1px 1px 3px #333;
-  position: absolute; top: 50%; right: 10%; z-index: 999;
+  position: absolute; top: 50%; right: 10%; z-index: 99;
   margin-top: -1.1em;
 }
 
@@ -955,7 +965,7 @@ text-transform: lowercase;}
   color: #555; display: block;
   border-bottom: 2px solid #353535; border-left: 2px solid #353535; border-right: 2px solid #353535;
   font-size: 0.75em; /*12px*/ line-height: 1.25em;
-  position: relative; z-index: 999;
+  position: relative; z-index: 99;
   text-align:center;
 }
 #totalHrsAggregate .hours {}
@@ -1148,7 +1158,7 @@ text-transform: lowercase;}
 }
 #pm-dashboard .resource-list li .user {/*width: 20%;*/width:75px;position: relative;/*overflow:hidden;*/}
 /*#pm-dashboard .resource-list li .user img {border: 3px solid #fff; float: left; margin-left: 10px; position: relative; z-index: 10001; width: 50px;}*/
-#pm-dashboard .resource-list li .user img {border: 3px solid #fff; margin-left: 10px; position: absolute; z-index: 10001; width: 50px; top:50%; margin-top: -25px;}
+#pm-dashboard .resource-list li .user img {border: 3px solid #fff; margin-left: 10px; position: absolute; z-index: 101; width: 50px; top:50%; margin-top: -25px;}
 #pm-dashboard .resource-list li .user .contact {
   background: rgb(120,120,120) transparent;
   background: rgba(120,120,120,0.9);
@@ -1157,7 +1167,7 @@ text-transform: lowercase;}
   /*box-sizing: border-box;*/
   color: #fff;
   font-size: 0.71875em; /* 11.5px */ font-weight: 300;
-  position: absolute; left: 36px; z-index: 10000;
+  position: absolute; left: 36px; z-index: 100;
   height: 100%; /*35px*/ width: 0; /*auto*/
   overflow: hidden;
 }
@@ -1185,7 +1195,7 @@ text-transform: lowercase;}
   font-size: 1.25em; /* 20px */ font-weight: bold;
   border-radius: 50px;
   display: block;/*height: 10px;width: 10px;*/padding: 0 2px 2px 2px;/*padding: 0px 5px 10px 5px;*/
-  position: absolute; z-index: 10002; top: 60%; left: 60%;
+  position: absolute; z-index: 102; top: 60%; left: 60%;
   line-height: 0.6em;
   text-align: left;text-decoration: none;
   overflow: hidden;
@@ -1335,11 +1345,11 @@ text-transform: lowercase;}
 #pm-dashboard #pm-team-navigation {
   background: #fff;
   left: auto; right: -651px; width: 350px; /*overflow-y:hidden;*/
-  z-index: 10003;
+  z-index: 103;
 }
 
 #pm-team-navigation .action.close-team-navigation {
-  position: absolute;/*absolute;*/ z-index: 10004;
+  position: absolute;/*absolute;*/ z-index: 104;
   border: none;
   color: #fff;
   padding: 5px;
@@ -1349,7 +1359,7 @@ text-transform: lowercase;}
 #pm-team-navigation label {
   background:#000;
   display: block; /*padding: 10px;*/ width: 320px; padding-right: 20px; padding-left: 30px; padding-bottom: 27px;
-  position:absolute; overflow: hidden; z-index: 10003;
+  position:absolute; overflow: hidden; z-index: 103;
 }
 #pm-team-navigation label select {
   background: transparent; border: none!important; border-radius: 0; outline: none;
@@ -1357,7 +1367,7 @@ text-transform: lowercase;}
   cursor: pointer;
   font-family: Helvetica, sans-serif; font-size: 0.8125em; /*13px*/
   display: block; padding: 5px 10px; margin: 0; width: 102%; height: 40px;
-  position: relative; z-index: 10006;
+  position: relative; z-index: 106;
   -webkit-appearance: none; /* Removes default chrome and safari styles*/
   -moz-appearance: none; /* Removes default firefox styles */
   -o-appearance: none;
@@ -1373,7 +1383,7 @@ text-transform: lowercase;}
   width: 0; height: 0;
   border-left: 8px solid transparent; border-right: 8px solid transparent;
   border-top: 8px solid #787878;
-  position: fixed; top: 15px; right: -376px; /*25px*/ z-index: 10005;
+  position: fixed; top: 15px; right: -376px; /*25px*/ z-index: 105;
 }
 #pm-team-navigation.collapsed label::after {right: -376px;}
 #pm-team-navigation.expanded label::after {right: 25px;}
@@ -1434,7 +1444,7 @@ text-transform: lowercase;}
 }
 
 #pm-team-navigation #project-team-list .selection-notification {
-  color: #5f9963; overflow: hidden; font-size: 0; width: 25px; text-align: center; position: relative; z-index: 10000;
+  color: #5f9963; overflow: hidden; font-size: 0; width: 25px; text-align: center; position: relative; z-index: 100;
 }
 
 #pm-dashboard #pm-team-navigation.directory-view a {display:none;}
@@ -1451,7 +1461,7 @@ text-transform: lowercase;}
 
 #project-panel #headline .action.slide-team-directory {
   background: #000;
-  position: absolute; top: 0; right: 0; z-index:10002;
+  position: absolute; top: 0; right: 0; z-index:102;
   height: 40px; padding: 0 5px;
 }
 

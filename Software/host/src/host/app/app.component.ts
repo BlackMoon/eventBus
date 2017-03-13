@@ -17,12 +17,12 @@ export class AppComponent implements AfterViewInit {
 
     ngAfterViewInit() {    
         
-        //!this.authService.isAuthenticated() && this.loginComponent.open();
+        !this.authService.isAuthenticated() && this.loginComponent.open();
 
         $("#pm-dashboard").mCustomScrollbar();        
-    }
+    }    
 
-    toggleTaskBar(e) {
+    toggleNavBar(e) {
         
         e.preventDefault();
         $('#pm-navigation').toggleClass('expanded');
