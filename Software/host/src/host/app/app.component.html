@@ -1,12 +1,13 @@
 ﻿<app-login (closed)="load()"></app-login>
-<!-- START PM NAVIGATION PANEL -->
+
 <div id="pm-dashboard">
+    <!-- START PM NAVIGATION PANEL -->
     <div id="pm-navigation" class="collapsed navigation-slide">
         <div class="expand-container">
             <a href="#" class="btn-expand" (click)="toggleNavBar($event)" touchstart="toggleNavBar($event)">
                 <i class="icon-md icon-menu">Expand Navigation</i>
             </a>
-        </div>
+        </div>        
         <div class="profile table">
             <div class="userinfo row">
                 <span class="picture cell valign-mid">
@@ -108,8 +109,11 @@
         </section> 
         <!-- END LOGIN PANEL -->     
     </div>
+    <!-- END PM NAVIGATION PANEL -->
+    <!-- START PROJECT PANEL -->
+    <div id="project-panel" class="content">
+        <router-outlet></router-outlet>
+    </div>
+    <!-- END PROJECT PANEL -->
 </div>
- <!-- END PM NAVIGATION PANEL -->
-<!-- START PROJECT PANEL -->
-<div id="project-panel" class="content" ng-view></div>
-<!-- END PROJECT PANEL -->
+ 

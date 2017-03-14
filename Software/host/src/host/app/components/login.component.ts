@@ -77,7 +77,8 @@ export class LoginComponent implements AfterViewInit {
             this.authService.login(this.model.username, this.model.password)
                 .subscribe(
                 next => {
-                    this.router.navigate(['/']);
+                    debugger;
+                    this.router.navigate(['home']);
                     this.close();
                 },
                 error => {

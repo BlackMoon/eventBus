@@ -1,4 +1,5 @@
 ﻿import { AfterViewInit, Component, ViewChild } from '@angular/core';
+import { Router } from '@angular/router';
 import { LoginComponent } from "./modules/auth.module";
 import { AuthService } from './services/index';
 import { LoginModel } from './models/index';
@@ -16,7 +17,9 @@ export class AppComponent implements AfterViewInit {
 
     private credentials: LoginModel;
 
-    constructor(private authService: AuthService) {
+    constructor(private authService: AuthService,
+        private router: Router)
+    {
         this.load();
     }
 
@@ -28,6 +31,7 @@ export class AppComponent implements AfterViewInit {
 
     login() {       
         this.loginComponent.open();
+        this.router.navigate(['home']);
     }
 
     logout() {
