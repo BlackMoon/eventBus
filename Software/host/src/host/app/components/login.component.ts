@@ -1,7 +1,8 @@
-﻿import { AfterViewInit, Component, ViewChild } from '@angular/core';
+﻿import { AfterViewInit, Component, EventEmitter, Output, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import { AuthHttp } from 'angular2-jwt';
 import { AuthService } from '../services/index';
+import { LoginModel } from '../models/index';
 import { IgValidatorComponent } from 'igniteui-angular2/igniteui.angular2';
 
 declare var $: any;
@@ -16,7 +17,7 @@ export class LoginComponent implements AfterViewInit {
 
     @ViewChild('validator') validator: IgValidatorComponent;
 
-    private model: any = {};        
+    private model: LoginModel = new LoginModel();        
     private dialogOptions: any;     
     private validatorOptions: any;   
     private validatorRef: any;   
@@ -24,6 +25,10 @@ export class LoginComponent implements AfterViewInit {
     private formId: string = 'loginForm';
     private loginId: string = 'login';
     private passwordId: string = 'pswd';    
+
+    // event Handlers
+    @Output() closed: EventEmitter<any> = new EventEmitter();
+    @Output() opened: EventEmitter<any> = new EventEmitter();
 
     constructor(
         private authService: AuthService,
@@ -65,8 +70,8 @@ export class LoginComponent implements AfterViewInit {
         $("#app-login button").button();                
     }
 
-    login() {       
-
+    submit() {       
+        
         if (this.validatorRef.isValid()) {
             
             this.authService.login(this.model.username, this.model.password)
@@ -85,9 +90,11 @@ export class LoginComponent implements AfterViewInit {
 
     open() {        
         this.dialogOptions.state = 'opened';
+        this.opened.emit(null);
     }
 
-    close() {
+    close() {       
         this.dialogOptions.state = 'closed';
+        this.closed.emit(null);
     }    
 }

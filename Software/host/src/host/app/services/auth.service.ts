@@ -4,7 +4,10 @@ import { Http, Headers, RequestOptions, Response } from '@angular/http';
 import { JwtHelper } from 'angular2-jwt';
 import { Observable } from 'rxjs';
 import * as CryptoJS from 'crypto-js';
+import { LoginModel } from '../models/index';
 import { IDictionary } from '../utils';
+
+const claimName = 'http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name';
 
 const secretUrl = '/secret';
 const tokenUrl = '/token';
@@ -46,10 +49,16 @@ export class AuthService {
         return (token !== null) && !this.jwtHelper.isTokenExpired(token);
     }
 
-    getCredentials(): any {
-        var token = this.storage.getItem(TokenKey);
-                        
-        return (token != null) ? this.jwtHelper.decodeToken(token) : {};
+    getCredentials(): LoginModel {
+        var credentials: LoginModel = new LoginModel(),
+            token = this.storage.getItem(TokenKey);
+        
+        if (token != null) {
+            let obj = this.jwtHelper.decodeToken(token);
+            credentials.username = obj[claimName];
+        }
+
+        return credentials;
     } 
 
     login(username?: string, password?: string): Observable<any> {
