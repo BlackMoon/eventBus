@@ -15,6 +15,7 @@ function authHttpServiceFactory(authService: AuthService, http: Http, options: R
 }
 
 @NgModule({
+    
     providers: [
         {
             provide: AuthHttp,

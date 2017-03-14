@@ -1,6 +1,7 @@
 ﻿import { AfterViewInit, Component, ViewChild } from '@angular/core';
+import { Http, RequestOptions } from '@angular/http';
 import { Router } from '@angular/router';
-import { LoginComponent } from "./modules/auth.module";
+import { LoginComponent } from "./modules/index";
 import { AuthService } from './services/index';
 import { LoginModel } from './models/index';
 
@@ -25,13 +26,12 @@ export class AppComponent implements AfterViewInit {
 
     ngAfterViewInit() {    
         
-        !this.authService.isAuthenticated() && this.login();
+        //!this.authService.isAuthenticated() && this.login();
         $("#pm-dashboard").mCustomScrollbar();        
     }    
 
     login() {       
-        this.loginComponent.open();
-        this.router.navigate(['home']);
+        this.loginComponent.open();        
     }
 
     logout() {
