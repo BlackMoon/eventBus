@@ -63,7 +63,8 @@ namespace Host
                     options.ModelBinderProviders.Insert(0, new EncryptModelBinderProvider());
                 })
                 .AddJsonOptions(option =>
-                {   
+                {
+                    option.SerializerSettings.DefaultValueHandling = DefaultValueHandling.Ignore;
                     option.SerializerSettings.NullValueHandling = NullValueHandling.Ignore;
                     option.SerializerSettings.ContractResolver = new CamelCasePropertyNamesContractResolver();
                 });
@@ -84,8 +85,8 @@ namespace Host
                 ConnectionOptions options = r.Resolve<IOptions<ConnectionOptions>>().Value;
 
                 ClaimsPrincipal cp = httpContext.User;
-                string pswd = cp.FindFirst(ConnectionClaimTypes.Password).Value,
-                       userId = cp.Identity.Name;                       
+                string pswd = "postgres",//cp.FindFirst(ConnectionClaimTypes.Password)?.Value,
+                    userId = "postgres";// cp.Identity.Name;                       
 
                 return $"User Id={userId};Password={pswd};Host={options.Server};Port={options.Port};Database={options.DataSource};Pooling=true;";                
 

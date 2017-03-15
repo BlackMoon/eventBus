@@ -1,5 +1,4 @@
-﻿using domain.Login;
-using Host.Security;
+﻿using Host.Security;
 using Host.Security.TokenProvider;
 using Kit.Core.CQRS.Command;
 using Kit.Core.CQRS.Query;
@@ -18,6 +17,7 @@ using System.Security.Cryptography;
 using System.Security.Principal;
 using System.Text;
 using System.Threading.Tasks;
+using domain.Login.Command;
 
 namespace Host
 {

@@ -6,7 +6,6 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Host.Controllers
 {
-    [Authorize]
     [Route("api/[controller]")]
     public class ValuesController : Controller
     {
@@ -21,8 +20,11 @@ namespace Host.Controllers
         [HttpGet]
         public IEnumerable<string> Get()
         {
-            IDataReader r = _dbManager.ExecuteReader(CommandType.Text, "SELECT id, application_id, name, type, settings FROM adk_application.application_adapters");
-            r.Read();
+            IDataReader r = _dbManager.ExecuteReader(CommandType.Text, "select a.id from adk_user.users a");
+            while (r.Read())
+            {
+                var id = r.GetString(0);
+            }
             _dbManager.CloseReader();            
             
             return new string[] { "value1", "value2" };
