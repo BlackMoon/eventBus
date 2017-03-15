@@ -4,7 +4,7 @@ using Kit.Dal.DbManager;
 
 namespace domain.AdkUser.Query
 {
-    public class AdkUserQueryHandler : IQueryHandler<FindUserByIdQuery, AdkUser>, IQueryHandler<FindUserByLoginQuery, AdkUser>
+    public class AdkUserQueryHandler : IQueryHandler<FindUserByIdQuery, AdkUser>
     {
         private readonly IDbManager _dbManager;
         public AdkUserQueryHandler(IDbManager dbManager)
@@ -16,11 +16,6 @@ namespace domain.AdkUser.Query
         public AdkUser Execute(FindUserByIdQuery query)
         {
             return _dbManager.DbConnection.QuerySingle<AdkUser>("SELECT * FROM adk_user.users u WHERE u.id = @id", new { id  = query.Id });
-        }
-
-        public AdkUser Execute(FindUserByLoginQuery query)
-        {
-            return _dbManager.DbConnection.QuerySingle<AdkUser>("SELECT * FROM adk_user.users u WHERE u.login = @login", new { id = query.Login });
         }
     }
 }

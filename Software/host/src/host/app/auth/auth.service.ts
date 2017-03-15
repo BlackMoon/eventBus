@@ -38,7 +38,7 @@ export class AuthService {
     private jwtHelper: JwtHelper = new JwtHelper();
     private pads: Pads = new Pads();
     private storage: Storage;
-    private dt: Date = new Date(); 
+    
     constructor(private http: Http) {
                 
         this.storage = Storage;

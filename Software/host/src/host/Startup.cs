@@ -2,7 +2,6 @@
 using System.Net;
 using DryIoc;
 using Kit.Core;
-using Kit.Core.Identity;
 using Kit.Core.CQRS.Job;
 using Kit.Core.Web.Binders;
 using Kit.Dal.DbManager;

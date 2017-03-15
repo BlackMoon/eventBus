@@ -1,6 +1,6 @@
-﻿using Host.Security;
+﻿using domain.Login.Command;
+using Host.Security;
 using Host.Security.TokenProvider;
-using Kit.Core.CQRS.Command;
 using Kit.Core.CQRS.Query;
 using Kit.Core.Identity;
 using Kit.Dal.Configuration;
@@ -17,7 +17,7 @@ using System.Security.Cryptography;
 using System.Security.Principal;
 using System.Text;
 using System.Threading.Tasks;
-using domain.Login.Command;
+using Kit.Core.CQRS.Command;
 
 namespace Host
 {
@@ -49,12 +49,11 @@ namespace Host
             {
                 ConnectionOptions connOptions = app.ApplicationServices.GetRequiredService<IOptions<ConnectionOptions>>().Value;
                 ICommandDispatcher commandDispatcher = app.ApplicationServices.GetRequiredService<ICommandDispatcher>();
-                IQueryDispatcher queryDispatcher = app.ApplicationServices.GetRequiredService<IQueryDispatcher>();
 
                 ClaimsIdentity identity = null;
                 try
                 {
-                    commandDispatcher.Dispatch(
+                    LoginCommandResult result = commandDispatcher.Dispatch<LoginCommand, LoginCommandResult>(
                         new LoginCommand()
                         {
                             Host = connOptions.Server,
@@ -64,7 +63,11 @@ namespace Host
                             Password = p
                         });
 
-                    identity = new ClaimsIdentity(new GenericIdentity(u, "Token"), new Claim[]{});
+                    identity = new ClaimsIdentity(new GenericIdentity(u, "Token"), 
+                        new[]
+                        {
+                            new Claim("isadmin", Newtonsoft.Json.JsonConvert.SerializeObject(result.IsAdmin))
+                        });
                 }
                 catch
                 {

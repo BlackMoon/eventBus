@@ -41,7 +41,6 @@ var AuthService = (function () {
         this.http = http;
         this.jwtHelper = new angular2_jwt_1.JwtHelper();
         this.pads = new Pads();
-        this.dt = new Date();
         this.storage = exports.Storage;
     }
     AuthService.prototype.isAuthenticated = function () {

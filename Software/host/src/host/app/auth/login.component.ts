@@ -61,7 +61,7 @@ export class LoginComponent implements AfterViewInit {
 
     ngAfterViewInit() {
         $("#app-login button").button();                
-    }
+    }       
 
     submit() {       
         
