@@ -1,22 +1,23 @@
-﻿using System;
+﻿using domain.Login;
+using Host.Security;
+using Host.Security.TokenProvider;
+using Kit.Core.CQRS.Command;
+using Kit.Core.CQRS.Query;
+using Kit.Core.Identity;
+using Kit.Dal.Configuration;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Http.Authentication;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
+using Microsoft.IdentityModel.Tokens;
+using System;
 using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Security.Principal;
 using System.Text;
 using System.Threading.Tasks;
-using domain.Login;
-using Host.Security;
-using Host.Security.TokenProvider;
-using Kit.Core.CQRS.Command;
-using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Http.Authentication;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Builder;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Options;
-using Microsoft.IdentityModel.Tokens;
-using Kit.Core.Identity;
-using Kit.Dal.Configuration;
 
 namespace Host
 {
@@ -47,12 +48,13 @@ namespace Host
             tokenOptions.IdentityResolver = (u, p) =>
             {
                 ConnectionOptions connOptions = app.ApplicationServices.GetRequiredService<IOptions<ConnectionOptions>>().Value;
-                ICommandDispatcher dispatcher = app.ApplicationServices.GetRequiredService<ICommandDispatcher>();
+                ICommandDispatcher commandDispatcher = app.ApplicationServices.GetRequiredService<ICommandDispatcher>();
+                IQueryDispatcher queryDispatcher = app.ApplicationServices.GetRequiredService<IQueryDispatcher>();
 
                 ClaimsIdentity identity = null;
                 try
                 {
-                    dispatcher.Dispatch(
+                    commandDispatcher.Dispatch(
                         new LoginCommand()
                         {
                             Host = connOptions.Server,

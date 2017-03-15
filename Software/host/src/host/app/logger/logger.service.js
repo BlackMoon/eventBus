@@ -6,13 +6,16 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
     return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
 var core_1 = require("@angular/core");
-var LogService = (function () {
-    function LogService() {
+/**
+ * Служба логирования
+ */
+var LoggerService = (function () {
+    function LoggerService() {
     }
-    return LogService;
+    return LoggerService;
 }());
-LogService = __decorate([
+LoggerService = __decorate([
     core_1.Injectable()
-], LogService);
-exports.LogService = LogService;
-//# sourceMappingURL=log.service.js.map
+], LoggerService);
+exports.LoggerService = LoggerService;
+//# sourceMappingURL=logger.service.js.map

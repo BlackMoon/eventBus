@@ -9,17 +9,13 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 var core_1 = require("@angular/core");
-var router_1 = require("@angular/router");
-var angular2_jwt_1 = require("angular2-jwt");
-var index_1 = require("../services/index");
-var index_2 = require("../models/index");
-var igniteui_angular2_1 = require("igniteui-angular2/igniteui.angular2");
+var auth_service_1 = require("./auth.service");
+var index_1 = require("../models/index");
+var utils_1 = require("../utils");
 var LoginComponent = (function () {
-    function LoginComponent(authService, http, router) {
+    function LoginComponent(authService) {
         this.authService = authService;
-        this.http = http;
-        this.router = router;
-        this.model = new index_2.LoginModel();
+        this.model = new index_1.LoginModel();
         this.formId = 'loginForm';
         this.loginId = 'login';
         this.passwordId = 'pswd';
@@ -59,11 +55,7 @@ var LoginComponent = (function () {
         var _this = this;
         if (this.validatorRef.isValid()) {
             this.authService.login(this.model.username, this.model.password)
-                .subscribe(function (next) {
-                debugger;
-                _this.router.navigate(['home']);
-                _this.close();
-            }, function (error) {
+                .subscribe(function (next) { return _this.close(utils_1.DialogResult.OK); }, function (error) {
                 debugger;
                 console.log(error);
                 //this.logService.error(error);                
@@ -74,16 +66,13 @@ var LoginComponent = (function () {
         this.dialogOptions.state = 'opened';
         this.opened.emit(null);
     };
-    LoginComponent.prototype.close = function () {
+    LoginComponent.prototype.close = function (result) {
+        if (result === void 0) { result = utils_1.DialogResult.Cancel; }
         this.dialogOptions.state = 'closed';
-        this.closed.emit(null);
+        this.closed.emit(result);
     };
     return LoginComponent;
 }());
-__decorate([
-    core_1.ViewChild('validator'),
-    __metadata("design:type", igniteui_angular2_1.IgValidatorComponent)
-], LoginComponent.prototype, "validator", void 0);
 __decorate([
     core_1.Output(),
     __metadata("design:type", core_1.EventEmitter)
@@ -98,9 +87,7 @@ LoginComponent = __decorate([
         styleUrls: ['login.component.css'],
         templateUrl: 'login.component.html'
     }),
-    __metadata("design:paramtypes", [index_1.AuthService,
-        angular2_jwt_1.AuthHttp,
-        router_1.Router])
+    __metadata("design:paramtypes", [auth_service_1.AuthService])
 ], LoginComponent);
 exports.LoginComponent = LoginComponent;
 //# sourceMappingURL=login.component.js.map

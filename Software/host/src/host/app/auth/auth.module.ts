@@ -18,15 +18,7 @@ function authHttpServiceFactory(authService: AuthService, http: Http, options: R
 @NgModule({
     exports: [IgDialogComponent, IgTextEditorComponent, IgValidatorComponent, LoginComponent],
     imports: [FormsModule, HttpModule],
-    declarations: [IgDialogComponent, IgTextEditorComponent, IgValidatorComponent, LoginComponent],
-    providers: [
-        {
-            provide: AuthHttp,
-            useFactory: authHttpServiceFactory,
-            deps: [AuthService, Http, RequestOptions]
-        },
-        AuthService
-    ]    
+    declarations: [IgDialogComponent, IgTextEditorComponent, IgValidatorComponent, LoginComponent]    
 })
 export class AuthModule {
 

@@ -8,31 +8,42 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 var core_1 = require("@angular/core");
 var http_1 = require("@angular/http");
 var angular2_jwt_1 = require("angular2-jwt");
-var index_1 = require("../services/index");
-var login_component_1 = require("../components/login.component");
-exports.LoginComponent = login_component_1.LoginComponent;
+var forms_1 = require("@angular/forms");
+var auth_service_1 = require("./auth.service");
+var igniteui_angular2_1 = require("igniteui-angular2/igniteui.angular2");
+var login_component_1 = require("./login.component");
 function authHttpServiceFactory(authService, http, options) {
     return new angular2_jwt_1.AuthHttp(new angular2_jwt_1.AuthConfig({
-        tokenName: index_1.TokenKey,
-        tokenGetter: (function () { return authService.isAuthenticated() ? index_1.Storage.getItem(index_1.TokenKey) : authService.login().toPromise(); }),
+        tokenName: auth_service_1.TokenKey,
+        tokenGetter: (function () { return authService.isAuthenticated() ? auth_service_1.Storage.getItem(auth_service_1.TokenKey) : authService.login().toPromise(); }),
         globalHeaders: [{ 'Content-Type': 'application/json' }]
     }), http, options);
 }
-var AuthModule = (function () {
+var AuthModule = AuthModule_1 = (function () {
     function AuthModule() {
     }
+    AuthModule.forRoot = function () {
+        return {
+            ngModule: AuthModule_1,
+            providers: [
+                {
+                    provide: angular2_jwt_1.AuthHttp,
+                    useFactory: authHttpServiceFactory,
+                    deps: [auth_service_1.AuthService, http_1.Http, http_1.RequestOptions]
+                },
+                auth_service_1.AuthService
+            ]
+        };
+    };
     return AuthModule;
 }());
-AuthModule = __decorate([
+AuthModule = AuthModule_1 = __decorate([
     core_1.NgModule({
-        providers: [
-            {
-                provide: angular2_jwt_1.AuthHttp,
-                useFactory: authHttpServiceFactory,
-                deps: [index_1.AuthService, http_1.Http, http_1.RequestOptions]
-            }
-        ]
+        exports: [igniteui_angular2_1.IgDialogComponent, igniteui_angular2_1.IgTextEditorComponent, igniteui_angular2_1.IgValidatorComponent, login_component_1.LoginComponent],
+        imports: [forms_1.FormsModule, http_1.HttpModule],
+        declarations: [igniteui_angular2_1.IgDialogComponent, igniteui_angular2_1.IgTextEditorComponent, igniteui_angular2_1.IgValidatorComponent, login_component_1.LoginComponent]
     })
 ], AuthModule);
 exports.AuthModule = AuthModule;
+var AuthModule_1;
 //# sourceMappingURL=auth.module.js.map

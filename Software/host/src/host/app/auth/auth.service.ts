@@ -27,7 +27,7 @@ class Pads implements IDictionary<any>
     [key: string]: Object;
 }
 
-export const Storage = sessionStorage;
+export const Storage = localStorage;//sessionStorage;
 export const TokenKey = 'token';
 
 /**
@@ -38,7 +38,7 @@ export class AuthService {
     private jwtHelper: JwtHelper = new JwtHelper();
     private pads: Pads = new Pads();
     private storage: Storage;
-
+    private dt: Date = new Date(); 
     constructor(private http: Http) {
                 
         this.storage = Storage;

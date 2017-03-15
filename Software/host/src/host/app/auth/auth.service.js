@@ -31,7 +31,7 @@ var Pads = (function () {
     }
     return Pads;
 }());
-exports.Storage = sessionStorage;
+exports.Storage = localStorage; //sessionStorage;
 exports.TokenKey = 'token';
 /**
  * Служба аутентификации
@@ -41,6 +41,7 @@ var AuthService = (function () {
         this.http = http;
         this.jwtHelper = new angular2_jwt_1.JwtHelper();
         this.pads = new Pads();
+        this.dt = new Date();
         this.storage = exports.Storage;
     }
     AuthService.prototype.isAuthenticated = function () {
@@ -89,7 +90,7 @@ var AuthService = (function () {
                 });
             }
             else
-                throw 'Unknown algorithm';
+                return rxjs_1.Observable.throw('Unknown algorithm');
         });
     };
     AuthService.prototype.logout = function () {
