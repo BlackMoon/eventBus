@@ -1,9 +1,7 @@
 ﻿import { AfterViewInit, Component, EventEmitter, Output, ViewChild } from '@angular/core';
-import { Router } from '@angular/router';
-import { AuthHttp } from 'angular2-jwt';
-import { AuthService } from '../services/index';
+import { AuthService } from './auth.service';
 import { LoginModel } from '../models/index';
-import { IgValidatorComponent } from 'igniteui-angular2/igniteui.angular2';
+import { DialogResult } from '../utils';
 
 declare var $: any;
 
@@ -13,11 +11,10 @@ declare var $: any;
     templateUrl: 'login.component.html'
 })
 
-export class LoginComponent implements AfterViewInit {      
+export class LoginComponent implements AfterViewInit {     
 
-    @ViewChild('validator') validator: IgValidatorComponent;
-
-    private model: LoginModel = new LoginModel();        
+    private model: LoginModel = new LoginModel();   
+         
     private dialogOptions: any;     
     private validatorOptions: any;   
     private validatorRef: any;   
@@ -27,15 +24,11 @@ export class LoginComponent implements AfterViewInit {
     private passwordId: string = 'pswd';    
 
     // event Handlers
-    @Output() closed: EventEmitter<any> = new EventEmitter();
+    @Output() closed: EventEmitter<DialogResult> = new EventEmitter();
     @Output() opened: EventEmitter<any> = new EventEmitter();
 
-    constructor(
-        private authService: AuthService,
-        private http: AuthHttp,
-        private router: Router)
+    constructor(private authService: AuthService)
     {
-
         let self = this;
 
         this.dialogOptions = {
@@ -76,11 +69,7 @@ export class LoginComponent implements AfterViewInit {
             
             this.authService.login(this.model.username, this.model.password)
                 .subscribe(
-                next => {
-                    debugger;
-                    this.router.navigate(['home']);
-                    this.close();
-                },
+                next => this.close(DialogResult.OK),
                 error => {
                     debugger;
                     console.log(error);
@@ -94,8 +83,8 @@ export class LoginComponent implements AfterViewInit {
         this.opened.emit(null);
     }
 
-    close() {       
+    close(result: DialogResult = DialogResult.Cancel) {       
         this.dialogOptions.state = 'closed';
-        this.closed.emit(null);
+        this.closed.emit(result);
     }    
 }

@@ -46,7 +46,7 @@ export class AuthService {
 
     isAuthenticated(): boolean {
         var token = this.storage.getItem(TokenKey);
-        return true;//(token !== null) && !this.jwtHelper.isTokenExpired(token);
+        return (token !== null) && !this.jwtHelper.isTokenExpired(token);
     }
 
     getCredentials(): LoginModel {
@@ -107,7 +107,7 @@ export class AuthService {
                         });
                 }
                 else
-                    throw 'Unknown algorithm';
+                    return Observable.throw('Unknown algorithm');                    
             });
     }
 
