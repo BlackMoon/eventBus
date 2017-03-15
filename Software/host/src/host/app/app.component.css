@@ -592,15 +592,6 @@ body #pm-navigation.expanded .cell.hidden-expanded {opacity: 0; display: none;}
   background: #2d2d2d;
 }
 
-#pm-navigation .projects.logged ul li:hover {  
-  cursor: default;
-}
-
-#pm-navigation .projects.logged div.details-btn {  
-  cursor: pointer;
-}
-
-
 #pm-navigation .projects.upcoming {
   background: #353535;
 }

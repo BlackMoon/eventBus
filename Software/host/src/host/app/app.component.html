@@ -90,18 +90,18 @@
                 </li>
             </ul>
         </section>                
-        <section class="projects logged" *ngIf="this.authService.isAuthenticated()">
+        <section class="projects upcoming" *ngIf="this.authService.isAuthenticated()">
             <ul>
-                <li class="table">
+                <li class="table" [ngStyle]="{'cursor': 'default'}">
                     <div class="essentials cell valign-mid">
                         <div class="doughnut">Вошел как</div>
-                        <span class="client abbr">{{credentials.username.toUpperCase()}}</span>
+                        <span class="client abbr">{{credentials.username | uppercase }}</span>
                     </div>
                     <div class="details cell valign-mid hidden-closed">
                         <span class="client full">{{credentials.username}}</span>
                         <span class="projectID">#1002</span>
                     </div>
-                    <div class="details-btn cell valign-mid hidden-closed" (click)="logout()">
+                    <div class="details-btn cell valign-mid hidden-closed" (click)="logout()" [ngStyle]="{'cursor': 'pointer'}">
                         <i class="icon-md icon-remove" title="Выйти"></i>
                     </div>
                 </li>
