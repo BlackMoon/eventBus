@@ -1,21 +1,13 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
-using Kit.Core.CQRS.Query;
-
-namespace domain.AdkUser
+﻿namespace domain.AdkUser
 {
-    [Table("adk_user.users")]
     public class AdkUser : KeyObject
     {
-        [Column("login")]
         public string Login { get; set; }
-
-        [Column("name")]
-        public string Name { get; set; }
-
-        [Column("active")]
+        
+        public string Description { get; set; }
+    
         public bool Active { get; set; }
-
-        [Column("is_admin")]
+    
         public bool IsAdmin { get; set; }
     }
 }

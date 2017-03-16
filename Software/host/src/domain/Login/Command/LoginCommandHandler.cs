@@ -1,11 +1,10 @@
 ﻿using System.Threading.Tasks;
-using Dapper;
 using Kit.Core.CQRS.Command;
 using Kit.Dal.DbManager;
 
 namespace domain.Login.Command
 {
-    public class LoginCommandHandler : ICommandHandler<LoginCommand>
+    public class LoginCommandHandler : ICommandHandlerWithResult<LoginCommand, string>
     {
         private readonly IDbManager _dbManager;
         public LoginCommandHandler(IDbManager dbManager)
@@ -14,17 +13,21 @@ namespace domain.Login.Command
         }
 
         /// <summary>
-        /// Возвращает роль пользователя
+        /// Возвращает строку соединения
         /// </summary>
         /// <param name="command"></param>
         /// <returns></returns>
-        public void Execute(LoginCommand command)
+        public string Execute(LoginCommand command)
         {
-            _dbManager.Open($"Host={command.Host};Port={command.Port};Database={command.DataBase};User Id={command.UserName};Password={command.Password};Pooling=true;");
+            string connectionString = $"Host={command.Host};Port={command.Port};Database={command.DataBase};User Id={command.UserName};Password={command.Password};Pooling=true;";
+
+            _dbManager.Open(connectionString);
             _dbManager.Dispose();
+
+            return connectionString;
         }
 
-        public Task ExecuteAsync(LoginCommand command)
+        public Task<string> ExecuteAsync(LoginCommand command)
         {
             throw new System.NotImplementedException();
         }

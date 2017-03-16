@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace domain
+namespace domain.AdkUser.Command
 {
-    public class Profile
+    public class AdkUserCommandHandler
     {
     }
 }

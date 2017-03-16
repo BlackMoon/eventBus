@@ -8,13 +8,12 @@ namespace domain.AdkUser.Query
 {
     public class AdkUserQueryHandler : IQueryHandler<FindUserByIdQuery, AdkUser>, IQueryHandler<FindUserByLoginQuery, AdkUser>
     {
-        private const string Sql = "SELECT * FROM adk_user.users u";
+        private const string Select = "SELECT * FROM adk_user.users u";
 
         private readonly IDbManager _dbManager;
         public AdkUserQueryHandler(IDbManager dbManager)
         {
             _dbManager = dbManager;
-            _dbManager.Open();
         }
 
         public AdkUser Execute(FindUserByLoginQuery query)
@@ -29,12 +28,14 @@ namespace domain.AdkUser.Query
 
         public Task<AdkUser> ExecuteAsync(FindUserByLoginQuery query)
         {
-            return _dbManager.DbConnection.QuerySingleAsync<AdkUser>($"{Sql} WHERE u.id = @id", new { id = query.Login });
+            _dbManager.Open(query.ConnectionString);
+            return _dbManager.DbConnection.QuerySingleAsync<AdkUser>($"{Select} WHERE u.login = @login", new { login = query.Login });
         }
 
         public Task<AdkUser> ExecuteAsync(FindUserByIdQuery query)
         {
-            return _dbManager.DbConnection.QuerySingleAsync<AdkUser>($"{Sql} WHERE u.id = @id", new { id = query.Id });
+            _dbManager.Open();
+            return _dbManager.DbConnection.QuerySingleAsync<AdkUser>($"{Select} WHERE u.id = @id", new { id = query.Id });
         }
     }
 }
