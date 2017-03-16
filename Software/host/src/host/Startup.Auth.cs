@@ -53,7 +53,7 @@ namespace Host
                 ClaimsIdentity identity = null;
                 try
                 {
-                    LoginCommandResult result = commandDispatcher.Dispatch<LoginCommand, LoginCommandResult>(
+                    commandDispatcher.Dispatch(
                         new LoginCommand()
                         {
                             Host = connOptions.Server,
@@ -64,9 +64,9 @@ namespace Host
                         });
 
                     identity = new ClaimsIdentity(new GenericIdentity(u, "Token"), 
-                        new[]
+                        new Claim[]
                         {
-                            new Claim("isadmin", Newtonsoft.Json.JsonConvert.SerializeObject(result.IsAdmin))
+                            
                         });
                 }
                 catch

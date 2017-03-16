@@ -4,7 +4,7 @@ using Kit.Core.CQRS.Query;
 namespace domain.AdkUser
 {
     [Table("adk_user.users")]
-    public class AdkUser : KeyObject, IQueryResult
+    public class AdkUser : KeyObject
     {
         [Column("login")]
         public string Login { get; set; }

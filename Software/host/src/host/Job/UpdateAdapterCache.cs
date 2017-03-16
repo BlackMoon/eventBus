@@ -1,6 +1,7 @@
 ﻿using System.IO;
 using System.Reflection;
 using System.Runtime.Loader;
+using System.Threading.Tasks;
 using Kit.Core.CQRS.Job;
 using Kit.Dal.DbManager;
 
@@ -42,6 +43,11 @@ namespace Host.Job
                     }
                 }
             }
+        }
+
+        public Task RunAsync()
+        {
+            throw new System.NotImplementedException();
         }
     }
 }
