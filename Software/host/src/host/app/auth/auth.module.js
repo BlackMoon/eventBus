@@ -15,7 +15,7 @@ var login_component_1 = require("./login.component");
 function authHttpServiceFactory(authService, http, options) {
     return new angular2_jwt_1.AuthHttp(new angular2_jwt_1.AuthConfig({
         tokenName: auth_service_1.TokenKey,
-        tokenGetter: (function () { return authService.isAuthenticated() ? auth_service_1.Storage.getItem(auth_service_1.TokenKey) : authService.login().toPromise(); }),
+        tokenGetter: (function () { return authService.isLoggedIn ? auth_service_1.Storage.getItem(auth_service_1.TokenKey) : authService.login().toPromise(); }),
         globalHeaders: [{ 'Content-Type': 'application/json' }]
     }), http, options);
 }

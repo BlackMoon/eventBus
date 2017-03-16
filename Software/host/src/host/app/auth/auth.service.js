@@ -15,11 +15,21 @@ var angular2_jwt_1 = require("angular2-jwt");
 var rxjs_1 = require("rxjs");
 var CryptoJS = require("crypto-js");
 var index_1 = require("../models/index");
-var claimName = 'http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name';
 var secretUrl = '/secret';
 var tokenUrl = '/token';
 var passwordKey = 'pswd';
 var usernameKey = 'uname';
+/**
+ * .net ClaimNames --> AdkUserModel fields mappings
+ */
+var Claims = (function () {
+    function Claims() {
+        this['description'] = null;
+        this['isadmin'] = null;
+        this['username'] = 'http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name';
+    }
+    return Claims;
+}());
 /**
  * .net Cryptography.PaddingMode --> CryptoJS.pads mapping
  */
@@ -40,21 +50,33 @@ var AuthService = (function () {
     function AuthService(http) {
         this.http = http;
         this.jwtHelper = new angular2_jwt_1.JwtHelper();
+        this.claims = new Claims();
         this.pads = new Pads();
         this.storage = exports.Storage;
     }
-    AuthService.prototype.isAuthenticated = function () {
-        var token = this.storage.getItem(exports.TokenKey);
-        return (token !== null) && !this.jwtHelper.isTokenExpired(token);
-    };
-    AuthService.prototype.getCredentials = function () {
-        var credentials = new index_1.LoginModel(), token = this.storage.getItem(exports.TokenKey);
-        if (token != null) {
-            var obj = this.jwtHelper.decodeToken(token);
-            credentials.username = obj[claimName];
-        }
-        return credentials;
-    };
+    Object.defineProperty(AuthService.prototype, "isLoggedIn", {
+        get: function () {
+            var token = this.storage.getItem(exports.TokenKey);
+            return (token !== null) && !this.jwtHelper.isTokenExpired(token);
+        },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(AuthService.prototype, "LoggedUser", {
+        get: function () {
+            var adkuser = new index_1.AdkUserModel(), token = this.storage.getItem(exports.TokenKey);
+            if (token != null) {
+                var obj = this.jwtHelper.decodeToken(token);
+                for (var key in this.claims) {
+                    var value = this.claims[key] || key;
+                    adkuser[key] = obj[value];
+                }
+            }
+            return adkuser;
+        },
+        enumerable: true,
+        configurable: true
+    });
     AuthService.prototype.login = function (username, password) {
         var _this = this;
         // username & password store in base64

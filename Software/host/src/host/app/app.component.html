@@ -25,7 +25,7 @@
                 </div>             
             </div>
         </div>       
-        <section class="projects current" *ngIf="this.authService.isAuthenticated()">            
+        <section class="projects current" *ngIf="this.authService.isAuthenticated">            
             <ul >
                 <li class="table" >
                     <div class="essentials cell valign-mid">
@@ -72,7 +72,7 @@
             </ul>
         </section> 
         <!-- START LOGIN PANEL -->
-        <section class="projects current" *ngIf="!this.authService.isAuthenticated()">
+        <section class="projects current" *ngIf="!this.authService.isAuthenticated">
             <ul>
                 <li class="table" (click)="loginComponent.open()">
                     <div class="essentials cell valign-mid">
@@ -90,16 +90,16 @@
                 </li>
             </ul>
         </section>                
-        <section class="projects upcoming" *ngIf="this.authService.isAuthenticated()">
+        <section class="projects upcoming" *ngIf="this.authService.isAuthenticated">
             <ul>
                 <li class="table" [ngStyle]="{'cursor': 'default'}">
                     <div class="essentials cell valign-mid">
                         <div class="doughnut">Вошел как</div>
-                        <span class="client abbr">{{credentials.username | uppercase }}</span>
+                        <span class="client abbr">{{loggedUser.username | uppercase }}</span>
                     </div>
                     <div class="details cell valign-mid hidden-closed">
-                        <span class="client full">{{credentials.username}}</span>
-                        <span class="projectID">#1002</span>
+                        <span class="client full">{{loggedUser.description || loggedUser.username}}</span>
+                        <span class="projectID">{{ loggedUser.isadmin ? 'Администратор' : 'Пользователь' }}</span>
                     </div>
                     <div class="details-btn cell valign-mid hidden-closed" (click)="logout()" [ngStyle]="{'cursor': 'pointer'}">
                         <i class="icon-md icon-remove" title="Выйти"></i>

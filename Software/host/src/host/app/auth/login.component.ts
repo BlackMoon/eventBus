@@ -1,6 +1,6 @@
 ﻿import { AfterViewInit, Component, EventEmitter, Output, ViewChild } from '@angular/core';
 import { AuthService } from './auth.service';
-import { LoginModel } from '../models/index';
+import { AdkUserModel } from '../models/index';
 import { DialogResult } from '../utils';
 
 declare var $: any;
@@ -13,7 +13,7 @@ declare var $: any;
 
 export class LoginComponent implements AfterViewInit {     
 
-    private model: LoginModel = new LoginModel();   
+    private model: AdkUserModel = new AdkUserModel();   
          
     private dialogOptions: any;     
     private validatorOptions: any;   

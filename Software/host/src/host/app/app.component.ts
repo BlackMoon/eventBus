@@ -3,7 +3,7 @@ import { Http, RequestOptions } from '@angular/http';
 import { Router } from '@angular/router';
 import { AuthService } from './auth/auth.service';
 import { LoginComponent } from './auth/login.component';
-import { LoginModel } from './models/index';
+import { AdkUserModel } from './models/index';
 import { DialogResult } from './utils';
 
 declare var $: any;
@@ -16,7 +16,7 @@ declare var $: any;
 export class AppComponent implements AfterViewInit, OnInit {    
     @ViewChild(LoginComponent) loginComponent: LoginComponent;
 
-    private credentials: LoginModel;
+    private loggedUser: AdkUserModel;
 
     constructor(private authService: AuthService,
         private router: Router)
@@ -25,13 +25,13 @@ export class AppComponent implements AfterViewInit, OnInit {
 
     ngAfterViewInit() {    
         
-        !this.authService.isAuthenticated() && this.login();
+        !this.authService.isAuthenticated && this.login();
         $("#pm-dashboard").mCustomScrollbar();        
     }    
 
     ngOnInit() {
         // Загрузить данные
-        this.credentials = this.authService.getCredentials();     
+        this.loggedUser = this.authService.LoggedUser;     
     }
 
     login() {       
@@ -47,7 +47,7 @@ export class AppComponent implements AfterViewInit, OnInit {
         if (result == DialogResult.OK)
         {
             // Загрузить данные
-            this.credentials = this.authService.getCredentials();        
+            this.loggedUser = this.authService.LoggedUser;        
             this.router.navigate(['home']);
         }
     }

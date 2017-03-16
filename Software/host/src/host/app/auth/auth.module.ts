@@ -10,15 +10,15 @@ function authHttpServiceFactory(authService: AuthService, http: Http, options: R
     
     return new AuthHttp(new AuthConfig({
         tokenName: TokenKey,
-        tokenGetter: (() => authService.isAuthenticated() ? Storage.getItem(TokenKey) : authService.login().toPromise()),
+        tokenGetter: (() => authService.isAuthenticated ? Storage.getItem(TokenKey) : authService.login().toPromise()),
         globalHeaders: [{ 'Content-Type': 'application/json' }]
     }), http, options);
 }
 
 @NgModule({
+    declarations: [IgDialogComponent, IgTextEditorComponent, IgValidatorComponent, LoginComponent],    
     exports: [IgDialogComponent, IgTextEditorComponent, IgValidatorComponent, LoginComponent],
-    imports: [FormsModule, HttpModule],
-    declarations: [IgDialogComponent, IgTextEditorComponent, IgValidatorComponent, LoginComponent]    
+    imports: [FormsModule, HttpModule]    
 })
 export class AuthModule {
 

@@ -17,7 +17,10 @@ using System.Security.Cryptography;
 using System.Security.Principal;
 using System.Text;
 using System.Threading.Tasks;
+using domain.AdkUser;
+using domain.AdkUser.Query;
 using Kit.Core.CQRS.Command;
+using Microsoft.Extensions.Logging;
 
 namespace Host
 {
@@ -45,15 +48,17 @@ namespace Host
             SymmetricSecurityKey signingKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(tokenOptions.SecretPhrase));
 
             tokenOptions.SigningCredentials = new SigningCredentials(signingKey, SecurityAlgorithms.HmacSha256Signature);
-            tokenOptions.IdentityResolver = (u, p) =>
+            tokenOptions.IdentityResolver = async (u, p) =>
             {
                 ConnectionOptions connOptions = app.ApplicationServices.GetRequiredService<IOptions<ConnectionOptions>>().Value;
                 ICommandDispatcher commandDispatcher = app.ApplicationServices.GetRequiredService<ICommandDispatcher>();
+                IQueryDispatcher queryDispatcher = app.ApplicationServices.GetRequiredService<IQueryDispatcher>();
+                ILogger<TokenProviderMiddleware> logger = app.ApplicationServices.GetRequiredService<ILogger<TokenProviderMiddleware>>();
 
                 ClaimsIdentity identity = null;
                 try
                 {
-                    commandDispatcher.Dispatch(
+                    string connectionString = commandDispatcher.Dispatch<LoginCommand, string>(
                         new LoginCommand()
                         {
                             Host = connOptions.Server,
@@ -62,19 +67,22 @@ namespace Host
                             UserName = u,
                             Password = p
                         });
-
+                    
+                    AdkUser adkUser = await queryDispatcher.DispatchAsync<FindUserByLoginQuery, AdkUser>(new FindUserByLoginQuery() { ConnectionString = connectionString, Login = u});
+                    
                     identity = new ClaimsIdentity(new GenericIdentity(u, "Token"), 
-                        new Claim[]
+                        new []
                         {
-                            
+                            new Claim("description", adkUser.Description),
+                            new Claim("isadmin", adkUser.IsAdmin.ToString(), ClaimValueTypes.Boolean)    
                         });
                 }
-                catch
+                catch (Exception ex)
                 {
-                    // ignored
+                    logger.LogError(ex.Message);    
                 }
 
-                return Task.FromResult(identity);
+                return await Task.FromResult(identity);
             };
 
             app.UseSimpleTokenProvider(tokenOptions);

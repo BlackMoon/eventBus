@@ -4,16 +4,26 @@ import { Http, Headers, RequestOptions, Response } from '@angular/http';
 import { JwtHelper } from 'angular2-jwt';
 import { Observable } from 'rxjs';
 import * as CryptoJS from 'crypto-js';
-import { LoginModel } from '../models/index';
+import { AdkUserModel } from '../models/index';
 import { IDictionary } from '../utils';
-
-const claimName = 'http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name';
 
 const secretUrl = '/secret';
 const tokenUrl = '/token';
 
 const passwordKey = 'pswd';
 const usernameKey = 'uname';
+
+/**
+ * .net ClaimNames --> AdkUserModel fields mapping
+ */
+class Claims implements IDictionary<string>
+{
+    'description' = null;
+    'isadmin' = null;
+    'username' = 'http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name';
+
+    [key: string]: string;
+}
 
 /**
  * .net Cryptography.PaddingMode --> CryptoJS.pads mapping
@@ -36,7 +46,10 @@ export const TokenKey = 'token';
 @Injectable()
 export class AuthService {
     private jwtHelper: JwtHelper = new JwtHelper();
+
+    private claims: Claims = new Claims();
     private pads: Pads = new Pads();
+
     private storage: Storage;
     
     constructor(private http: Http) {
@@ -44,22 +57,26 @@ export class AuthService {
         this.storage = Storage;
     }
 
-    isAuthenticated(): boolean {
+    get isAuthenticated(): boolean {
         var token = this.storage.getItem(TokenKey);
         return (token !== null) && !this.jwtHelper.isTokenExpired(token);
     }
 
-    getCredentials(): LoginModel {
-        var credentials: LoginModel = new LoginModel(),
+    get LoggedUser(): AdkUserModel {
+        var adkuser: AdkUserModel = new AdkUserModel(),
             token = this.storage.getItem(TokenKey);
-        
+
         if (token != null) {
             let obj = this.jwtHelper.decodeToken(token);
-            credentials.username = obj[claimName];
+
+            for (let key in this.claims) {
+                let value = this.claims[key] || key;
+                adkuser[key] = obj[value];
+            }
         }
 
-        return credentials;
-    } 
+        return adkuser;
+    }    
 
     login(username?: string, password?: string): Observable<any> {
 

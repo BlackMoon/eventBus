@@ -15,7 +15,7 @@ var utils_1 = require("../utils");
 var LoginComponent = (function () {
     function LoginComponent(authService) {
         this.authService = authService;
-        this.model = new index_1.LoginModel();
+        this.model = new index_1.AdkUserModel();
         this.formId = 'loginForm';
         this.loginId = 'login';
         this.passwordId = 'pswd';
