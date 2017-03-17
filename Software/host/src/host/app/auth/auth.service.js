@@ -20,7 +20,7 @@ var tokenUrl = '/token';
 var passwordKey = 'pswd';
 var usernameKey = 'uname';
 /**
- * .net ClaimNames --> AdkUserModel fields mappings
+ * .net ClaimNames --> AdkUserModel fields mapping
  */
 var Claims = (function () {
     function Claims() {
@@ -54,7 +54,7 @@ var AuthService = (function () {
         this.pads = new Pads();
         this.storage = exports.Storage;
     }
-    Object.defineProperty(AuthService.prototype, "isLoggedIn", {
+    Object.defineProperty(AuthService.prototype, "isAuthenticated", {
         get: function () {
             var token = this.storage.getItem(exports.TokenKey);
             return (token !== null) && !this.jwtHelper.isTokenExpired(token);

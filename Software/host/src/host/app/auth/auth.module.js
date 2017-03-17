@@ -12,13 +12,13 @@ var forms_1 = require("@angular/forms");
 var auth_service_1 = require("./auth.service");
 var igniteui_angular2_1 = require("igniteui-angular2/igniteui.angular2");
 var login_component_1 = require("./login.component");
-function authHttpServiceFactory(authService, http, options) {
+var authHttpServiceFactory = function (authService, http, options) {
     return new angular2_jwt_1.AuthHttp(new angular2_jwt_1.AuthConfig({
         tokenName: auth_service_1.TokenKey,
-        tokenGetter: (function () { return authService.isLoggedIn ? auth_service_1.Storage.getItem(auth_service_1.TokenKey) : authService.login().toPromise(); }),
+        tokenGetter: (function () { return authService.isAuthenticated ? auth_service_1.Storage.getItem(auth_service_1.TokenKey) : authService.login().toPromise(); }),
         globalHeaders: [{ 'Content-Type': 'application/json' }]
     }), http, options);
-}
+};
 var AuthModule = AuthModule_1 = (function () {
     function AuthModule() {
     }
@@ -39,9 +39,9 @@ var AuthModule = AuthModule_1 = (function () {
 }());
 AuthModule = AuthModule_1 = __decorate([
     core_1.NgModule({
+        declarations: [igniteui_angular2_1.IgDialogComponent, igniteui_angular2_1.IgTextEditorComponent, igniteui_angular2_1.IgValidatorComponent, login_component_1.LoginComponent],
         exports: [igniteui_angular2_1.IgDialogComponent, igniteui_angular2_1.IgTextEditorComponent, igniteui_angular2_1.IgValidatorComponent, login_component_1.LoginComponent],
-        imports: [forms_1.FormsModule, http_1.HttpModule],
-        declarations: [igniteui_angular2_1.IgDialogComponent, igniteui_angular2_1.IgTextEditorComponent, igniteui_angular2_1.IgValidatorComponent, login_component_1.LoginComponent]
+        imports: [forms_1.FormsModule, http_1.HttpModule]
     })
 ], AuthModule);
 exports.AuthModule = AuthModule;

@@ -1,2 +1,2 @@
-﻿export * from './home.view';
+﻿export * from './user-tree.view';
 export * from './notfound.view';

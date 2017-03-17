@@ -1,5 +1,5 @@
 ﻿import { platformBrowserDynamic } from '@angular/platform-browser-dynamic';
-import { enableProdMode } from '@angular/core';
+import { enableProdMode, ComponentRef } from '@angular/core';
 import { AppModule } from './app.module';
 
 if (process.env.ENV === 'production') {
@@ -7,7 +7,8 @@ if (process.env.ENV === 'production') {
 }
 
 let boot = document.addEventListener('DOMContentLoaded', () => {
-    platformBrowserDynamic().bootstrapModule(AppModule);
+    platformBrowserDynamic()
+        .bootstrapModule(AppModule);        
 });
 
 module.exports = boot;

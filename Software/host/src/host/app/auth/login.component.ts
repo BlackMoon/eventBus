@@ -30,7 +30,7 @@ export class LoginComponent implements AfterViewInit {
     constructor(private authService: AuthService)
     {
         let self = this;
-
+        
         this.dialogOptions = {
             headerText: "Войти в систему",
             modal: true,
@@ -60,7 +60,7 @@ export class LoginComponent implements AfterViewInit {
     }    
 
     ngAfterViewInit() {
-        $("#app-login button").button();                
+        $("#app-login button").button();               
     }       
 
     submit() {       

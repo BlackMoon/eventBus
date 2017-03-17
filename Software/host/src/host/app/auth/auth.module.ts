@@ -6,8 +6,8 @@ import { AuthService, Storage, TokenKey } from './auth.service';
 import { IgDialogComponent, IgTextEditorComponent, IgValidatorComponent } from 'igniteui-angular2/igniteui.angular2';
 import { LoginComponent } from "./login.component";
 
-function authHttpServiceFactory(authService: AuthService, http: Http, options: RequestOptions) {
-    
+let authHttpServiceFactory = (authService: AuthService, http: Http, options: RequestOptions) => {
+
     return new AuthHttp(new AuthConfig({
         tokenName: TokenKey,
         tokenGetter: (() => authService.isAuthenticated ? Storage.getItem(TokenKey) : authService.login().toPromise()),
