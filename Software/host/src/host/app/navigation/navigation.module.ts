@@ -11,8 +11,8 @@ const appRoutes: Routes = [
 ];
 
 @NgModule({
-    declarations: [views.PageNotFoundView, views.UsersTreeView],    
-    entryComponents: [views.UsersTreeView],
+    declarations: [views.MonitorView, views.PageNotFoundView, views.UsersTreeView],    
+    entryComponents: [views.MonitorView, views.UsersTreeView],
     exports: [RouterModule],
     imports: [
         RouterModule.forRoot(

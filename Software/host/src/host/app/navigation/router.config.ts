@@ -8,7 +8,7 @@ import * as decorator from './route.decorator';
 const routesUrl = '/routes.json';
 
 /**
- * Конфигурация маршрутов
+ * Конфигуратор маршрутов
  */
 @Injectable()
 export class RouterConfig {
@@ -25,6 +25,7 @@ export class RouterConfig {
     load() {
         
         return new Promise((resolve, reject) => {
+
             this.http.get(routesUrl)
                 .map(r => r.json())
                 .catch((error: any): any => {
