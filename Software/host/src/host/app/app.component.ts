@@ -1,4 +1,4 @@
-﻿import { AfterViewInit, Component, OnInit, ViewChild } from '@angular/core';
+﻿import { AfterViewInit, Component, OnInit, Renderer, ViewChild } from '@angular/core';
 import { Http, RequestOptions } from '@angular/http';
 import { Observable } from 'rxjs';
 import { Router } from '@angular/router';
@@ -19,37 +19,57 @@ declare var $: any;
 export class AppComponent implements AfterViewInit, OnInit {    
     @ViewChild(LoginComponent) loginComponent: LoginComponent;
 
+    private $navigation;
     private menu: Array<MenuItem> = [];
     private loggedUser: AdkUserModel;    
 
     constructor(
         private authService: AuthService,        
+        private render: Renderer,
         private router: Router,
         private routerConfig: RouterConfig)
     {        
     }
 
     ngAfterViewInit() {    
-        
-        !this.authService.isAuthenticated && this.login();
-        $("#pm-dashboard").mCustomScrollbar();          
+
+        this.$navigation = $("#pm-navigation");
+
+        $("#pm-dashboard").mCustomScrollbar({
+            theme: "dark",
+            axis: 'y'
+        }); 
+
+        if (this.authService.isAuthenticated)
+        {
+            (this.menu.length > 0) && this.menuItemClick(this.menu[0]);
+        }
+        else
+            this.login();        
     }    
 
     ngOnInit() {
 
         // Маршруты        
         let config = this.routerConfig.Routes.concat(this.router.config);
-        this.router.resetConfig(config);        
-        
+        this.router.resetConfig(config);               
+
         // Данные
-        (this.authService.isAuthenticated) && this.retrieveUser();
+        (this.authService.isAuthenticated) && this.retrieveUser();       
     }
 
-    menuItemClick() {
+    menuItemClick(item: MenuItem) {
+       
+        this.$navigation.switchClass('expanded', 'collapsed'); // collapse navigation        
+        
+        this.router.navigate([item.route]);
+        this.menu.forEach(mi => mi.active = false);
+        item.active = true;        
     }
 
     login() {       
-        this.loginComponent.open();        
+        this.$navigation.switchClass('expanded', 'collapsed'); // collapse navigation        
+        this.loginComponent.open(); 
     }
 
     logout() {
@@ -58,7 +78,10 @@ export class AppComponent implements AfterViewInit, OnInit {
 
     loginComponent_Closed(result: DialogResult) {
 
-        (result == DialogResult.OK) && this.retrieveUser();        
+        if (result == DialogResult.OK) {
+            this.retrieveUser();
+            (this.menu.length > 0) && this.menuItemClick(this.menu[0]);
+        }
     }
 
     /**
@@ -104,13 +127,11 @@ export class AppComponent implements AfterViewInit, OnInit {
 
             return found;
         });
-       
-        (this.menu.length > 0) && this.router.navigate([this.menu[0].route]);
     }
 
     toggleNavBar(e) {
         
         e.preventDefault();
-        $('#pm-navigation').toggleClass('expanded');
+        this.$navigation.toggleClass('expanded');
     }
 }

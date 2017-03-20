@@ -8,6 +8,8 @@ export class MenuItem {
 
     abbr?: string;
 
+    active?: boolean;
+
     details?: { iconCls: string; title: string; } = null;
 
     iconCls?: string;

@@ -28,7 +28,7 @@
 
         <section class="projects current" *ngIf="this.authService.isAuthenticated">
             <ul>
-                <li class="table" *ngFor="let mi of menu" (click)="menuItemClick">
+                <li id="menu-{{mi.id}}" [ngClass]="{ active: mi.active, table: true }" *ngFor="let mi of menu" (click)="menuItemClick(mi)">
                     <h3 *ngIf="mi.title">{{mi.title}}</h3>
                     <div class="essentials cell valign-mid">
                         <div class="doughnut">
@@ -50,7 +50,7 @@
         <!-- START LOGIN PANEL -->
         <section class="projects current" *ngIf="!this.authService.isAuthenticated">
             <ul>
-                <li class="table" (click)="loginComponent.open()">
+                <li class="table" (click)="login()">
                     <div class="essentials cell valign-mid">
                         <div class="doughnut">
                             <i class="icon-md icon-add-team"></i>
