@@ -2,8 +2,8 @@
 import { Http, RequestOptions } from '@angular/http';
 import { Router } from '@angular/router';
 import { AuthService } from './auth/auth.service';
-import { NavigationService } from './navigation/navigation.service';
 import { LoginComponent } from './auth/login.component';
+import { RouterConfig } from './navigation/router.config';
 import { AdkUserModel } from './models/index';
 import { DialogResult } from './utils';
 
@@ -20,9 +20,9 @@ export class AppComponent implements AfterViewInit, OnInit {
     private loggedUser: AdkUserModel;
 
     constructor(
-        private authService: AuthService,
-        private navigationService: NavigationService,
-        private router: Router)
+        private authService: AuthService,        
+        private router: Router,
+        private routerConfig: RouterConfig)
     {        
     }
 
@@ -34,16 +34,10 @@ export class AppComponent implements AfterViewInit, OnInit {
 
     ngOnInit() {
 
-        // Маршруты
-        this.navigationService
-            .loadRoutes()
-            .subscribe(routes => {
-                this.router.resetConfig(routes);
-                debugger;
-                this.router.navigate(['users']);      
-            });
+        // Маршруты        
+        let config = this.routerConfig.Routes.concat(this.router.config);
+        this.router.resetConfig(config);        
         
-        debugger;
         // Данные
         this.loggedUser = this.authService.LoggedUser;     
     }
