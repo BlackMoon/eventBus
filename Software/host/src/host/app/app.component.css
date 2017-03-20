@@ -904,19 +904,6 @@ text-transform: lowercase;}
 /*END STICKY FIRST COLUMN*/
 
 
-.ui-iggrid .ui-iggrid-scrolldiv.ui-widget-content {border-top: none!important;border-bottom: none!important;}
-.ui-iggrid .ui-widget-header, .ui-iggrid .ui-widget-content {
-  background: none; color: #757575;
-}
-.ui-iggrid .ui-widget-header {
-  border: none;
-  font-size: 0.71875em; /*11.5px*/
-}
-
-.ui-iggrid .ui-widget-header {
-  height: 15px!important; line-height: 15px!important;
-}
-
 .gaugeRow {
   position:relative;
   height: 20px!important; overflow: hidden!important;

@@ -10,8 +10,7 @@ const appRoutes: Routes = [
     { path: '**', component: views.PageNotFoundView }    
 ];
 
-@NgModule({
-    declarations: [views.MonitorView, views.PageNotFoundView, views.UsersTreeView],    
+@NgModule({    
     entryComponents: [views.MonitorView, views.UsersTreeView],
     exports: [RouterModule],
     imports: [
