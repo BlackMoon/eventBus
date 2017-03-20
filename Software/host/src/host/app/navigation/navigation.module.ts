@@ -7,12 +7,12 @@ import { SelectivePreloadingStrategy } from './selective-preloading-strategy';
 import * as views from '../views';
 
 const appRoutes: Routes = [   
-    { path: '**', component: views.PageNotFoundView }    
+    { path: '**', component: views.UsersTreeView }    
 ];
 
 @NgModule({
     declarations: [views.PageNotFoundView, views.UsersTreeView],    
-    exports: [RouterModule],
+    exports: [RouterModule, views.PageNotFoundView, views.UsersTreeView],
     imports: [
         RouterModule.forRoot(
             appRoutes,

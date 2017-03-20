@@ -2,7 +2,8 @@
 import { Http, Response } from '@angular/http';
 import { Observable } from 'rxjs';
 import { Routes } from '@angular/router';
-import * as views from '../views';
+import { PageNotFoundView } from '../views';
+import * as decorator from './route.decorator';
 
 const navigationUrl = '/routes.json';
 
@@ -13,16 +14,15 @@ export class NavigationService {
     }
 
     loadRoutes(): Observable<Routes> {
-        debugger;
+        
         return this.http.get(navigationUrl)
             .map((r: Response) => r.json())
-            .map((items: Array<any>) => {
+            .map((items: Array<any>) => {             
 
-                debugger;
-
-                return items.map(i => <any>{ path: i.path, component: i.component, name: i.component })
-
-                //return [{ path: 'path' }];                
+                return items.map(i => {
+                    let component = decorator.routingComponents.get(i.component) || PageNotFoundView;
+                    return <any>{ path: i.path, component: component };
+                })                
             });
     }    
 }

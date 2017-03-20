@@ -1,6 +1,6 @@
 ﻿[
   {
     "path": "users",
-    "component": "views.UserTreeView"    
+    "component": "UsersTreeView"    
   }  
 ]
