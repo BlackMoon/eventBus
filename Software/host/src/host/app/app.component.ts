@@ -67,9 +67,10 @@ export class AppComponent implements AfterViewInit, OnInit {
         item.active = true;        
     }
 
-    login() {       
-        this.$navigation.switchClass('expanded', 'collapsed'); // collapse navigation        
-        this.loginComponent.open(); 
+    login() {        
+        
+        this.loginComponent.open();
+        this.$navigation.switchClass('expanded', 'collapsed'); // collapse navigation  
     }
 
     logout() {
