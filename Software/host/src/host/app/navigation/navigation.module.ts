@@ -1,16 +1,17 @@
 ﻿import { APP_INITIALIZER, ModuleWithProviders, NgModule } from '@angular/core';
 import { NavigationService } from './navigation.service';
 import { RouterModule, Router, Routes } from '@angular/router';
-import { PageNotFoundView } from '../views/index'
 import { Injector } from '@angular/core';
 import { SelectivePreloadingStrategy } from './selective-preloading-strategy';
 
-const appRoutes: Routes = [
-    { path: '**', component: PageNotFoundView }    
+import * as views from '../views';
+
+const appRoutes: Routes = [   
+    { path: '**', component: views.PageNotFoundView }    
 ];
 
 @NgModule({
-    declarations: [PageNotFoundView],    
+    declarations: [views.PageNotFoundView, views.UsersTreeView],    
     exports: [RouterModule],
     imports: [
         RouterModule.forRoot(

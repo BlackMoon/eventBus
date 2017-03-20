@@ -1,8 +1,8 @@
-﻿using System;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using Dapper;
 using Kit.Core.CQRS.Query;
 using Kit.Dal.DbManager;
+using Dapper.Contrib.Extensions;
 
 namespace domain.AdkUser.Query
 {
@@ -18,12 +18,14 @@ namespace domain.AdkUser.Query
 
         public AdkUser Execute(FindUserByLoginQuery query)
         {
-            return ExecuteAsync(query).Result;
+            _dbManager.Open(query.ConnectionString);
+            return _dbManager.DbConnection.QuerySingle<AdkUser>($"{Select} WHERE u.login = @login", new { login = query.Login });
         }
 
         public AdkUser Execute(FindUserByIdQuery query)
         {
-            return ExecuteAsync(query).Result;
+            _dbManager.Open();
+            return _dbManager.DbConnection.Get<AdkUser>(query.Id);
         }
 
         public Task<AdkUser> ExecuteAsync(FindUserByLoginQuery query)
@@ -35,7 +37,7 @@ namespace domain.AdkUser.Query
         public Task<AdkUser> ExecuteAsync(FindUserByIdQuery query)
         {
             _dbManager.Open();
-            return _dbManager.DbConnection.QuerySingleAsync<AdkUser>($"{Select} WHERE u.id = @id", new { id = query.Id });
+            return _dbManager.DbConnection.GetAsync<AdkUser>(query.Id);
         }
     }
 }

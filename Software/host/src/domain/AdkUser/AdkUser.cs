@@ -1,5 +1,8 @@
-﻿namespace domain.AdkUser
+﻿using System.ComponentModel.DataAnnotations.Schema;
+
+namespace domain.AdkUser
 {
+    [Table("adk_user.users")]
     public class AdkUser : KeyObject
     {
         public string Login { get; set; }

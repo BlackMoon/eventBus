@@ -2,7 +2,7 @@
   "dependencies": {
     "CacheManager.Core": "0.9.3",
     "CacheManager.Microsoft.Extensions.Caching.Memory": "0.9.3",
-    "CacheManager.Microsoft.Extensions.Configuration": "0.9.3",
+    "CacheManager.Microsoft.Extensions.Configuration": "0.9.3",    
     "domain": "1.0.0-*",
     "Kit.Core.Web": "1.0.0-*",
     "Kit.Dal": "1.0.0-*",
@@ -14,7 +14,7 @@
     "Microsoft.AspNetCore.Server.IISIntegration": "1.1.0",
     "Microsoft.AspNetCore.Server.Kestrel": "1.1.0",
     "Microsoft.AspNetCore.StaticFiles": "1.1.0",
-    "Microsoft.DotNet.InternalAbstractions": "1.0.0",    
+    "Microsoft.DotNet.InternalAbstractions": "1.0.0",
     "Microsoft.Extensions.Configuration.EnvironmentVariables": "1.1.0",
     "Microsoft.Extensions.Configuration.FileExtensions": "1.1.0",
     "Microsoft.Extensions.Configuration.Json": "1.1.0",

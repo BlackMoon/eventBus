@@ -42,7 +42,7 @@ module.exports = {
     plugins: [     
 
       new CopyWebpackPlugin([            
-            { from: '*.json' }
+            { from: '**/*.json', to: '[name].[ext]' }
         ]),
 
       new webpack.optimize.CommonsChunkPlugin({

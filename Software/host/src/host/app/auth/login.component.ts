@@ -1,6 +1,6 @@
 ﻿import { AfterViewInit, Component, EventEmitter, Output, ViewChild } from '@angular/core';
 import { AuthService } from './auth.service';
-import { AdkUserModel } from '../models/index';
+import { AdkUserModel } from '../models';
 import { DialogResult } from '../utils';
 
 declare var $: any;

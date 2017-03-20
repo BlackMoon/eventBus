@@ -2,6 +2,7 @@
 import { Http, Response } from '@angular/http';
 import { Observable } from 'rxjs';
 import { Routes } from '@angular/router';
+import * as views from '../views';
 
 const navigationUrl = '/routes.json';
 
@@ -15,9 +16,13 @@ export class NavigationService {
         debugger;
         return this.http.get(navigationUrl)
             .map((r: Response) => r.json())
-            .map((routes:Routes) => {
+            .map((items: Array<any>) => {
+
                 debugger;
-                return routes;
+
+                return items.map(i => <any>{ path: i.path, component: i.component, name: i.component })
+
+                //return [{ path: 'path' }];                
             });
     }    
 }

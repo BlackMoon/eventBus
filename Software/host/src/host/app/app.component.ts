@@ -29,7 +29,7 @@ export class AppComponent implements AfterViewInit, OnInit {
     ngAfterViewInit() {    
         
         !this.authService.isAuthenticated && this.login();
-        $("#pm-dashboard").mCustomScrollbar();        
+        $("#pm-dashboard").mCustomScrollbar();          
     }    
 
     ngOnInit() {
@@ -37,7 +37,11 @@ export class AppComponent implements AfterViewInit, OnInit {
         // Маршруты
         this.navigationService
             .loadRoutes()
-            .subscribe(routes => this.router.resetConfig(routes));
+            .subscribe(routes => {
+                this.router.resetConfig(routes);
+                debugger;
+                this.router.navigate(['users']);      
+            });
         
         debugger;
         // Данные
