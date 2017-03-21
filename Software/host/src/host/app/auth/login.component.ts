@@ -31,7 +31,7 @@ export class LoginComponent implements AfterViewInit {
     {
         let self = this;
         
-        this.dialogOptions = {
+        this.dialogOptions = {            
             headerText: "Войти в систему",
             modal: true,
             openAnimation: "slide",

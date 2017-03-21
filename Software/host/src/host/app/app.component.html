@@ -90,35 +90,7 @@
             <a href="#" class="action slide-team-directory">
                 <span class="icon-md icon-approve"></span>
             </a>
-        </div>    
-
-        <section id="details" class="table">
-            <h2>Project Details</h2>
-            <div id="planned-budget" class="cell alert visible-lg visible-md visible-sm">
-                <span class="label">@Resources.Main.Details_BaselineBudget</span>
-                <span data-bind="text: budget_format(budget)" class="result">0.00</span>
-            </div>
-            <div id="projected-budget" data-bind="css: {'warning': (status() === 'warning'), 'danger': status() === 'danger', 'success': (status() === 'ok' && budget_projected() < budget())}" class="cell alert">
-                <span class="label">@Resources.Main.Details_ProjectedBudget</span>
-                <span data-bind="text: budget_projected_format(budget_projected)" class="result">0.00</span>
-            </div>
-            <div id="planned-hours-worked" class="cell alert">
-                <span class="label">@Resources.Main.Details_HoursPlanned</span>
-                <span class="result"><span data-bind="text: hours_worked" class="completed">--</span>/<span data-bind="text: hours_planned" class="scheduled">--</span> <span data-bind="text: hrsCompletePercent" class="percent">(--%)</span></span>
-            </div>
-            <div id="planned-tasks" class="cell alert">
-                <span class="label">@Resources.Main.Details_TaskProgress</span>
-                <span class="result"><span data-bind="text: tasks_complete" class="completed">--</span>/<span data-bind="text: tasks_total" class="scheduled">--</span> <span data-bind="text: tasksCompletePercent" class="percent">(--%)</span></span>
-            </div>
-            <div id="planned-end-date" class="cell alert visible-lg visible-md visible-sm">
-                <span class="label">@Resources.Main.Details_PlannedEndDate</span>
-                <span data-bind="text: end_date_format" class="result">--/--/----</span>
-            </div>
-            <div id="projected-end-date" data-bind="css: {'warning': (status() === 'warning'), 'danger': status() === 'danger', 'success': (status() === 'ok' && projected_end_date() < end_date())}" class="cell alert">
-                <span class="label">@Resources.Main.Details_ProjectedEndDate</span>
-                <span data-bind="text: projected_end_date_format" class="result">--/--/----</span>
-            </div>
-        </section>
+        </div>            
         <router-outlet></router-outlet>            
         
     </div>

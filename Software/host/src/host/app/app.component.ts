@@ -42,8 +42,8 @@ export class AppComponent implements AfterViewInit, OnInit {
         {
             (this.menu.length > 0) && this.menuItemClick(this.menu[0]);
         }
-        //else
-            //this.login();        
+        else
+            this.login();        
     }    
 
     ngOnInit() {
