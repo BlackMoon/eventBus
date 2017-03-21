@@ -1,9 +1,10 @@
 ﻿import { NgModule } from "@angular/core";
-import { IgTreeGridComponent } from 'igniteui-angular2/igniteui.angular2';
+import { IgniteUIModule } from "../igniteui.module";
 import * as views from './index';
 
 @NgModule({
-    declarations: [IgTreeGridComponent, views.MonitorView, views.PageNotFoundView, views.UsersTreeView],
-    exports: [IgTreeGridComponent, views.MonitorView, views.PageNotFoundView, views.UsersTreeView]    
+    declarations: [ views.MonitorView, views.PageNotFoundView, views.UsersTreeView],
+    exports: [views.MonitorView, views.PageNotFoundView, views.UsersTreeView],
+    imports: [IgniteUIModule]    
 })
 export class ViewsModule { }

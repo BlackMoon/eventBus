@@ -8,7 +8,7 @@ declare var $: any;
 @Component({
     selector: 'app-login',
     styleUrls: ['login.component.css'],
-    templateUrl: 'login.component.html'
+    templateUrl: 'login.component.html',    
 })
 
 export class LoginComponent implements AfterViewInit {     

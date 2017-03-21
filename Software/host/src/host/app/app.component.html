@@ -24,8 +24,7 @@
                     <span class="cell">событий</span>
                 </div>             
             </div>
-        </div>       
-
+        </div>     
         <section class="projects current" *ngIf="this.authService.isAuthenticated">
             <ul>
                 <li id="menu-{{mi.id}}" [ngClass]="{ active: mi.active, table: true }" *ngFor="let mi of menu" (click)="menuItemClick(mi)">
@@ -45,8 +44,7 @@
                     </div>
                 </li>
             </ul>
-        </section>        
-    
+        </section>
         <!-- START LOGIN PANEL -->
         <section class="projects current" *ngIf="!this.authService.isAuthenticated">
             <ul>
@@ -84,12 +82,20 @@
             </ul>
         </section>
         <!-- END LOGIN PANEL -->
-</div>
+    </div>
     <!-- END PM NAVIGATION PANEL -->
+    <div id="project-panel" class="content">
+        <div id="headline">
+            <div class="expand-container visible-xxs hidden-sm hidden-xs hidden-md hidden-lg"></div>
+            <h1>projectplanner</h1>
+        </div>
+    </div>        
     <!-- START PROJECT PANEL -->
     <div id="project-panel" class="content">
         <router-outlet></router-outlet>
     </div>
     <!-- END PROJECT PANEL -->
+    
 </div>
+    
  

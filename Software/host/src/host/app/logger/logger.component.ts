@@ -2,7 +2,12 @@
 
 @Component({
     selector: 'app-logger',
-
+    templateUrl: 'logger.component.html'
 })
+export class LoggerComponent {
+    private dialogOptions: any;     
 
-export class LoggerComponent { }
+    constructor() {
+        this.dialogOptions = {};
+    }
+}

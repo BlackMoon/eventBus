@@ -2,8 +2,8 @@
 import { HttpModule, Http, RequestOptions } from '@angular/http';
 import { AuthHttp, AuthConfig } from 'angular2-jwt';
 import { FormsModule } from '@angular/forms';
+import { IgniteUIModule } from "../igniteui.module";
 import { AuthService, Storage, TokenKey } from './auth.service';
-import { IgDialogComponent, IgTextEditorComponent, IgValidatorComponent } from 'igniteui-angular2/igniteui.angular2';
 import { LoginComponent } from "./login.component";
 
 let authHttpServiceFactory = (authService: AuthService, http: Http, options: RequestOptions) => {
@@ -16,9 +16,9 @@ let authHttpServiceFactory = (authService: AuthService, http: Http, options: Req
 }
 
 @NgModule({
-    declarations: [IgDialogComponent, IgTextEditorComponent, IgValidatorComponent, LoginComponent],    
-    exports: [IgDialogComponent, IgTextEditorComponent, IgValidatorComponent, LoginComponent],
-    imports: [FormsModule, HttpModule]    
+    declarations: [LoginComponent],    
+    exports: [LoginComponent],
+    imports: [IgniteUIModule, FormsModule, HttpModule]    
 })
 export class AuthModule {
 
