@@ -33,9 +33,7 @@ export class AppComponent implements AfterViewInit, OnInit {
 
     ngAfterViewInit() {    
 
-        this.$navigation = $("#pm-navigation");
-
-        $("#pm-dashboard").mCustomScrollbar({
+        this.$navigation = $("#pm-navigation").mCustomScrollbar({
             theme: "dark",
             axis: 'y'
         }); 
