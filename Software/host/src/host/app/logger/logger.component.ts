@@ -8,6 +8,10 @@ export class LoggerComponent {
     private dialogOptions: any;     
 
     constructor() {
-        this.dialogOptions = {};
+        this.dialogOptions = {
+            pinned: true,            
+            showCloseButton: false,
+            showPinButton: true            
+        };
     }
 }

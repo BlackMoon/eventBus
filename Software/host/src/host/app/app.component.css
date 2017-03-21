@@ -1,13 +1,16 @@
 ﻿html,body {height: 100%;}
 body {
   background: #eaeaea;
-  font-size: 12px;
+  font-size: 16px;
   font-family: Helvetica, sans-serif;
   -ms-overflow-style: scrollbar;
   margin: 0;
 }
 h1,h2,h3,h4 {
   font-family: 'Oswald', sans-serif;
+}
+small {
+    font-size: 80%;
 }
 #pm-dashboard.lang-ja h1, #pm-dashboard.lang-ja h2, #pm-dashboard.lang-ja h3, #pm-dashboard.lang-ja h4 {
   font-family: "Meiryo","Hiragino Kaku Gothic Pro W3","Droid Sans Japanese", sans-serif;
@@ -29,12 +32,64 @@ body * {
 }
 
 /*****
+Oswald font
+*****/
+/* cyrillic */
+@font-face {
+  font-family: 'Oswald';
+  font-style: normal;
+  font-weight: 300;
+  src: local('Oswald Light'), local('Oswald-Light'), url(fonts/oswald-cyrillic-light.woff2) format('woff2');
+  unicode-range: U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116;
+}
+/* latin */
+@font-face {
+  font-family: 'Oswald';
+  font-style: normal;
+  font-weight: 300;
+  src: local('Oswald Light'), local('Oswald-Light'), url(fonts/oswald-latin-light.woff2) format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2212, U+2215;
+}
+/* cyrillic */
+@font-face {
+  font-family: 'Oswald';
+  font-style: normal;
+  font-weight: 400;
+  src: local('Oswald Regular'), local('Oswald-Regular'), url(fonts/oswald-cyrillic-regular.woff2) format('woff2');
+  unicode-range: U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116;
+}
+/* latin */
+@font-face {
+  font-family: 'Oswald';
+  font-style: normal;
+  font-weight: 400;
+  src: local('Oswald Regular'), local('Oswald-Regular'), url(fonts/oswald-latin-regular.woff2) format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2212, U+2215;
+}
+/* cyrillic */
+@font-face {
+  font-family: 'Oswald';
+  font-style: normal;
+  font-weight: 700;
+  src: local('Oswald Bold'), local('Oswald-Bold'), url(fonts/oswald-cyrillic-bold.woff2) format('woff2');
+  unicode-range: U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116;
+}
+/* latin */
+@font-face {
+  font-family: 'Oswald';
+  font-style: normal;
+  font-weight: 700;
+  src: local('Oswald Bold'), local('Oswald-Bold'), url(fonts/oswald-latin-bold.woff2) format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2212, U+2215;
+}
+
+/*****
 GLYPHICONS
 *****/
 @font-face {
   font-family: 'Glyphicons Halflings';
-  /*src: url('../Content/fonts/glyphicons-halflings-regular.eot');*/
-  /*src: url('../Content/fonts/glyphicons-halflings-regular.eot?#iefix') format('embedded-opentype'), url('../Content/fonts/glyphicons-halflings-regular.woff2') format('woff2'), url('../Content/fonts/glyphicons-halflings-regular.woff') format('woff'), url('../Content/fonts/glyphicons-halflings-regular.ttf') format('truetype'), url('../Content/fonts/glyphicons-halflings-regular.svg#glyphicons_halflingsregular') format('svg');*/
+  src: url('fonts/glyphicons-halflings-regular.eot');
+  src: url('fonts/glyphicons-halflings-regular.eot?#iefix') format('embedded-opentype'), url('fonts/glyphicons-halflings-regular.woff2') format('woff2'), url('fonts/glyphicons-halflings-regular.woff') format('woff'), url('fonts/glyphicons-halflings-regular.ttf') format('truetype'), url('fonts/glyphicons-halflings-regular.svg#glyphicons_halflingsregular') format('svg');
 }
 .glyphicon {
   position: relative;
@@ -184,7 +239,7 @@ a:hover .icon-md.icon-help, .icon-md.icon-help:hover {
   background-position: -109px -170px;
 }
 .icon-md.icon-team {
-  background-position: -143px -170px;
+  background-position: -143px -138px;
 }
 a:hover .icon-md.icon-team, .icon-md.icon-team:hover {
   background-position: -143px -138px;
@@ -505,7 +560,7 @@ body #pm-navigation.expanded .cell.hidden-expanded {opacity: 0; display: none;}
   display: block;
   width: 100px;
   overflow-x: hidden;
-  position: fixed; top: 0; left: 0; bottom: 0; z-index: 109;
+  position: fixed; top: 0; left: 0; bottom: 0; z-index: 10009;
   -webkit-box-shadow: 10px 7px 45px 10px rgba(0,0,0,0.18);
   -moz-box-shadow: 10px 7px 45px 10px rgba(0,0,0,0.18);
   box-shadow: 10px 7px 45px 10px rgba(0,0,0,0.18);

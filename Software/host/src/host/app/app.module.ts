@@ -9,6 +9,6 @@ import { AppComponent } from "./app.component";
 @NgModule({    
     bootstrap: [AppComponent],
     declarations: [AppComponent],     
-    imports: [AuthModule.forRoot(), BrowserModule, NavigationModule.forRoot(), ViewsModule]
+    imports: [AuthModule.forRoot(), BrowserModule, LoggerModule, NavigationModule.forRoot(), ViewsModule]
 })
 export class AppModule { }

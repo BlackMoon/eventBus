@@ -17,15 +17,15 @@
                     EventBus
                     <small class="discipline">1.0.0.0</small>
                 </span>
-            </div>
-            <div class="row-group">
+            </div>            
+            <div class="date today row-group">
                 <span class="cell">Диспетчер</span>   
                 <div class="row">
                     <span class="cell">событий</span>
                 </div>             
             </div>
         </div>     
-        <section class="projects current" *ngIf="this.authService.isAuthenticated">
+        <section class="projects current" *ngIf="menu.length > 0">
             <ul>
                 <li id="menu-{{mi.id}}" [ngClass]="{ active: mi.active, table: true }" *ngFor="let mi of menu" (click)="menuItemClick(mi)">
                     <h3 *ngIf="mi.title">{{mi.title}}</h3>
@@ -84,18 +84,18 @@
         <!-- END LOGIN PANEL -->
     </div>
     <!-- END PM NAVIGATION PANEL -->
-    <div id="project-panel" class="content">
-        <div id="headline">
-            <div class="expand-container visible-xxs hidden-sm hidden-xs hidden-md hidden-lg"></div>
-            <h1>projectplanner</h1>
-        </div>
-    </div>        
     <!-- START PROJECT PANEL -->
     <div id="project-panel" class="content">
-        <router-outlet></router-outlet>
+        <div id="headline">            
+            <h1>projectplanner</h1>            
+            <a href="#" class="action slide-team-directory">
+                <span class="icon-md icon-team" [ngStyle]="{'margin-top': '3px'}"></span>
+            </a>
+        </div>    
+        <router-outlet></router-outlet>            
+        
     </div>
-    <!-- END PROJECT PANEL -->
-    
+    <!-- END PROJECT PANEL -->    
 </div>
     
  
