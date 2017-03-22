@@ -3,7 +3,7 @@
 namespace domain.AdkUser
 {
     [Table("adk_user.users")]
-    public class AdkUser : KeyObject
+    public class AdkUser : KeyObject.KeyObject
     {
         public string Login { get; set; }
         

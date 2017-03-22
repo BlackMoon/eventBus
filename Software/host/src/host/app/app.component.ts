@@ -18,7 +18,7 @@ declare var $: any;
 })
 export class AppComponent implements AfterViewInit, OnInit {    
     @ViewChild(LoginComponent) loginComponent: LoginComponent;
-
+    
     private $navigation;
     private menu: Array<MenuItem> = [];
     private loggedUser: AdkUserModel;    
@@ -82,7 +82,7 @@ export class AppComponent implements AfterViewInit, OnInit {
             (this.menu.length > 0) && this.menuItemClick(this.menu[0]);
         }
     }
-
+       
     /**
      * Извлечь сохраненные данные
      */

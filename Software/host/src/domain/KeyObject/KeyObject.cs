@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace domain
+namespace domain.KeyObject
 {
     public abstract class KeyObject
     {              

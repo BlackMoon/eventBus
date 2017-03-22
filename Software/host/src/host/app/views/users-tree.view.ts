@@ -1,29 +1,39 @@
 ﻿import { Component } from '@angular/core';
 import { RoutingComponent } from '../navigation/route.decorator';
 
+const dataUrl = '/api/adkuser';
+
 @Component({          
     templateUrl: 'users-tree.view.html'
 })
 @RoutingComponent()
 export class UsersTreeView {
-
-    private id: string;
+        
     private tgridOptions: any;
 
     constructor() {
         
-        this.tgridOptions = {
+        this.tgridOptions = {                        
             autoCommit: true,
-            dataSource: [{ "id": 0 }, { "id": 1 }, { "id": 2 }],
+            //autoGenerateColumns: false,            
+            dataSource: [],
+            dataSourceUrl: dataUrl,            
+            enableRemoteLoadOnDemand: true,
+            features: [
+                { name: 'Resizing' },
+                { name: 'RowSelectors' },
+                { name: 'Selection' }
+            ],
             width: "100%",
             height: "400px",
-            autoGenerateColumns: false,
-            autoGenerateColumnLayouts: false,
+            
             primaryKey: "id",
-            childDataKey: "products",
+            childDataKey: "objects",
             renderExpansionIndicatorColumn: true,
             columns: [
-                { key: "id", headerText: "ID", width: "100px", dataType: "number" }                
+                { key: "id", headerText: "ID", width: "100px" },
+                { key: "name", headerText: "name" },
+                { key: "description", headerText: "description" }                
             ]
         };
     }

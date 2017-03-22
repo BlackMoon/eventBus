@@ -9,6 +9,8 @@ export class LoggerComponent {
 
     constructor() {
         this.dialogOptions = {
+            height: 80,
+            minHeight: 80,
             pinned: true,            
             showCloseButton: false,
             showPinButton: true            

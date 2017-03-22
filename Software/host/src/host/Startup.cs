@@ -63,7 +63,7 @@ namespace Host
                 })
                 .AddJsonOptions(option =>
                 {
-                    option.SerializerSettings.DefaultValueHandling = DefaultValueHandling.Ignore;
+                    option.SerializerSettings.DefaultValueHandling = DefaultValueHandling.Ignore;                    
                     option.SerializerSettings.NullValueHandling = NullValueHandling.Ignore;
                     option.SerializerSettings.ContractResolver = new CamelCasePropertyNamesContractResolver();
                 });

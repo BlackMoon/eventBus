@@ -1,43 +1,45 @@
 ﻿using System.Threading.Tasks;
+using domain.KeyObject.Query;
 using Dapper;
 using Kit.Core.CQRS.Query;
 using Kit.Dal.DbManager;
-using Dapper.Contrib.Extensions;
 
 namespace domain.AdkUser.Query
 {
-    public class AdkUserQueryHandler : IQueryHandler<FindUserByIdQuery, AdkUser>, IQueryHandler<FindUserByLoginQuery, AdkUser>
+    public class AdkUserQueryHandler : KeyObjectQueryHandler<FindUserByIdQuery, AdkUser>,         
+        IFindRootGroupHandler<FindUserRootGroupQuery>,
+        IQueryHandler<FindUserByLoginQuery, AdkUser>
     {
-        private const string Select = "SELECT * FROM adk_user.users u";
+        private const string SelectGroup = "SELECT * FROM adk_group_objects.groups g";
+        private const string SelectUser = "SELECT * FROM adk_user.users u";
 
-        private readonly IDbManager _dbManager;
-        public AdkUserQueryHandler(IDbManager dbManager)
+        public AdkUserQueryHandler(IDbManager dbManager) : base(dbManager)
         {
-            _dbManager = dbManager;
+            
         }
 
         public AdkUser Execute(FindUserByLoginQuery query)
         {
-            _dbManager.Open(query.ConnectionString);
-            return _dbManager.DbConnection.QuerySingle<AdkUser>($"{Select} WHERE u.login = @login", new { login = query.Login });
+            DbManager.Open(query.ConnectionString);
+            return DbManager.DbConnection.QuerySingle<AdkUser>($"{SelectUser} WHERE u.login = @login", new { login = query.Login });
         }
-
-        public AdkUser Execute(FindUserByIdQuery query)
-        {
-            _dbManager.Open();
-            return _dbManager.DbConnection.Get<AdkUser>(query.Id);
-        }
-
+        
         public Task<AdkUser> ExecuteAsync(FindUserByLoginQuery query)
         {
-            _dbManager.Open(query.ConnectionString);
-            return _dbManager.DbConnection.QuerySingleAsync<AdkUser>($"{Select} WHERE u.login = @login", new { login = query.Login });
+            DbManager.Open(query.ConnectionString);
+            return DbManager.DbConnection.QuerySingleAsync<AdkUser>($"{SelectUser} WHERE u.login = @login", new { login = query.Login });
         }
 
-        public Task<AdkUser> ExecuteAsync(FindUserByIdQuery query)
+        public AdkGroup.AdkGroup Execute(FindUserRootGroupQuery query)
         {
-            _dbManager.Open();
-            return _dbManager.DbConnection.GetAsync<AdkUser>(query.Id);
+            DbManager.Open();
+            return DbManager.DbConnection.QuerySingle<AdkGroup.AdkGroup>($"{SelectGroup} WHERE g.id = {query.RootGroupFunction}");
+        }
+
+        public Task<AdkGroup.AdkGroup> ExecuteAsync(FindUserRootGroupQuery query)
+        {
+            DbManager.Open();
+            return DbManager.DbConnection.QuerySingleAsync<AdkGroup.AdkGroup>($"{SelectGroup} WHERE g.id = {query.RootGroupFunction}");
         }
     }
 }

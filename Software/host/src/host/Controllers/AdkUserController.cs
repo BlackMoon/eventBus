@@ -1,4 +1,7 @@
 ﻿using System.Collections.Generic;
+using System.Threading.Tasks;
+using domain;
+using domain.AdkGroup;
 using domain.AdkUser;
 using domain.AdkUser.Query;
 using Kit.Core.CQRS.Query;
@@ -19,16 +22,17 @@ namespace Host.Controllers
 
         // GET: api/values
         [HttpGet]
-        public IEnumerable<string> Get()
+        public async Task<dynamic> Get()
         {
-            return new string[] { "value1", "value2" };
+            AdkGroup g = await _queryDispatcher.DispatchAsync<FindUserRootGroupQuery, AdkGroup>(new FindUserRootGroupQuery());
+            return new [] { g };
         }
 
         // GET api/values/5
         [HttpGet("{id}")]
-        public AdkUser Get(string id)
+        public Task<AdkUser> Get(string id)
         {
-            return _queryDispatcher.Dispatch<FindUserByIdQuery, AdkUser>(new FindUserByIdQuery() {Id = id });
+            return _queryDispatcher.DispatchAsync<FindUserByIdQuery, AdkUser>(new FindUserByIdQuery() {Id = id });
         }
 
         // POST api/values

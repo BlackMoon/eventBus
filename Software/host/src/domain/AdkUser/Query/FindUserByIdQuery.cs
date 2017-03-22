@@ -1,12 +1,8 @@
-﻿using Kit.Core.CQRS.Query;
+﻿using domain.KeyObject.Query;
 
 namespace domain.AdkUser.Query
 {
-    /// <summary>
-    /// Запрос. Найти пользователя по id
-    /// </summary>
-    public class FindUserByIdQuery : IQuery
+    public class FindUserByIdQuery : FindObjectByIdQuery
     {
-        public string Id { get; set; }
     }
 }
