@@ -20,6 +20,7 @@ using System.Security.Claims;
 using CacheManager.Core;
 using Host.Security;
 using Host.Security.TokenProvider;
+using Microsoft.Extensions.Primitives;
 
 namespace Host
 {
@@ -123,6 +124,13 @@ namespace Host
         {
             loggerFactory.AddConsole(Configuration.GetSection("Logging"));
             loggerFactory.AddDebug();
+
+            app.Use(async (context, next) =>
+            {
+                await next();
+                if (context.Response.StatusCode == 404)
+                    context.Response.Redirect("/?returnUrl=" + context.Request.Path);
+            });
 
             // exception handlers
             app.UseExceptionHandler(builder =>

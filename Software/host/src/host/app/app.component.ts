@@ -1,7 +1,6 @@
-﻿import { AfterViewInit, Component, OnInit, Renderer, ViewChild } from '@angular/core';
-import { Http, RequestOptions } from '@angular/http';
-import { Observable } from 'rxjs';
-import { Router } from '@angular/router';
+﻿import { AfterViewInit, Component, OnInit, ViewChild } from '@angular/core';
+import { Http, RequestOptions, URLSearchParams } from '@angular/http';
+import { Params, Router } from '@angular/router';
 import { AuthService } from './auth/auth.service';
 import { LoginComponent } from './auth/login.component';
 import { RouterConfig } from './navigation/router.config';
@@ -10,6 +9,7 @@ import { appMenu } from './app.menu';
 import { DialogResult } from './utils';
 
 declare var $: any;
+const startViewKey = 'returnUrl';
 
 @Component({
     selector: 'eventBus-app',
@@ -21,14 +21,18 @@ export class AppComponent implements AfterViewInit, OnInit {
     
     private $navigation;
     private menu: Array<MenuItem> = [];
-    private loggedUser: AdkUserModel;    
+    private loggedUser: AdkUserModel;
+    /**
+     * Стартовая страница
+     */
+    private startView: string;    
 
     constructor(
-        private authService: AuthService,        
-        private render: Renderer,
+        private authService: AuthService,       
         private router: Router,
         private routerConfig: RouterConfig)
-    {        
+    {
+        this.startView = new URLSearchParams(window.location.search).get(startViewKey);         
     }
 
     ngAfterViewInit() {    
@@ -38,9 +42,19 @@ export class AppComponent implements AfterViewInit, OnInit {
             axis: 'y'
         }); 
 
-        if (this.authService.isAuthenticated)
-        {
-            (this.menu.length > 0) && this.menuItemClick(this.menu[0]);
+        if (this.authService.isAuthenticated) {           
+
+            if (this.startView != undefined) {
+                if (this.menu.length > 0) {
+                    let mi: MenuItem = this.menu.find(item => item.route.toLowerCase() === this.startView);
+                    this.menuItemClick(mi);
+                }
+                else
+                    this.router.navigate([this.startView]);
+            }
+            else {                
+                (this.menu.length > 0) && this.menuItemClick(this.menu[0]);                
+            }            
         }
         else
             this.login();        
@@ -50,7 +64,7 @@ export class AppComponent implements AfterViewInit, OnInit {
 
         // Маршруты        
         let config = this.routerConfig.Routes.concat(this.router.config);
-        this.router.resetConfig(config);               
+        this.router.resetConfig(config);                       
 
         // Данные
         (this.authService.isAuthenticated) && this.retrieveUser();       
@@ -59,10 +73,12 @@ export class AppComponent implements AfterViewInit, OnInit {
     menuItemClick(item: MenuItem) {
        
         this.$navigation.switchClass('expanded', 'collapsed'); // collapse navigation        
-        
-        this.router.navigate([item.route]);
-        this.menu.forEach(mi => mi.active = false);
-        item.active = true;        
+
+        if (item != null) {
+            this.router.navigate([item.route]);
+            this.menu.forEach(mi => mi.active = false);
+            item.active = true;
+        }
     }
 
     login() {        
@@ -77,7 +93,7 @@ export class AppComponent implements AfterViewInit, OnInit {
 
     loginComponent_Closed(result: DialogResult) {
 
-        if (result == DialogResult.OK) {
+        if (result === DialogResult.OK) {
             this.retrieveUser();
             (this.menu.length > 0) && this.menuItemClick(this.menu[0]);
         }

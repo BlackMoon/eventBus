@@ -41,7 +41,8 @@ module.exports = {
 
     plugins: [     
 
-      new CopyWebpackPlugin([            
+      new CopyWebpackPlugin([
+            { from: 'favicon.ico' },
             { from: '**/*.json', to: '[name].[ext]' }
         ]),
 

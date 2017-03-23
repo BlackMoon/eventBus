@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using domain;
 using domain.AdkGroup;
@@ -22,10 +23,15 @@ namespace Host.Controllers
 
         // GET: api/values
         [HttpGet]
-        public async Task<dynamic> Get()
+        public async Task<IEnumerable<AdkGroupUsers>> Get()
         {
-            AdkGroup g = await _queryDispatcher.DispatchAsync<FindUserRootGroupQuery, AdkGroup>(new FindUserRootGroupQuery());
-            return new [] { g };
+            //AdkGroupUsers g = await _queryDispatcher.DispatchAsync<FindUserRootGroupQuery, AdkGroupUsers>(new FindUserRootGroupQuery());
+            AdkGroupUsers g = new AdkGroupUsers();
+            g.Id = Guid.NewGuid().ToString();
+
+            AdkGroupUsers g1 = new AdkGroupUsers();
+            g1.Id = Guid.NewGuid().ToString();
+            return new [] { g, g1 };
         }
 
         // GET api/values/5

@@ -1,12 +1,12 @@
 ﻿import { NgModule } from '@angular/core';
-import { IgniteUIModule } from "../igniteui.module";
+import { AppUIModule } from "../app-ui.module";
 import { LoggerComponent } from './logger.component';
 import { LoggerService } from './logger.service';
 
 @NgModule({
     declarations: [ LoggerComponent],    
     exports: [LoggerComponent],
-    imports: [IgniteUIModule],
+    imports: [AppUIModule],
     providers: [LoggerService]
 })
 export class LoggerModule { }
