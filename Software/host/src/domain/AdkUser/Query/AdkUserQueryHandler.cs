@@ -1,9 +1,10 @@
-﻿using System.Threading.Tasks;
-using domain.AdkGroup;
+﻿using System.Linq;
+using System.Threading.Tasks;
 using domain.Common.Query;
 using Dapper;
 using Kit.Core.CQRS.Query;
 using Kit.Dal.DbManager;
+using System;
 
 namespace domain.AdkUser.Query
 {
@@ -11,7 +12,7 @@ namespace domain.AdkUser.Query
         IFindRootGroupHandler<FindUserRootGroupQuery, AdkGroupUsers>,
         IQueryHandler<FindUserByLoginQuery, AdkUser>
     {
-        private const string SelectGroup = "SELECT * FROM adk_group_objects.groups g";
+        private const string SelectGroup = "SELECT g.id, g.name, g.description, (select count(1) FROM adk_group_objects.group_objects o where o.group_id = g.id) AS cnt FROM adk_group_objects.groups g";
         private const string SelectUser = "SELECT * FROM adk_user.users u";
 
         public AdkUserQueryHandler(IDbManager dbManager) : base(dbManager)
@@ -34,13 +35,31 @@ namespace domain.AdkUser.Query
         public AdkGroupUsers Execute(FindUserRootGroupQuery query)
         {
             DbManager.Open();
-            return DbManager.DbConnection.QuerySingle<AdkGroupUsers>($"{SelectGroup} WHERE g.id = {query.RootGroupFunction}");
+
+            var groups = DbManager.DbConnection.Query<AdkGroupUsers, long, AdkGroupUsers>($"{SelectGroup} where g.id = {query.RootGroupFunction}",
+                (g, i) =>
+                {
+                    if (i > 0)
+                        g.Objects = Enumerable.Empty<AdkUser>();
+                    return g;
+                }, splitOn: "*");
+
+            return groups.FirstOrDefault();
         }
 
-        public Task<AdkGroupUsers> ExecuteAsync(FindUserRootGroupQuery query)
+        public async Task<AdkGroupUsers> ExecuteAsync(FindUserRootGroupQuery query)
         {
             DbManager.Open();
-            return DbManager.DbConnection.QuerySingleAsync<AdkGroupUsers>($"{SelectGroup} WHERE g.id = {query.RootGroupFunction}");
+
+            var groups = await DbManager.DbConnection.QueryAsync<AdkGroupUsers, long, AdkGroupUsers>($"{SelectGroup} where g.id = {query.RootGroupFunction}", 
+                (g, i) =>
+                {
+                    if (i > 0)
+                        g.Objects = Enumerable.Empty<AdkUser>();
+                    return g;
+                }, splitOn: "*");
+
+            return groups.FirstOrDefault();
         }
     }
 }

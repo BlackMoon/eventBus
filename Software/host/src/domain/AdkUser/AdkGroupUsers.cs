@@ -1,5 +1,4 @@
-﻿using System.Linq;
-
+﻿
 namespace domain.AdkUser
 {
     /// <summary>
@@ -7,9 +6,6 @@ namespace domain.AdkUser
     /// </summary>
     public class AdkGroupUsers : AdkGroup.AdkGroup
     {
-        public AdkGroupUsers()
-        {
-            Objects = Enumerable.Empty<AdkUser>();
-        }
+        
     }
 }
