@@ -3,7 +3,7 @@ import { RoutingComponent } from '../navigation/route.decorator';
 
 declare var $: any;
 
-const dataUrl = '/nodes.json';//'/api/adkuser';
+const dataUrl = '/api/adkuser';
 
 @Component({          
     templateUrl: 'users-tree.view.html'
@@ -15,16 +15,13 @@ export class UsersTreeView {
     private tgridOptions: any;
 
     constructor() {
-
-        let ds = new $.ig.TreeHierarchicalDataSource({
-            dataSource: dataUrl
-        });
         
-
         this.tgridOptions = {                        
             autoCommit: true,            
             autoGenerateColumns: false,
-            dataSource: ds,            
+            dataSource: [],
+            dataSourceUrl: dataUrl,                        
+            enableRemoteLoadOnDemand: true,
             features: [
                 { name: 'Resizing' },
                 //{ name: 'RowSelectors', rowSelectorNumberingMode: 'sequential' },
@@ -42,7 +39,5 @@ export class UsersTreeView {
                 { key: "description", headerText: "description" }                
             ]
         };
-
-        ds.dataBind();
     }
 }

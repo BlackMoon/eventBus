@@ -20,6 +20,8 @@ export class AppComponent implements AfterViewInit, OnInit {
     @ViewChild(LoginComponent) loginComponent: LoginComponent;
     
     private $navigation;
+    private $settings;
+
     private menu: Array<MenuItem> = [];
     private loggedUser: AdkUserModel;
     /**
@@ -41,6 +43,8 @@ export class AppComponent implements AfterViewInit, OnInit {
             theme: "dark",
             axis: 'y'
         }); 
+
+        this.$settings = $("#pm-team-navigation");
 
         if (this.authService.isAuthenticated) {           
 
@@ -148,5 +152,58 @@ export class AppComponent implements AfterViewInit, OnInit {
         
         e.preventDefault();
         this.$navigation.toggleClass('expanded');
+    }
+
+    toggleTeamBar(e) {
+       
+        e.preventDefault();                
+        this.$settings[$(e.currentTarget).hasClass('slide-team-directory') ? 'addClass' : 'removeCalss']('directory-view');
+
+        // collapsed --> expand
+        if (this.$settings.hasClass('collapsed'))
+        {
+            // Handles Open animation for Team Resource Selection Slide
+            if (this.$settings.hasClass('directory-view'))
+            {
+
+                $('#project-panel #headline .action.slide-team-directory')
+                    .animate({ "right": "351px", "easing": "easeInQuad" }, 50)
+                    .css({ 'position': 'fixed' });
+
+                this.$settings
+                    .animate({ "right": "0px", "easing": "easeInQuad" }, 50)
+                    .switchClass('collapsed', 'expanded');                                
+            }
+            else
+            {
+                this.$settings
+                    .animate({ "right": '0px', easing: "easeInQuad" }, 50)
+                    .switchClass('collapsed', 'expanded');           
+            
+            }
+        }
+        // expanded --> collapse
+        else
+        {
+            if (this.$settings.css('right') === '0px')
+            {
+                let tdWidth = this.$settings.outerWidth();
+                if (this.$settings.hasClass('directory-view'))
+                {
+                    $('#project-panel #headline .action.slide-team-directory')
+                        .animate({ "right": "0px", "easing": "easeInQuad" }, 0)
+                        .css({ 'position': 'absolute' });
+
+                    this.$settings.switchClass('expanded', 'collapsed')
+                        .animate({ "right": '-' + (tdWidth + 350) + 'px', "easing": "easeInQuad" }, 0);
+                }
+                else
+                {
+                    this.$settings
+                        .switchClass('expanded', 'collapsed')
+                        .animate({"right": '-' + (tdWidth + 350) + 'px', easing: "easeOutQuad" }, 0);
+                }
+            }
+        }        
     }
 }

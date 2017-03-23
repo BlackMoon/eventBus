@@ -1,4 +1,5 @@
 ﻿using System.Threading.Tasks;
+using domain.AdkGroup;
 using domain.KeyObject.Query;
 using Dapper;
 using Kit.Core.CQRS.Query;
@@ -7,7 +8,7 @@ using Kit.Dal.DbManager;
 namespace domain.AdkUser.Query
 {
     public class AdkUserQueryHandler : KeyObjectQueryHandler<FindUserByIdQuery, AdkUser>,         
-        IFindRootGroupHandler<FindUserRootGroupQuery>,
+        IFindRootGroupHandler<FindUserRootGroupQuery, AdkGroupUsers>,
         IQueryHandler<FindUserByLoginQuery, AdkUser>
     {
         private const string SelectGroup = "SELECT * FROM adk_group_objects.groups g";
@@ -30,16 +31,16 @@ namespace domain.AdkUser.Query
             return DbManager.DbConnection.QuerySingleAsync<AdkUser>($"{SelectUser} WHERE u.login = @login", new { login = query.Login });
         }
 
-        public AdkGroup.AdkGroup Execute(FindUserRootGroupQuery query)
+        public AdkGroupUsers Execute(FindUserRootGroupQuery query)
         {
             DbManager.Open();
-            return DbManager.DbConnection.QuerySingle<AdkGroup.AdkGroup>($"{SelectGroup} WHERE g.id = {query.RootGroupFunction}");
+            return DbManager.DbConnection.QuerySingle<AdkGroupUsers>($"{SelectGroup} WHERE g.id = {query.RootGroupFunction}");
         }
 
-        public Task<AdkGroup.AdkGroup> ExecuteAsync(FindUserRootGroupQuery query)
+        public Task<AdkGroupUsers> ExecuteAsync(FindUserRootGroupQuery query)
         {
             DbManager.Open();
-            return DbManager.DbConnection.QuerySingleAsync<AdkGroup.AdkGroup>($"{SelectGroup} WHERE g.id = {query.RootGroupFunction}");
+            return DbManager.DbConnection.QuerySingleAsync<AdkGroupUsers>($"{SelectGroup} WHERE g.id = {query.RootGroupFunction}");
         }
     }
 }

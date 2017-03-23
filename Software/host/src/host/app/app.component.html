@@ -87,12 +87,17 @@
     <div id="project-panel" class="content">
         <div id="headline">            
             <h1>projectplanner</h1>            
-            <a href="#" class="action slide-team-directory">
-                <span class="icon-md icon-approve" title="Настройки"></span>
+            <a href="#" class="action slide-team-directory" (click)="toggleTeamBar($event)">
+                <span class="icon-md icon-menu" title="Настройки"></span>
             </a>
         </div> 
         
         <router-outlet></router-outlet>            
     </div>
-    <!-- END PROJECT PANEL -->       
+    <!-- END PROJECT PANEL -->  
+    <!-- START TEAM PANEL -->
+    <div id="pm-team-navigation" class="navigation-slide collapsed">
+        Настройки
+    </div>
+    <!-- END TEAM PANEL -->
 </div>

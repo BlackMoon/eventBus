@@ -10,4 +10,9 @@ namespace domain.AdkGroup
 
         public string Description { get; set; }
     }
+
+    public class AdkGroup<T> : AdkGroup
+    {
+        public IEnumerable<T> Objects { get; set; }
+    }
 }
