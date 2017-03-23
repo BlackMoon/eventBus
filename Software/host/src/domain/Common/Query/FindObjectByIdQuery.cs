@@ -1,6 +1,6 @@
 ﻿using Kit.Core.CQRS.Query;
 
-namespace domain.KeyObject.Query
+namespace domain.Common.Query
 {
     /// <summary>
     /// Запрос. Найти объект по ключу

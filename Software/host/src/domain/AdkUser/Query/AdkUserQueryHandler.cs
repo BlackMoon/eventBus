@@ -1,6 +1,6 @@
 ﻿using System.Threading.Tasks;
 using domain.AdkGroup;
-using domain.KeyObject.Query;
+using domain.Common.Query;
 using Dapper;
 using Kit.Core.CQRS.Query;
 using Kit.Dal.DbManager;

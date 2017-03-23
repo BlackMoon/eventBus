@@ -1,4 +1,4 @@
-﻿using domain.KeyObject.Query;
+﻿using domain.Common.Query;
 
 namespace domain.AdkUser.Query
 {

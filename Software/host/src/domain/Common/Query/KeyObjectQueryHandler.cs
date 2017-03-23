@@ -3,7 +3,7 @@ using Dapper.Contrib.Extensions;
 using Kit.Core.CQRS.Query;
 using Kit.Dal.DbManager;
 
-namespace domain.KeyObject.Query
+namespace domain.Common.Query
 {
     public abstract class KeyObjectQueryHandler<TIdQuery, TResult> : IQueryHandler<TIdQuery, TResult>
         where TIdQuery : FindObjectByIdQuery

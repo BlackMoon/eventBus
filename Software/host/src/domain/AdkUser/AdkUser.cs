@@ -1,9 +1,10 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
+using domain.Common;
 
 namespace domain.AdkUser
 {
     [Table("adk_user.users")]
-    public class AdkUser : KeyObject.KeyObject
+    public class AdkUser : KeyObject, IComponent
     {
         public string Login { get; set; }
         

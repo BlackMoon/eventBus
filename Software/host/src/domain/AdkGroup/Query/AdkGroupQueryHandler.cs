@@ -1,4 +1,4 @@
-﻿using domain.KeyObject.Query;
+﻿using domain.Common.Query;
 using Kit.Dal.DbManager;
 
 namespace domain.AdkGroup.Query

@@ -24,7 +24,7 @@
                 </div>             
             </div>
         </div>     
-        <section class="projects current" *ngIf="menu.length > 0">
+        <section class="projects current" *ngIf="this.authService.isAuthenticated">
             <ul>
                 <li id="menu-{{mi.id}}" [ngClass]="{ active: mi.active, table: true }" *ngFor="let mi of menu" (click)="menuItemClick(mi)">
                     <h3 *ngIf="mi.title">{{mi.title}}</h3>
@@ -76,6 +76,18 @@
                     </div>
                     <div class="details-btn cell valign-mid hidden-closed" (click)="logout()" [ngStyle]="{'cursor': 'pointer'}">
                         <i class="icon-md icon-remove" title="Выйти"></i>
+                    </div>
+                </li>
+                <li class="table">
+                    <div class="essentials cell valign-mid">
+                        <div class="date">
+                            <i class="icon-md icon-help"></i>
+                            <time>0/1</time>
+                        </div>                        
+                    </div>
+                    <div class="details cell valign-mid hidden-closed">
+                        <span class="client full">Ошибок</span>
+                        <span class="projectID">Предупреждений</span>
                     </div>
                 </li>
             </ul>
