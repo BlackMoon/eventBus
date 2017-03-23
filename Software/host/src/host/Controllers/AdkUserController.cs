@@ -25,13 +25,8 @@ namespace Host.Controllers
         [HttpGet]
         public async Task<IEnumerable<AdkGroupUsers>> Get()
         {
-            //AdkGroupUsers g = await _queryDispatcher.DispatchAsync<FindUserRootGroupQuery, AdkGroupUsers>(new FindUserRootGroupQuery());
-            AdkGroupUsers g = new AdkGroupUsers();
-            g.Id = Guid.NewGuid().ToString();
-
-            AdkGroupUsers g1 = new AdkGroupUsers();
-            g1.Id = Guid.NewGuid().ToString();
-            return new [] { g, g1 };
+            AdkGroupUsers g = await _queryDispatcher.DispatchAsync<FindUserRootGroupQuery, AdkGroupUsers>(new FindUserRootGroupQuery());
+            return new [] { g };
         }
 
         // GET api/values/5

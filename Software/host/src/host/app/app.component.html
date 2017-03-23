@@ -23,27 +23,7 @@
                     <span class="cell">событий</span>
                 </div>             
             </div>
-        </div>     
-        <section class="projects current" *ngIf="this.authService.isAuthenticated">
-            <ul>
-                <li id="menu-{{mi.id}}" [ngClass]="{ active: mi.active, table: true }" *ngFor="let mi of menu" (click)="menuItemClick(mi)">
-                    <h3 *ngIf="mi.title">{{mi.title}}</h3>
-                    <div class="essentials cell valign-mid">
-                        <div class="doughnut">
-                            <i class="{{mi.iconCls}}" *ngIf="mi.iconCls"></i>
-                        </div>
-                        <span class="client abbr">{{mi.abbr}}</span>
-                    </div>
-                    <div class="details cell valign-mid hidden-closed">
-                        <span class="client full">{{mi.name}}</span>
-                        <span class="projectID"></span>
-                    </div>
-                    <div class="details-btn cell valign-mid hidden-closed" *ngIf="mi.details">
-                        <i class="{{mi.details.iconCls}}" title="{{mi.details.title}}"></i>    
-                    </div>
-                </li>
-            </ul>
-        </section>
+        </div>
         <!-- START LOGIN PANEL -->
         <section class="projects current" *ngIf="!this.authService.isAuthenticated">
             <ul>
@@ -83,7 +63,7 @@
                         <div class="date">
                             <i class="icon-md icon-help"></i>
                             <time>0/1</time>
-                        </div>                        
+                        </div>
                     </div>
                     <div class="details cell valign-mid hidden-closed">
                         <span class="client full">Ошибок</span>
@@ -93,6 +73,26 @@
             </ul>
         </section>
         <!-- END LOGIN PANEL -->
+        <section class="projects current" *ngIf="this.authService.isAuthenticated">
+            <ul>
+                <li id="menu-{{mi.id}}" [ngClass]="{ active: mi.active, table: true }" *ngFor="let mi of menu" (click)="menuItemClick(mi)">
+                    <h3 *ngIf="mi.title">{{mi.title}}</h3>
+                    <div class="essentials cell valign-mid">
+                        <div class="doughnut">
+                            <i class="{{mi.iconCls}}" *ngIf="mi.iconCls"></i>
+                        </div>
+                        <span class="client abbr">{{mi.abbr}}</span>
+                    </div>
+                    <div class="details cell valign-mid hidden-closed">
+                        <span class="client full">{{mi.name}}</span>
+                        <span class="projectID"></span>
+                    </div>
+                    <div class="details-btn cell valign-mid hidden-closed" *ngIf="mi.details">
+                        <i class="{{mi.details.iconCls}}" title="{{mi.details.title}}"></i>    
+                    </div>
+                </li>
+            </ul>
+        </section>
     </div>
     <!-- END PM NAVIGATION PANEL -->
     <!-- START PROJECT PANEL -->

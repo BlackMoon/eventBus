@@ -106,7 +106,6 @@ namespace Host
 
             // dbManager для текущего пользователя (веб)
             container.Register(
-                reuse: Reuse.InWebRequest,
                 made: Made.Of(() => DbManagerFactory.CreateDbManager(Arg.Of<string>("ProviderName"), Arg.Of<string>("ConnectionString")), requestIgnored => string.Empty));
 
             // 
