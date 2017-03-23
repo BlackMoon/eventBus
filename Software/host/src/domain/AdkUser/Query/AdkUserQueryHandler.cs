@@ -23,13 +23,13 @@ namespace domain.AdkUser.Query
         public AdkUser Execute(FindUserByLoginQuery query)
         {
             DbManager.Open(query.ConnectionString);
-            return DbManager.DbConnection.QuerySingle<AdkUser>($"{SelectUser} WHERE u.login = @login", new { login = query.Login });
+            return DbManager.DbConnection.QuerySingleOrDefault<AdkUser>($"{SelectUser} WHERE u.login = @login", new { login = query.Login });
         }
         
         public Task<AdkUser> ExecuteAsync(FindUserByLoginQuery query)
         {
             DbManager.Open(query.ConnectionString);
-            return DbManager.DbConnection.QuerySingleAsync<AdkUser>($"{SelectUser} WHERE u.login = @login", new { login = query.Login });
+            return DbManager.DbConnection.QuerySingleOrDefaultAsync<AdkUser>($"{SelectUser} WHERE u.login = @login", new { login = query.Login });
         }
 
         public AdkGroupUsers Execute(FindUserRootGroupQuery query)

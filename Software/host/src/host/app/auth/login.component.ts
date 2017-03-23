@@ -1,11 +1,13 @@
 ﻿import { AfterViewInit, Component, EventEmitter, Output, ViewChild } from '@angular/core';
+import { Response } from '@angular/http';
 import { AuthService } from './auth.service';
 import { AdkUserModel } from '../models';
 import { DialogResult } from '../utils';
+import { NgStyle } from "@angular/common";
 
 declare var $: any;
 
-@Component({
+@Component({    
     selector: 'app-login',
     styleUrls: ['login.component.css'],
     templateUrl: 'login.component.html',    
@@ -14,7 +16,8 @@ declare var $: any;
 export class LoginComponent implements AfterViewInit {     
 
     private model: AdkUserModel = new AdkUserModel();   
-         
+
+    private errorMessage: string;
     private dialogOptions: any;     
     private validatorOptions: any;   
     private validatorRef: any;   
@@ -33,6 +36,7 @@ export class LoginComponent implements AfterViewInit {
         
         this.dialogOptions = {            
             headerText: "Войти в систему",
+            footerText: "<img src=\"images/ui-anim_basic_16x16.gif\">",
             modal: true,
             openAnimation: "slide",
             resizable: false,
@@ -64,26 +68,29 @@ export class LoginComponent implements AfterViewInit {
     }       
 
     submit() {       
-        
+        this.errorMessage = null;   
+
         if (this.validatorRef.isValid()) {
             
             this.authService.login(this.model.username, this.model.password)
                 .subscribe(
-                next => this.close(DialogResult.OK),
-                error => {
-                    debugger;
-                    console.log(error);
-                    //this.logService.error(error);                
-                });
+                    next => this.close(DialogResult.OK),
+                    (error:Response) => {                       
+
+                        let text = error.text();
+                        this.errorMessage = (text) ? text :
+                                error.status ? `${error.status} - ${error.statusText}` : 'Server error';   
+                    });
         }
     }
 
-    open() {        
+    open() {          
         this.dialogOptions.state = 'opened';
         this.opened.emit(null);
     }
 
-    close(result: DialogResult = DialogResult.Cancel) {       
+    close(result: DialogResult = DialogResult.Cancel) {  
+        this.errorMessage = null;        
         this.dialogOptions.state = 'closed';
         this.closed.emit(result);
     }    

@@ -1,6 +1,15 @@
-﻿using domain.Login.Command;
+﻿using System;
+using System.Security.Claims;
+using System.Security.Cryptography;
+using System.Security.Principal;
+using System.Text;
+using System.Threading.Tasks;
+using domain.AdkUser;
+using domain.AdkUser.Query;
+using domain.Login.Command;
 using Host.Security;
 using Host.Security.TokenProvider;
+using Kit.Core.CQRS.Command;
 using Kit.Core.CQRS.Query;
 using Kit.Core.Identity;
 using Kit.Dal.Configuration;
@@ -9,18 +18,9 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http.Authentication;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
-using System;
-using System.Security.Claims;
-using System.Security.Cryptography;
-using System.Security.Principal;
-using System.Text;
-using System.Threading.Tasks;
-using domain.AdkUser;
-using domain.AdkUser.Query;
-using Kit.Core.CQRS.Command;
-using Microsoft.Extensions.Logging;
 
 namespace Host
 {
@@ -59,7 +59,7 @@ namespace Host
                 try
                 {
                     string connectionString = commandDispatcher.Dispatch<LoginCommand, string>(
-                        new LoginCommand()
+                        new LoginCommand
                         {
                             Host = connOptions.Server,
                             Port = connOptions.Port,
@@ -68,14 +68,13 @@ namespace Host
                             Password = p
                         });
                     
-                    AdkUser adkUser = await queryDispatcher.DispatchAsync<FindUserByLoginQuery, AdkUser>(new FindUserByLoginQuery() { ConnectionString = connectionString, Login = u});
-                    
-                    identity = new ClaimsIdentity(new GenericIdentity(u, "Token"), 
-                        new []
-                        {
-                            new Claim("description", adkUser.Description),
-                            new Claim("isadmin", adkUser.IsAdmin.ToString(), ClaimValueTypes.Boolean)    
-                        });
+                    AdkUser adkUser = await queryDispatcher.DispatchAsync<FindUserByLoginQuery, AdkUser>(new FindUserByLoginQuery { ConnectionString = connectionString, Login = u});
+
+                    Claim[] claims = (adkUser != null) ? 
+                        new[] { new Claim("description", adkUser.Description), new Claim("isadmin", adkUser.IsAdmin.ToString(), ClaimValueTypes.Boolean) } : 
+                        null;
+
+                    identity = new ClaimsIdentity(new GenericIdentity(u, "Token"), claims);
                 }
                 catch (Exception ex)
                 {
@@ -91,7 +90,8 @@ namespace Host
             {
                 AutomaticAuthenticate = true,
                 AutomaticChallenge = true,
-                Events = new JwtBearerEvents() {
+                Events = new JwtBearerEvents
+                {
                     OnChallenge = ctx => Task.FromResult(0),            // prevent 404 status code instead of 401              
                     OnTokenValidated = ctx =>
                     {

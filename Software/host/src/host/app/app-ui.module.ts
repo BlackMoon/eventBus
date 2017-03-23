@@ -1,4 +1,5 @@
-﻿import { NgModule } from "@angular/core";
+﻿import { CommonModule } from "@angular/common";
+import { NgModule } from "@angular/core";
 import { IgDialogComponent, IgTextEditorComponent, IgTreeGridComponent, IgValidatorComponent } from 'igniteui-angular2/igniteui.angular2';
 
 /**
@@ -6,6 +7,7 @@ import { IgDialogComponent, IgTextEditorComponent, IgTreeGridComponent, IgValida
  */
 @NgModule({
     declarations: [IgDialogComponent, IgTextEditorComponent, IgTreeGridComponent, IgValidatorComponent],
-    exports: [IgDialogComponent, IgTextEditorComponent, IgTreeGridComponent, IgValidatorComponent]
+    exports: [IgDialogComponent, IgTextEditorComponent, IgTreeGridComponent, IgValidatorComponent, CommonModule], 
+    imports: [ CommonModule]   
 })
 export class AppUIModule { }

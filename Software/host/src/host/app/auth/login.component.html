@@ -7,11 +7,13 @@
         <div class="group-fields">
             <label for="password">Пароль</label>
             <ig-text-editor [widgetId]="passwordId" [textMode]="'password'" [placeHolder]="'********'" [width]="'100%'" [(ngModel)]="model.password" name="password"></ig-text-editor>
-        </div>
-        <div class="ui-dialog-buttonpane" [ngStyle]="{'bottom': '0', 'right': '0', 'position': 'absolute'}">
-            <button type="submit">Вход</button>
-            <button type="reset">Отмена</button>
+        </div>                
+          
+        <div class="ui-dialog-buttonpane" [ngStyle]="{'bottom': '0', 'right': '0', 'position': 'absolute'}">            
+            <button type="submit">Вход</button>                        
+            <button type="reset">Отмена</button>                        
         </div>
     </form>
+    <div class="error" *ngIf="errorMessage" [ngStyle]="{'font-size': '0.85em', 'margin-top': '20px'}" [ngClass]="'ui-ignotify-error ui-ignotify-inline'">{{errorMessage}}</div>       
     <ig-validator [widgetId]='formId' [options]="validatorOptions"></ig-validator>
 </ig-dialog>
