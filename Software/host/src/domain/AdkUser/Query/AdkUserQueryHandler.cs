@@ -37,9 +37,9 @@ namespace domain.AdkUser.Query
             DbManager.Open();
 
             var groups = DbManager.DbConnection.Query<AdkGroupUsers, long, AdkGroupUsers>($"{SelectGroup} where g.id = {query.RootGroupFunction}",
-                (g, i) =>
+                (g, n) =>
                 {
-                    if (i > 0)
+                    if (n > 0)
                         g.Objects = Enumerable.Empty<AdkUser>();
                     return g;
                 }, splitOn: "*");
@@ -52,9 +52,9 @@ namespace domain.AdkUser.Query
             DbManager.Open();
 
             var groups = await DbManager.DbConnection.QueryAsync<AdkGroupUsers, long, AdkGroupUsers>($"{SelectGroup} where g.id = {query.RootGroupFunction}", 
-                (g, i) =>
+                (g, n) =>
                 {
-                    if (i > 0)
+                    if (n > 0)
                         g.Objects = Enumerable.Empty<AdkUser>();
                     return g;
                 }, splitOn: "*");

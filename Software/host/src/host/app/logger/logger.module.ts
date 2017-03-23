@@ -6,7 +6,7 @@ import { LoggerService } from './logger.service';
 @NgModule({
     declarations: [ LoggerComponent],    
     exports: [LoggerComponent],
-    imports: [AppUIModule],
+    imports: [ AppUIModule ],
     providers: [LoggerService]
 })
 export class LoggerModule { }

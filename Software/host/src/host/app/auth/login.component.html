@@ -8,10 +8,10 @@
             <label for="password">Пароль</label>
             <ig-text-editor [widgetId]="passwordId" [textMode]="'password'" [placeHolder]="'********'" [width]="'100%'" [(ngModel)]="model.password" name="password"></ig-text-editor>
         </div>
-        <div class="ui-dialog-buttonpane" style="float: right">
+        <div class="ui-dialog-buttonpane" [ngStyle]="{'bottom': '0', 'right': '0', 'position': 'absolute'}">
             <button type="submit">Вход</button>
             <button type="reset">Отмена</button>
         </div>
     </form>
-    <ig-validator #validator [widgetId]='formId' [options]="validatorOptions"></ig-validator>
+    <ig-validator [widgetId]='formId' [options]="validatorOptions"></ig-validator>
 </ig-dialog>
