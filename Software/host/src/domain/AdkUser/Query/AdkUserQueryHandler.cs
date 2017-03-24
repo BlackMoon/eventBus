@@ -1,18 +1,21 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using domain.Common.Query;
 using Dapper;
 using Kit.Core.CQRS.Query;
 using Kit.Dal.DbManager;
 using System;
+using domain.Dto;
+using Mapster;
 
 namespace domain.AdkUser.Query
 {
     public class AdkUserQueryHandler : KeyObjectQueryHandler<FindUserByIdQuery, AdkUser>,         
-        IFindRootGroupHandler<FindUserRootGroupQuery, AdkGroupUsers>,
+        IFindRootGroupHandler<FindUserRootGroupQuery, AdkUserDto>,
+        IQueryHandler<FindGroupUsersChildrenQuery, IEnumerable<AdkUserDto>>,
         IQueryHandler<FindUserByLoginQuery, AdkUser>
     {
-        private const string SelectGroup = "SELECT g.id, g.name, g.description, (select count(1) FROM adk_group_objects.group_objects o where o.group_id = g.id) AS cnt FROM adk_group_objects.groups g";
+        private const string SelectGroup = "SELECT g.id, g.name, g.description FROM adk_group_objects.groups g";
         private const string SelectUser = "SELECT * FROM adk_user.users u";
 
         public AdkUserQueryHandler(IDbManager dbManager) : base(dbManager)
@@ -32,34 +35,50 @@ namespace domain.AdkUser.Query
             return DbManager.DbConnection.QuerySingleOrDefaultAsync<AdkUser>($"{SelectUser} WHERE u.login = @login", new { login = query.Login });
         }
 
-        public AdkGroupUsers Execute(FindUserRootGroupQuery query)
+        public AdkUserDto Execute(FindUserRootGroupQuery query)
         {
             DbManager.Open();
 
-            var groups = DbManager.DbConnection.Query<AdkGroupUsers, long, AdkGroupUsers>($"{SelectGroup} where g.id = {query.RootGroupFunction}",
-                (g, n) =>
-                {
-                    if (n > 0)
-                        g.Objects = Enumerable.Empty<AdkUser>();
-                    return g;
-                }, splitOn: "*");
+            AdkUserDto dto = new AdkUserDto();
+            AdkGroup.AdkGroup group = DbManager.DbConnection.QuerySingleOrDefault<AdkGroup.AdkGroup>($"{SelectGroup} where g.id = {query.RootGroupFunction}");
+            return group.Adapt(dto);
 
-            return groups.FirstOrDefault();
         }
 
-        public async Task<AdkGroupUsers> ExecuteAsync(FindUserRootGroupQuery query)
+        public async Task<AdkUserDto> ExecuteAsync(FindUserRootGroupQuery query)
         {
             DbManager.Open();
 
-            var groups = await DbManager.DbConnection.QueryAsync<AdkGroupUsers, long, AdkGroupUsers>($"{SelectGroup} where g.id = {query.RootGroupFunction}", 
-                (g, n) =>
-                {
-                    if (n > 0)
-                        g.Objects = Enumerable.Empty<AdkUser>();
-                    return g;
-                }, splitOn: "*");
+            AdkUserDto dto = new AdkUserDto();
+            AdkGroup.AdkGroup group = await DbManager.DbConnection.QuerySingleOrDefaultAsync<AdkGroup.AdkGroup>($"{SelectGroup} where g.id = {query.RootGroupFunction}");
+            return group.Adapt(dto);
+        }
 
-            return groups.FirstOrDefault();
+        public IEnumerable<AdkUserDto> Execute(FindGroupUsersChildrenQuery query)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<IEnumerable<AdkUserDto>> ExecuteAsync(FindGroupUsersChildrenQuery query)
+        {
+            DbManager.Open();
+
+            return DbManager.DbConnection.QueryAsync<AdkGroup.AdkGroup, AdkUser, AdkUserDto>(
+                @"SELECT g.*, u.* 
+                    FROM adk_group_objects.group_objects o 
+                    LEFT OUTER JOIN adk_group_objects.groups g ON g.id = o.object_id 
+                    LEFT OUTER JOIN adk_user.users u ON u.id = o.object_id
+                WHERE o.group_id = @groupId",
+                (g, u) =>
+                {
+                    AdkUserDto dto = new AdkUserDto();
+
+                    if (g.Id != null)
+                        return g.Adapt(dto);
+                    
+                    return u.Adapt(dto);
+                },
+                new { groupId = query.GroupId });
         }
     }
 }

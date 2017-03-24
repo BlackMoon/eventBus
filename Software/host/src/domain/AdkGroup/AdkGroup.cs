@@ -10,7 +10,7 @@ namespace domain.AdkGroup
         public string Name { get; set; }
 
         public string Description { get; set; }
-
+        
         public IEnumerable<IComponent> Objects { get; set; }
     }    
 }

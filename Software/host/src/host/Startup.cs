@@ -20,7 +20,6 @@ using System.Security.Claims;
 using CacheManager.Core;
 using Host.Security;
 using Host.Security.TokenProvider;
-using Microsoft.Extensions.Primitives;
 
 namespace Host
 {
