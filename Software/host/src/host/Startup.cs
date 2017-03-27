@@ -51,6 +51,7 @@ namespace Host
             // Add framework services.
             services.AddApplicationInsightsTelemetry(Configuration);
             services.AddOptions();
+            services.AddCors(o => o.AddPolicy("AllowAll", b => b.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod()));
 
             services.Configure<ConnectionOptions>(Configuration.GetSection("Data:DefaultConnection"));
             services.Configure<TokenProviderOptions>(Configuration.GetSection("TokenAuthentication"));
@@ -118,10 +119,15 @@ namespace Host
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline
-        public void Configure(IApplicationBuilder app, ILoggerFactory loggerFactory)
+        public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
         {
             loggerFactory.AddConsole(Configuration.GetSection("Logging"));
             loggerFactory.AddDebug();
+
+            //if (env.IsDevelopment())
+            {
+                app.UseCors("AllowAll");
+            }
 
             app.Use(async (context, next) =>
             {

@@ -35,8 +35,7 @@ export class LoginComponent implements AfterViewInit {
         let self = this;
         
         this.dialogOptions = {            
-            headerText: "Войти в систему",
-            footerText: "<img src=\"images/ui-anim_basic_16x16.gif\">",
+            headerText: "Войти в систему",           
             modal: true,
             openAnimation: "slide",
             resizable: false,

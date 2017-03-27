@@ -108,7 +108,7 @@
     </div>
     <!-- END PROJECT PANEL -->  
     <!-- START TEAM PANEL -->
-    <div id="pm-team-navigation" class="navigation-slide collapsed">
+    <div id="pm-team-navigation" class="navigation-slide collapsed" *ngIf="this.authService.isAuthenticated">
         Настройки
     </div>
     <!-- END TEAM PANEL -->

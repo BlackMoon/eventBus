@@ -11,7 +11,7 @@ let authHttpServiceFactory = (authService: AuthService, http: Http, options: Req
     return new AuthHttp(new AuthConfig({
         tokenName: TokenKey,
         tokenGetter: (() => authService.isAuthenticated ? Storage.getItem(TokenKey) : authService.login().toPromise()),
-        globalHeaders: [{ 'Content-Type': 'application/json' }]
+        globalHeaders: [{ 'Content-Type': 'application/json' }, { 'Access-Control - Allow - Origin': '*'}]
     }), http, options);
 }
 
