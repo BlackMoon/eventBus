@@ -28,7 +28,7 @@ export class UsersTreeView implements AfterViewInit {
                 { name: "RowSelectors" },
                 { name: "Selection" }
             ],   
-            initialExpandDepth: -1,         
+            initialExpandDepth: 1,         
             primaryKey: "id",            
             responseDataKey: "data",
             responseTotalRecCountKey: "total",            
