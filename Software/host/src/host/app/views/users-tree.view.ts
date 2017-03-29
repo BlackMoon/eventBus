@@ -40,7 +40,7 @@ export class UsersTreeView implements AfterViewInit {
                 { key: "description", headerText: "Описание" },
                 { key: "role", headerText: "Роль" }                                
             ],
-	        rendered: (e, ui) => ui.owner.dataSource.settings.treeDS.customEncodeUrlFunc = (rec, expand) => `${dataUrl}?groupid=${rec.id}`                            
+	        rendered: (e, ui) => ui.owner.dataSource.settings.treeDS.customEncodeUrlFunc = (rec) => `${dataUrl}?groupid=${rec.id}`                            
         };            
     }
 
