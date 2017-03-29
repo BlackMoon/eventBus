@@ -1,8 +1,10 @@
-﻿using System.Threading.Tasks;
-using domain.AdkUser;
+﻿using domain.AdkUser;
 using domain.AdkUser.Query;
+using domain.Common.Query;
 using Kit.Core.CQRS.Query;
 using Microsoft.AspNetCore.Mvc;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace Host.Controllers
 {
@@ -13,7 +15,13 @@ namespace Host.Controllers
         public AdkUsersController(IQueryDispatcher queryDispatcher)
         {
             _queryDispatcher = queryDispatcher;
-        }        
+        }
+
+        [HttpGet]
+        public Task<IEnumerable<AdkUser>> Get()
+        {
+            return _queryDispatcher.DispatchAsync<GetAllQuery, IEnumerable<AdkUser>>(new GetAllQuery());
+        }
 
         // GET api/values/5
         [HttpGet("{id}")]

@@ -3,7 +3,7 @@ import { RoutingComponent } from '../navigation/route.decorator';
 
 declare var $: any;
 
-const dataUrl = 'http://webtest.aquilon.ru:808/api/adkuserdto';
+const dataUrl = '/api/adkuserdto';
 
 @Component({        
     templateUrl: 'users-tree.view.html'    
@@ -28,7 +28,7 @@ export class UsersTreeView implements AfterViewInit {
                 { name: "RowSelectors" },
                 { name: "Selection" }
             ],   
-            initialExpandDepth: 1,         
+            initialExpandDepth: -1,         
             primaryKey: "id",            
             responseDataKey: "data",
             responseTotalRecCountKey: "total",            
@@ -40,7 +40,7 @@ export class UsersTreeView implements AfterViewInit {
                 { key: "description", headerText: "Описание" },
                 { key: "role", headerText: "Роль" }                                
             ],
-	    rendered: (e, ui) => ui.owner.dataSource.settings.treeDS.customEncodeUrlFunc = (rec, expand) => `${dataUrl}?groupid=${rec.id}`                            
+	        rendered: (e, ui) => ui.owner.dataSource.settings.treeDS.customEncodeUrlFunc = (rec, expand) => `${dataUrl}?groupid=${rec.id}`                            
         };            
     }
 

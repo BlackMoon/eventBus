@@ -1,26 +1,23 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 14
-VisualStudioVersion = 14.0.25420.1
+# Visual Studio 15
+VisualStudioVersion = 15.0.26228.9
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{32F7DBBF-696B-4129-8732-0B937D202F6F}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{390A951B-95AE-43A5-9BFF-681DE03FE930}"
-	ProjectSection(SolutionItems) = preProject
-		global.json = global.json
-	EndProjectSection
 EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "host", "src\Host\host.xproj", "{C78E67C5-7E64-49C4-9581-BFDFB3502FD0}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Host", "src\Host\Host.csproj", "{C78E67C5-7E64-49C4-9581-BFDFB3502FD0}"
 EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Kit.Dal", "..\..\..\kit\src\Kit.Dal\Kit.Dal.xproj", "{EFC3FD89-351A-4E6D-891A-8F410E325F2E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Kit.Dal", "..\..\..\kit\src\Kit.Dal\Kit.Dal.csproj", "{EFC3FD89-351A-4E6D-891A-8F410E325F2E}"
 EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Kit.Core", "..\..\..\kit\src\Kit.Core\Kit.Core.xproj", "{05987B61-EF26-4E20-92FB-28BB592AD3CF}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Kit.Core", "..\..\..\kit\src\Kit.Core\Kit.Core.csproj", "{05987B61-EF26-4E20-92FB-28BB592AD3CF}"
 EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Kit.Core.Web", "..\..\..\kit\src\Kit.Core.Web\Kit.Core.Web.xproj", "{F1AF5381-E765-4CCB-B1C7-4120B1E57DD9}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Kit.Core.Web", "..\..\..\kit\src\Kit.Core.Web\Kit.Core.Web.csproj", "{F1AF5381-E765-4CCB-B1C7-4120B1E57DD9}"
 EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Kit.Dal.Postgre", "..\..\..\kit\src\Kit.Dal.Postgre\Kit.Dal.Postgre.xproj", "{918BFBC6-8C30-4A11-B038-E449F9E7E479}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Kit.Dal.Postgre", "..\..\..\kit\src\Kit.Dal.Postgre\Kit.Dal.Postgre.csproj", "{918BFBC6-8C30-4A11-B038-E449F9E7E479}"
 EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "domain", "src\domain\domain.xproj", "{FFAC880E-1E64-491F-AE0C-50021AA6DC3A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "domain", "src\domain\domain.csproj", "{FFAC880E-1E64-491F-AE0C-50021AA6DC3A}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
