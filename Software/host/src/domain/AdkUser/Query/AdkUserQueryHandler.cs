@@ -7,18 +7,16 @@ using Kit.Dal.DbManager;
 using System;
 using domain.Dto;
 using Mapster;
-using Dapper.Contrib.Extensions;
 
 namespace domain.AdkUser.Query
 {
     public class AdkUserQueryHandler : KeyObjectQueryHandler<FindUserByIdQuery, AdkUser>,         
         IFindRootGroupHandler<FindUserRootGroupQuery, AdkUserDto>,
         IQueryHandler<FindGroupUsersChildrenQuery, IEnumerable<AdkUserDto>>,
-        IQueryHandler<FindUserByLoginQuery, AdkUser>,
-        IQueryHandler<GetAllQuery, IEnumerable<AdkUser>>
+        IQueryHandler<FindUserByLoginQuery, AdkUser>        
     {
-        private const string SelectGroup = "SELECT g.id, g.name, g.description FROM adk_group_objects.groups g";
-        private const string SelectUser = "SELECT * FROM adk_user.users u";
+        private const string SelectGroup = "SELECT g.* FROM adk_group_objects.groups g";
+        private const string SelectUser = "SELECT u.* FROM adk_user.users u";
 
         public AdkUserQueryHandler(IDbManager dbManager) : base(dbManager)
         {
@@ -81,18 +79,6 @@ namespace domain.AdkUser.Query
                     return u.Adapt(dto);
                 },
                 new { groupId = query.GroupId });
-        }
-
-        public IEnumerable<AdkUser> Execute(GetAllQuery query)
-        {
-            DbManager.Open();
-            return DbManager.DbConnection.GetAll<AdkUser>();
-        }
-
-        public Task<IEnumerable<AdkUser>> ExecuteAsync(GetAllQuery query)
-        {
-            DbManager.Open();
-            return DbManager.DbConnection.GetAllAsync<AdkUser>();
-        }
+        }        
     }
 }
