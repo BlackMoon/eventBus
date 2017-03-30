@@ -133,7 +133,7 @@ namespace Host
             {
                 await next();
                 if (context.Response.StatusCode == 404)
-                    context.Response.Redirect("/?returnUrl=" + context.Request.Path);
+                    context.Response.Redirect("/?returnUrl=" + context.Request.Path.Value.TrimStart('/'));
             });
 
             // exception handlers

@@ -32,22 +32,21 @@ export class AppComponent implements AfterViewInit, OnInit {
     constructor(
         private authService: AuthService,       
         private router: Router,
-        private routerConfig: RouterConfig)
-    {
-        this.startView = new URLSearchParams(window.location.search).get(startViewKey);         
+        private routerConfig: RouterConfig) {
+        this.startView = new URLSearchParams(window.location.search.slice(1)).get(startViewKey);         
     }
 
     ngAfterViewInit() {    
 
         this.$navigation = $("#pm-navigation").mCustomScrollbar({
             theme: "dark",
-            axis: 'y'
+            axis: "y"
         }); 
 
         this.$settings = $("#pm-team-navigation");
 
-        if (this.authService.isAuthenticated) {           
-
+        if (this.authService.isAuthenticated) {
+            // start redirect
             if (this.startView != undefined) {
                 if (this.menu.length > 0) {
                     let mi: MenuItem = this.menu.find(item => item.route.toLowerCase() === this.startView);
@@ -75,11 +74,11 @@ export class AppComponent implements AfterViewInit, OnInit {
     }
 
     menuItemClick(item: MenuItem) {
-       
+        
         this.$navigation.switchClass('expanded', 'collapsed'); // collapse navigation        
 
         if (item != null) {
-            this.router.navigate([item.route]);
+            this.router.navigateByUrl(item.route);
             this.menu.forEach(mi => mi.active = false);
             item.active = true;
         }

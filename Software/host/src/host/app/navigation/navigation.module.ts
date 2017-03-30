@@ -3,11 +3,10 @@ import { RouterConfig } from './router.config';
 import { RouterModule, Router, Routes } from '@angular/router';
 import { Injector } from '@angular/core';
 import { SelectivePreloadingStrategy } from './selective-preloading-strategy';
-import { LoggerComponent } from '../logger/logger.component';
+import { QueryComponent } from '../ui/query.component';
 import * as views from '../views';
 
-const appRoutes: Routes = [
-    { path: 'logger', component: LoggerComponent } ,   
+const appRoutes: Routes = [    
     { path: '**', component: views.PageNotFoundView }    
 ];
 

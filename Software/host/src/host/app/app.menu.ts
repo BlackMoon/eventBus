@@ -8,6 +8,14 @@ export const appMenu: Array<MenuItem> = [{
     route: 'users'
     //for:['administrators']
 },
+    {
+        id: 'monitor1',
+        abbr: 'Монитор1',
+        name: 'Монитор1',
+        iconCls: 'icon-sm icon-folder',
+        route: 'query/users-tree'
+    },
+
 {
     id: 'monitor',
     abbr: 'Монитор',

@@ -2,7 +2,7 @@
 import { HttpModule, Http, RequestOptions } from '@angular/http';
 import { AuthHttp, AuthConfig } from 'angular2-jwt';
 import { FormsModule } from '@angular/forms';
-import { AppUIModule } from "../app-ui.module";
+import { UiModule } from "../ui/ui.module";
 import { AuthService, Storage, TokenKey } from './auth.service';
 import { LoginComponent } from "./login.component";
 
@@ -18,7 +18,7 @@ let authHttpServiceFactory = (authService: AuthService, http: Http, options: Req
 @NgModule({
     declarations: [LoginComponent],    
     exports: [LoginComponent],
-    imports: [AppUIModule, FormsModule, HttpModule]    
+    imports: [UiModule, FormsModule, HttpModule]    
 })
 export class AuthModule {
 

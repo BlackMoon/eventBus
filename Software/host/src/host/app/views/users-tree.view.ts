@@ -3,7 +3,8 @@ import { RoutingComponent } from '../navigation/route.decorator';
 
 declare var $: any;
 
-const dataUrl = '/api/adkuserdto';
+const dataUrl = 'http://webtest.aquilon.ru:808/api/adkuserdto';
+//const dataUrl = 'http://localhost:13908/api/adkuserdto';
 
 @Component({        
     templateUrl: 'users-tree.view.html'    

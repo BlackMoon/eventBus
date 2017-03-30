@@ -1,5 +1,9 @@
 ﻿[
   {
+    "path": "query/:view",
+    "component": "QueryComponent"
+  },
+  {
     "path": "users",
     "component": "UsersTreeView"
   },
