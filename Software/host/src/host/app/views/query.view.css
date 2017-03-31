@@ -1,0 +1,15 @@
+﻿.header {
+     padding: 2px;
+}
+
+.filterbar {
+     float: right
+}
+
+.filterbar label {
+     font-size: small
+}
+
+.toolbar {
+    float: left
+}
