@@ -79,7 +79,7 @@ export class AppComponent implements AfterViewInit, OnInit {
     }
 
     menuItemClick(item: MenuItem) {
-        debugger;
+      
         this.$navigation.switchClass('expanded', 'collapsed'); // collapse navigation        
 
         if (item != null) {
@@ -108,7 +108,7 @@ export class AppComponent implements AfterViewInit, OnInit {
     }
 
     onResize(event) {
-        this.$view.height(event.target.innerHeight - $("#headline").height() - 10 /*headline padding*/);
+        this.$view.height(event.target.innerHeight - this.$headline.height() - 10 /*headline padding*/);
     }
 
     /**

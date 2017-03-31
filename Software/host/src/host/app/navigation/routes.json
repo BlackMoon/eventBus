@@ -9,7 +9,7 @@
   },
   {
     "path": "users",
-    "component": "UsersTreeView"
+    "component": "users-tree"
   },
   {
     "path": "monitor",

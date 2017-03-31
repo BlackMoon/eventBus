@@ -34,7 +34,7 @@ export class RouterConfig {
                     return Observable.throw(error.json().error || 'Server error');
                 })
                 .subscribe((items: Array<any>) => {
-                    debugger;
+                  
                     this._routes = items.map(i => {
                         let component = namedComponents.get(i.component) || PageNotFoundView;
                         return <any>{ path: i.path, component: component };
