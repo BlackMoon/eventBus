@@ -1,7 +1,11 @@
 ﻿[
   {
+    "path": "query",
+    "component": "QueryView"
+  },
+  {
     "path": "query/:view",
-    "component": "QueryComponent"
+    "component": "QueryView"
   },
   {
     "path": "users",

@@ -3,7 +3,7 @@ import { Http, Response } from '@angular/http';
 import { Observable } from 'rxjs';
 import { PageNotFoundView } from '../views';
 import { Routes } from '@angular/router';
-import * as decorator from './route.decorator';
+import { namedComponents } from '../ui/named.decorator';
 
 const routesUrl = '/routes.json';
 
@@ -34,11 +34,11 @@ export class RouterConfig {
                     return Observable.throw(error.json().error || 'Server error');
                 })
                 .subscribe((items: Array<any>) => {
-                    
+                    debugger;
                     this._routes = items.map(i => {
-                        let component = decorator.routingComponents.get(i.component) || PageNotFoundView;
+                        let component = namedComponents.get(i.component) || PageNotFoundView;
                         return <any>{ path: i.path, component: component };
-                    })
+                    });
                     resolve(true);
                 });            
         });             

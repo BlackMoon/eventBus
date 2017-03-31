@@ -3,7 +3,7 @@ import { Http, Response } from '@angular/http';
 import { Observable } from 'rxjs';
 import { Routes } from '@angular/router';
 import { PageNotFoundView } from '../views';
-import * as decorator from './route.decorator';
+import { namedComponents } from '../ui/named.decorator';
 
 const navigationUrl = '/routes.json';
 
@@ -17,12 +17,12 @@ export class NavigationService {
         
         return this.http.get(navigationUrl)
             .map((r: Response) => r.json())
-            .map((items: Array<any>) => {             
-
+            .map((items: Array<any>) => {
+                
                 return items.map(i => {
-                    let component = decorator.routingComponents.get(i.component) || PageNotFoundView;
+                    let component = namedComponents.get(i.component) || PageNotFoundView;
                     return <any>{ path: i.path, component: component };
-                })                
+                });
             });
     }    
 }

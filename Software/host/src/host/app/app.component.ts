@@ -6,12 +6,13 @@ import { LoginComponent } from './auth/login.component';
 import { RouterConfig } from './navigation/router.config';
 import { AdkUserModel, MenuItem, AdministratorsGroup, UsersGroup } from './models/index';
 import { appMenu } from './app.menu';
-import { DialogResult } from './utils';
+import { DialogResult } from './ui/utils';
 
 declare var $: any;
 const startViewKey = 'returnUrl';
 
 @Component({
+    host: { '(window:resize)': 'onResize($event)' },
     selector: 'eventBus-app',
     styleUrls: ['app.component.css'],
     templateUrl: 'app.component.html'
@@ -19,7 +20,9 @@ const startViewKey = 'returnUrl';
 export class AppComponent implements AfterViewInit, OnInit {    
     @ViewChild(LoginComponent) loginComponent: LoginComponent;
     
+    private $headline;
     private $navigation;
+    private $view;
     private $settings;
 
     private menu: Array<MenuItem> = [];
@@ -41,8 +44,10 @@ export class AppComponent implements AfterViewInit, OnInit {
         this.$navigation = $("#pm-navigation").mCustomScrollbar({
             theme: "dark",
             axis: "y"
-        }); 
+        });
 
+        this.$headline = $("#project-panel #headline");
+        this.$view = $("#project-panel #view");
         this.$settings = $("#pm-team-navigation");
 
         if (this.authService.isAuthenticated) {
@@ -74,7 +79,7 @@ export class AppComponent implements AfterViewInit, OnInit {
     }
 
     menuItemClick(item: MenuItem) {
-        
+        debugger;
         this.$navigation.switchClass('expanded', 'collapsed'); // collapse navigation        
 
         if (item != null) {
@@ -101,7 +106,11 @@ export class AppComponent implements AfterViewInit, OnInit {
             (this.menu.length > 0) && this.menuItemClick(this.menu[0]);
         }
     }
-       
+
+    onResize(event) {
+        this.$view.height(event.target.innerHeight - $("#headline").height() - 10 /*headline padding*/);
+    }
+
     /**
      * Извлечь сохраненные данные
      */
@@ -113,15 +122,15 @@ export class AppComponent implements AfterViewInit, OnInit {
             predicatesNot: Array<(mi: MenuItem, index: number, array: MenuItem[]) => any> = [];
         
         if (this.loggedUser.isadmin) {
-            predicatesFor.push(v => v.for.findIndex(i => i.toLowerCase() === AdministratorsGroup.toLowerCase()) != -1);
+            predicatesFor.push(v => v.for.findIndex(i => i.toLowerCase() === AdministratorsGroup.toLowerCase()) !== -1);
             predicatesNot.push(v => v.not.findIndex(i => i.toLowerCase() === AdministratorsGroup.toLowerCase()) === -1);
         }
         else {
-            predicatesFor.push(v => v.for.findIndex(i => i.toLowerCase() === UsersGroup.toLowerCase()) != -1);
+            predicatesFor.push(v => v.for.findIndex(i => i.toLowerCase() === UsersGroup.toLowerCase()) !== -1);
             predicatesNot.push(v => v.not.findIndex(i => i.toLowerCase() === UsersGroup.toLowerCase()) === -1);
         }
 
-        predicatesFor.push(v => v.for.findIndex(i => i.toLowerCase() === this.loggedUser.username.toLowerCase()) != -1);        
+        predicatesFor.push(v => v.for.findIndex(i => i.toLowerCase() === this.loggedUser.username.toLowerCase()) !== -1);        
         predicatesNot.push(v => v.not.findIndex(i => i.toLowerCase() === this.loggedUser.username.toLowerCase()) === -1);   
         
         this.menu = appMenu.filter(mi => {
@@ -141,7 +150,7 @@ export class AppComponent implements AfterViewInit, OnInit {
                 for (let pre of predicatesNot) {
                     if (found = pre.call(this, mi)) break;
                 }
-            }                        
+            }
 
             return found;
         });

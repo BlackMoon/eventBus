@@ -1,5 +1,6 @@
 ﻿import { AfterViewInit, Component } from '@angular/core';
-import { RoutingComponent } from '../navigation/route.decorator';
+import { IGridView } from './grid.view';
+import { NamedComponent } from '../ui/named.decorator';
 
 declare var $: any;
 
@@ -9,10 +10,10 @@ const dataUrl = 'http://webtest.aquilon.ru:808/api/adkuserdto';
 @Component({        
     templateUrl: 'users-tree.view.html'    
 })
-@RoutingComponent()
-export class UsersTreeView implements AfterViewInit {
+@NamedComponent('users-tree')
+export class UsersTreeView implements AfterViewInit, IGridView {
 
-    private id: string = "tgrid";
+    private id: string = 'tgrid';
     private tgridOptions: any;    
 
     constructor() {
@@ -33,7 +34,7 @@ export class UsersTreeView implements AfterViewInit {
             primaryKey: "id",            
             responseDataKey: "data",
             responseTotalRecCountKey: "total",            
-            height: "400px",
+            height: "100%",
             width: "100%",
             columns: [
                 { key: "id", headerText: "id", hidden: true },

@@ -5,7 +5,6 @@ import { JwtHelper } from 'angular2-jwt';
 import { Observable } from 'rxjs';
 import * as CryptoJS from 'crypto-js';
 import { AdkUserModel } from '../models/index';
-import { IDictionary } from '../utils';
 
 const secretUrl = '/secret';
 const tokenUrl = '/token';
@@ -16,7 +15,7 @@ const usernameKey = 'uname';
 /**
  * .net ClaimNames --> AdkUserModel fields mapping
  */
-class Claims implements IDictionary<string>
+class Claims implements Dict<string>
 {
     'description' = null;
     'isadmin' = null;
@@ -28,13 +27,11 @@ class Claims implements IDictionary<string>
 /**
  * .net Cryptography.PaddingMode --> CryptoJS.pads mapping
  */
-class Pads implements IDictionary<any>
+class Pads implements Dict<any>
 {
     'None' = CryptoJS.pad.NoPadding;
     'PKCS7' = CryptoJS.pad.Pkcs7;
     'Zeros' = CryptoJS.pad.ZeroPadding;
-
-    [key: string]: Object;
 }
 
 export const Storage = localStorage;//sessionStorage;

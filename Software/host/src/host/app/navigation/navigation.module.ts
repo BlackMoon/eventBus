@@ -3,7 +3,6 @@ import { RouterConfig } from './router.config';
 import { RouterModule, Router, Routes } from '@angular/router';
 import { Injector } from '@angular/core';
 import { SelectivePreloadingStrategy } from './selective-preloading-strategy';
-import { QueryComponent } from '../ui/query.component';
 import * as views from '../views';
 
 const appRoutes: Routes = [    

@@ -2,7 +2,7 @@
 import { Response } from '@angular/http';
 import { AuthService } from './auth.service';
 import { AdkUserModel } from '../models';
-import { DialogResult } from '../utils';
+import { DialogResult } from '../ui/utils';
 import { NgStyle } from "@angular/common";
 
 declare var $: any;
@@ -10,7 +10,7 @@ declare var $: any;
 @Component({    
     selector: 'app-login',
     styleUrls: ['login.component.css'],
-    templateUrl: 'login.component.html',    
+    templateUrl: 'login.component.html'   
 })
 
 export class LoginComponent implements AfterViewInit {     
