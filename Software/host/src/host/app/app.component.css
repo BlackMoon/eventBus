@@ -16,6 +16,10 @@ small {
   font-family: "Meiryo","Hiragino Kaku Gothic Pro W3","Droid Sans Japanese", sans-serif;
 }
 
+.ui-igsplitter-splitbar-horizontal, .ui-igsplitter-splitbar-vertical {
+    height: 2px
+}
+
 .ui-igtrialwatermark{display:none;}
 .disabled a, a.disabled, .past-week .action-adjust-hrs a, .past-week a.action {cursor:default;}
 
@@ -34,7 +38,6 @@ body * {
 .ui-widget {
     font-size: 0.85em;
     font-family: Helvetica, sans-serif;
-    overflow: hidden;
 }
 
 /**

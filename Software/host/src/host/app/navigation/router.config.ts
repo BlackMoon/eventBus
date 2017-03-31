@@ -36,7 +36,7 @@ export class RouterConfig {
                 .subscribe((items: Array<any>) => {
                   
                     this._routes = items.map(i => {
-                        let component = namedComponents.get(i.component) || PageNotFoundView;
+                        let component = namedComponents.get(i.component.toLowerCase()) || PageNotFoundView;
                         return <any>{ path: i.path, component: component };
                     });
                     resolve(true);

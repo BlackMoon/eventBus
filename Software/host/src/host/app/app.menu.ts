@@ -21,7 +21,7 @@ export const appMenu: Array<MenuItem> = [{
     abbr: 'Монитор',
     name: 'Монитор',
     iconCls: 'icon-sm icon-folder',
-    route: 'monitor'
+    route: 'query/monitor'
 },
 {
     id: 'events',
