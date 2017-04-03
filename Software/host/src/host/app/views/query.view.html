@@ -11,15 +11,16 @@
             <button (click)="togglePanel($event)"></button>
         </div>
     </div>
-
-    <div class="center" style="box-sizing: content-box">
-        <ig-splitter widgetId="bottomSplitter" [(options)]="bottomSplitterOptions">
+    <div class="footer" class="ui-helper-hidden"></div>
+    <div class="center" style="height: 400px">
+        <div #dynamicComponentContainer></div>
+        <!--<ig-splitter widgetId="bottomSplitter" [(options)]="bottomSplitterOptions">
             <div>
                 <div #dynamicComponentContainer></div>
             </div>
             <div>
             </div>
-        </ig-splitter>
+        </ig-splitter>-->
     </div>
-   
+    <div class="right" class="ui-helper-hidden"></div>
 </ig-layout-manager>

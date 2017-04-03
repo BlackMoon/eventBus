@@ -50,6 +50,8 @@ export class AppComponent implements AfterViewInit, OnInit {
         this.$view = $("#project-panel #view");
         this.$settings = $("#pm-team-navigation");
 
+        this.onResize();
+
         if (this.authService.isAuthenticated) {
             // start redirect
             if (this.startView != undefined) {
@@ -99,7 +101,7 @@ export class AppComponent implements AfterViewInit, OnInit {
         this.authService.logout();
     }    
 
-    loginComponent_Closed(result: DialogResult) {
+    loginComponentClosed(result: DialogResult) {
 
         if (result === DialogResult.OK) {
             this.retrieveUser();
@@ -107,8 +109,8 @@ export class AppComponent implements AfterViewInit, OnInit {
         }
     }
 
-    onResize(event) {
-        this.$view.height(event.target.innerHeight - this.$headline.height() - 10 /*headline padding*/);
+    onResize() {
+        this.$view.height(window.innerHeight - this.$headline.height() - 11 /*headline padding*/);
     }
 
     /**

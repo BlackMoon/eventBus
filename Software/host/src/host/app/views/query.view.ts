@@ -90,7 +90,7 @@ export class QueryView implements OnInit {
 
         event.target.textContent = this.panelMode;
 
-        this.layoutManagerRef.options.borderLayout.showRight = true;
+        //this.layoutManagerRef.options.borderLayout.showRight = true;
 
         switch (this.panelMode) {
 

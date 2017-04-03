@@ -43,7 +43,7 @@ module.exports = {
 
       new CopyWebpackPlugin([
             { from: 'favicon.ico' },
-            { from: '**/*.json', to: '[name].[ext]' }
+            { from: '**/routes.json', to: '[name].[ext]' }
         ]),
 
       new webpack.optimize.CommonsChunkPlugin({
