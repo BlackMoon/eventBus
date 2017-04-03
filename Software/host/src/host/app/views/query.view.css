@@ -1,5 +1,9 @@
-﻿.header {
-     padding: 2px;
+﻿.center {
+    padding: 1px;
+}
+
+.header {
+    padding: 2px;
 }
 
 .filterbar {

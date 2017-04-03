@@ -50,6 +50,7 @@ export class AppComponent implements AfterViewInit, OnInit {
         this.$view = $("#project-panel #view");
         this.$settings = $("#pm-team-navigation");
 
+        // view height for FF
         this.onResize();
 
         if (this.authService.isAuthenticated) {
@@ -71,7 +72,6 @@ export class AppComponent implements AfterViewInit, OnInit {
     }    
 
     ngOnInit() {
-
         // Маршруты        
         let config = this.routerConfig.Routes.concat(this.router.config);
         this.router.resetConfig(config);                       
@@ -108,7 +108,7 @@ export class AppComponent implements AfterViewInit, OnInit {
             (this.menu.length > 0) && this.menuItemClick(this.menu[0]);
         }
     }
-
+    
     onResize() {
         this.$view.height(window.innerHeight - this.$headline.height() - 11 /*headline padding*/);
     }

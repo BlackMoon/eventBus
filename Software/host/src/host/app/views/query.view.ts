@@ -19,10 +19,8 @@ enum PanelMode { Off, Bottom, Right };
 @NamedComponent()
 export class QueryView implements OnInit {
     private currentComponent = null;
-
-    private bottomSplitterOptions; any;
+    
     private layoutOptions: any;
-    private layoutManagerRef: any;
     
     private panelMode: PanelMode = PanelMode.Off;
 
@@ -32,30 +30,26 @@ export class QueryView implements OnInit {
         private route: ActivatedRoute,
         private resolver: ComponentFactoryResolver) {
 
-        this.bottomSplitterOptions = {
-            orientation: 'horizontal',
-            height: '100%'
-        }
-
         this.layoutOptions = {
             layoutMode: "border",
             height: '100%',
             borderLayout: {
+                headerHeight: 36,
                 showFooter: false,
                 showLeft: false,
                 showRight: false
-            },
-            create: e => this.layoutManagerRef = $(e.target).data("igLayoutManager")
+            }
         };
     }
-
+    
     ngOnInit() {
+        
         this.route.params.subscribe(params => {
            
             let viewName = params[viewKey];
             if (viewName) {                
 
-                let inputProvider = { provide: viewName, useValue: null };
+                let inputProvider = { provide: viewName, useValue: 100 };
                 let resolvedInputs = ReflectiveInjector.resolve([inputProvider]);
 
                 let injector = ReflectiveInjector.fromResolvedProviders(resolvedInputs, this.dynamicComponentContainer.parentInjector);
@@ -78,6 +72,7 @@ export class QueryView implements OnInit {
         $("#editItem").button({ icons: { primary: 'ui-icon-circle-zoomin' } });
         $("#delItem").button({ icons: { primary: 'ui-icon-circle-close' } });
         $("#refresh").button({ icons: { primary: 'ui-icon-circle-check' } });
+        
     }
 
     toolbarClick() {
@@ -95,7 +90,7 @@ export class QueryView implements OnInit {
         switch (this.panelMode) {
 
             case PanelMode.Bottom:
-                this.layoutManagerRef.options.borderLayout.showFooter = true;
+                
                 break;
 
             case PanelMode.Right:
@@ -107,6 +102,6 @@ export class QueryView implements OnInit {
                 break;
         }
 
-        this.layoutManagerRef.reflow(true);
+        
     }
 }

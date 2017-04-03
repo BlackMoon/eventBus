@@ -14,10 +14,10 @@ const dataUrl = 'http://webtest.aquilon.ru:808/api/adkuserdto';
 export class UsersTreeView implements AfterViewInit, IGridView {
 
     private id: string = 'tgrid';
-    private tgridOptions: any;    
+    private tgridOptions: any; 
 
     constructor() {
-                      
+
         this.tgridOptions = {                                    
             autoGenerateColumns: false,                
             childDataKey: "objects",            
@@ -48,5 +48,5 @@ export class UsersTreeView implements AfterViewInit, IGridView {
 
     ngAfterViewInit() {
         
-    }    
+    }  
 }
