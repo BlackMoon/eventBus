@@ -15,7 +15,11 @@ export class MonitorView {
     constructor() {
         this.splitterOptions = {
             orientation: "horizontal",
-            height: '100%'
+            height: '100%',
+            panels: [
+                { size: "50%", min: "40%", max: "55%", collapsed: true, collapsible: true },
+                { collapsible: true }
+            ]
         }
     }
 

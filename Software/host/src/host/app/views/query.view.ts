@@ -1,4 +1,4 @@
-﻿import { Component, ComponentFactoryResolver, Input, OnInit, ReflectiveInjector, ViewChild, ViewContainerRef} from '@angular/core';
+﻿import { AfterViewInit, Component, ComponentFactoryResolver, Input, OnInit, ReflectiveInjector, ViewChild, ViewContainerRef} from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { NamedComponent, namedComponents } from '../ui/named.decorator';
 
@@ -17,30 +17,38 @@ enum PanelMode { Off, Bottom, Right };
     templateUrl: 'query.view.html'
 })
 @NamedComponent()
-export class QueryView implements OnInit {
+export class QueryView implements AfterViewInit, OnInit {
     private currentComponent = null;
     
+    private $footer: any;
+    private $layout: any;
+
     private layoutOptions: any;
-    
-    private panelMode: PanelMode = PanelMode.Off;
+
+// ReSharper disable once InconsistentNaming
+    private PanelMode = PanelMode;
+    private panelMode = PanelMode.Off;
 
     @ViewChild('dynamicComponentContainer', { read: ViewContainerRef }) dynamicComponentContainer: ViewContainerRef;
 
     constructor(
         private route: ActivatedRoute,
         private resolver: ComponentFactoryResolver) {
-
+        
         this.layoutOptions = {
             layoutMode: "border",
             height: '100%',
             borderLayout: {
-                headerHeight: 36,
-                showFooter: false,
-                showLeft: false,
-                showRight: false
+                rightWidth: '20%',
+                showLeft: false
             }
         };
     }
+
+    ngAfterViewInit() {
+        this.$layout = $("#layout");
+        this.$footer = this.$layout.find(".footer").css("font-size", "initial");
+    }  
     
     ngOnInit() {
         
@@ -49,11 +57,12 @@ export class QueryView implements OnInit {
             let viewName = params[viewKey];
             if (viewName) {                
 
-                let inputProvider = { provide: viewName, useValue: 100 };
+                let inputProvider = { provide: viewName, useValue: null };
                 let resolvedInputs = ReflectiveInjector.resolve([inputProvider]);
-
                 let injector = ReflectiveInjector.fromResolvedProviders(resolvedInputs, this.dynamicComponentContainer.parentInjector);
-                let def = namedComponents.get(viewName.toLowerCase());            // component definition
+
+                // component definition
+                let def = namedComponents.get(viewName.toLowerCase());            
                
                 if (def) {
                     let factory = this.resolver.resolveComponentFactory(<any>def);
@@ -72,7 +81,6 @@ export class QueryView implements OnInit {
         $("#editItem").button({ icons: { primary: 'ui-icon-circle-zoomin' } });
         $("#delItem").button({ icons: { primary: 'ui-icon-circle-close' } });
         $("#refresh").button({ icons: { primary: 'ui-icon-circle-check' } });
-        
     }
 
     toolbarClick() {
@@ -80,28 +88,15 @@ export class QueryView implements OnInit {
     }
 
     togglePanel(event) {
-        debugger;
+        
         this.panelMode++;
+        (this.panelMode > PanelMode.Right) && (this.panelMode = PanelMode.Off);
+
+        let h = this.panelMode === PanelMode.Bottom ? '300px' : 0;
+
+        this.$layout.css("padding-bottom", h);
+        this.$footer.css("height", h);
 
         event.target.textContent = this.panelMode;
-
-        //this.layoutManagerRef.options.borderLayout.showRight = true;
-
-        switch (this.panelMode) {
-
-            case PanelMode.Bottom:
-                
-                break;
-
-            case PanelMode.Right:
-                break;
-
-            default:
-                //this.layoutManagerRef.options.borderLayout.showFooter = false;
-                //this.layoutManagerRef.options.borderLayout.showRight = false;
-                break;
-        }
-
-        
     }
 }
