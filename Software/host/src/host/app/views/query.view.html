@@ -1,11 +1,11 @@
 ﻿<ig-layout-manager widgetId="layout" [(options)]="layoutOptions">
     <div class="header">
-        <div class="toolbar">
-            <button id="addItem" (click)="toolbarClick($event)">Добавить</button><button id="editItem" (click)="toolbarClick($event)">Изменить</button><button id="delItem" (click)="toolbarClick($event)">Удалить</button><button id="refresh" (click)="toolbarClick($event)">Обновить</button>
+        <div class="toolbar" (click)="toolbarClick($event)">
+            <button id="addItem">Добавить</button><button id="editItem">Изменить</button><button id="delItem">Удалить</button><button id="refresh" >Обновить</button>
         </div>
         <div class="filterbar">
             <label>Панель рабочих элементов</label>
-            <button (click)="togglePanel($event)"></button>
+            <button id="btnMode" (click)="togglePanel($event)"></button>
         </div>
     </div>
     <div class="footer" style="font-size:0" [ngClass]="{'ui-helper-hidden': panelMode !== PanelMode.Bottom}">footer</div>

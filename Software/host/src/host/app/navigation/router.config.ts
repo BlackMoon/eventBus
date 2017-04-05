@@ -3,7 +3,7 @@ import { Http, Response } from '@angular/http';
 import { Observable } from 'rxjs';
 import { PageNotFoundView } from '../views';
 import { Routes } from '@angular/router';
-import { namedComponents } from '../ui/named.decorator';
+import { namedComponents } from '../ui/decorators';
 
 const routesUrl = '/routes.json';
 

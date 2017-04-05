@@ -1,6 +1,6 @@
 ﻿import { AfterViewInit, Component } from '@angular/core';
 import { IGridView } from './grid.view';
-import { NamedComponent } from '../ui/named.decorator';
+import { NamedComponent } from '../ui/decorators';
 
 declare var $: any;
 

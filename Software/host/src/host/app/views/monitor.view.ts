@@ -1,5 +1,5 @@
 ﻿import { Component } from '@angular/core';
-import { NamedComponent } from '../ui/named.decorator';
+import { NamedComponent } from '../ui/decorators';
 
 @Component({
     styles: [``],

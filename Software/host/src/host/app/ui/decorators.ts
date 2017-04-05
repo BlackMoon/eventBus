@@ -1,4 +1,6 @@
-﻿/**
+﻿//import "reflect-metadata";
+
+/**
  * Components storage
  * @type {Map<string, Function>}
 */
@@ -13,5 +15,18 @@ export var NamedComponent = (name?: string) => {
         let key = name || target.name;
         namedComponents.set(key.toLowerCase(), target);
         return target;
-    }
+    };
+};
+
+/**
+ * DisplayAttribute
+ */
+const displayMetadataKey = "Display";
+
+export class DisplayAttribute {
+    static getMetadata = (target: Object, targetKey?: string | symbol): any => Reflect.getMetadata(displayMetadataKey, target, targetKey);
 }
+
+export const Display = (name?: string) => {
+    return Reflect.metadata(displayMetadataKey, name);
+};

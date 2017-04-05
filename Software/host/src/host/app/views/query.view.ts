@@ -1,12 +1,35 @@
 ﻿import { AfterViewInit, Component, ComponentFactoryResolver, Input, OnInit, ReflectiveInjector, ViewChild, ViewContainerRef} from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { NamedComponent, namedComponents } from '../ui/named.decorator';
+import { Display, NamedComponent, namedComponents } from '../ui/decorators';
 
 declare var $: any;
 
 const viewKey = 'view';
 
 enum PanelMode { Off, Bottom, Right };
+
+namespace PanelMode {
+    export function getName(mode: PanelMode) {
+
+        let name: string = "";
+        switch (mode) {
+
+            case PanelMode.Off:
+                name = "Выкл.";
+                break;
+
+            case PanelMode.Bottom:
+                name = "Внизу";
+                break;
+
+            case PanelMode.Right:
+                name = "Справа";
+                break;
+        }
+
+        return name;
+    }
+}
 
 /**
  * Компонент просмотра результатов выборки
@@ -19,7 +42,8 @@ enum PanelMode { Off, Bottom, Right };
 @NamedComponent()
 export class QueryView implements AfterViewInit, OnInit {
     private currentComponent = null;
-    
+
+    private $btnMode: any;
     private $footer: any;
     private $layout: any;
 
@@ -48,6 +72,8 @@ export class QueryView implements AfterViewInit, OnInit {
     ngAfterViewInit() {
         this.$layout = $("#layout");
         this.$footer = this.$layout.find(".footer").css("font-size", "initial");
+
+        $("#btnMode .ui-button-text").text(PanelMode.getName(this.panelMode));
     }  
     
     ngOnInit() {
@@ -83,8 +109,9 @@ export class QueryView implements AfterViewInit, OnInit {
         $("#refresh").button({ icons: { primary: 'ui-icon-circle-check' } });
     }
 
-    toolbarClick() {
+    toolbarClick(event) {
         $(".toolbar button").removeClass('ui-state-focus');
+        console.log(event.target);
     }
 
     togglePanel(event) {
@@ -96,7 +123,7 @@ export class QueryView implements AfterViewInit, OnInit {
 
         this.$layout.css("padding-bottom", h);
         this.$footer.css("height", h);
-
-        event.target.textContent = this.panelMode;
+        
+        event.target.textContent = PanelMode.getName(this.panelMode);
     }
 }
