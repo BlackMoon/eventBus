@@ -1,5 +1,7 @@
 ﻿import { AfterViewInit, Component, ComponentFactoryResolver, Input, OnInit, ReflectiveInjector, ViewChild, ViewContainerRef} from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
+import { IGridView } from './grid.view';
+import { ButtonItem } from '../models';
 import { Display, NamedComponent, namedComponents } from '../ui/decorators';
 
 declare var $: any;
@@ -9,7 +11,7 @@ const viewKey = 'view';
 enum PanelMode { Off, Bottom, Right };
 
 namespace PanelMode {
-    export function getName(mode: PanelMode) {
+    export function toName(mode: PanelMode) {
 
         let name: string = "";
         switch (mode) {
@@ -53,7 +55,13 @@ export class QueryView implements AfterViewInit, OnInit {
     private PanelMode = PanelMode;
     private panelMode = PanelMode.Off;
 
+    /**
+     * dynamic component instance
+     */
+    private view:IGridView;
     @ViewChild('dynamicComponentContainer', { read: ViewContainerRef }) dynamicComponentContainer: ViewContainerRef;
+
+    private buttons: [ButtonItem]; 
 
     constructor(
         private route: ActivatedRoute,
@@ -73,7 +81,16 @@ export class QueryView implements AfterViewInit, OnInit {
         this.$layout = $("#layout");
         this.$footer = this.$layout.find(".footer").css("font-size", "initial");
 
-        $("#btnMode .ui-button-text").text(PanelMode.getName(this.panelMode));
+        $(".toolbar, .filterbar").buttonset();
+        
+        for (let bi of this.buttons) {
+            
+            if (bi.iconCls)
+                $(`#${bi.id}`).button("option", "icons", { primary: bi.iconCls });
+        }
+
+        $("#btnMode .ui-button-text").text(PanelMode.toName(this.panelMode));
+        
     }  
     
     ngOnInit() {
@@ -88,11 +105,14 @@ export class QueryView implements AfterViewInit, OnInit {
                 let injector = ReflectiveInjector.fromResolvedProviders(resolvedInputs, this.dynamicComponentContainer.parentInjector);
 
                 // component definition
-                let def = namedComponents.get(viewName.toLowerCase());            
-               
+                let def = namedComponents.get(viewName.toLowerCase());
+                
                 if (def) {
                     let factory = this.resolver.resolveComponentFactory(<any>def);
                     let component = factory.create(injector);
+                    
+                    this.view = <IGridView>component.instance;
+                    this.buttons = this.view.buttons;
 
                     this.dynamicComponentContainer.insert(component.hostView);
                     (this.currentComponent) && this.currentComponent.destroy();
@@ -100,18 +120,12 @@ export class QueryView implements AfterViewInit, OnInit {
                 }
             }
         });
-
-        $(".toolbar, .filterbar").buttonset();
-
-        $("#addItem").button({ icons: { primary: 'ui-icon-circle-plus' } });
-        $("#editItem").button({ icons: { primary: 'ui-icon-circle-zoomin' } });
-        $("#delItem").button({ icons: { primary: 'ui-icon-circle-close' } });
-        $("#refresh").button({ icons: { primary: 'ui-icon-circle-check' } });
     }
 
-    toolbarClick(event) {
+    toolbarClick(event, bi:ButtonItem) {
         $(".toolbar button").removeClass('ui-state-focus');
-        console.log(event.target);
+
+        bi.click && bi.click.call(bi, event);
     }
 
     togglePanel(event) {
@@ -124,6 +138,6 @@ export class QueryView implements AfterViewInit, OnInit {
         this.$layout.css("padding-bottom", h);
         this.$footer.css("height", h);
         
-        event.target.textContent = PanelMode.getName(this.panelMode);
+        event.target.textContent = PanelMode.toName(this.panelMode);
     }
 }

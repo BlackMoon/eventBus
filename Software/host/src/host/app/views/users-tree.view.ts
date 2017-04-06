@@ -1,5 +1,6 @@
 ﻿import { AfterViewInit, Component } from '@angular/core';
 import { IGridView } from './grid.view';
+import { ButtonItem } from '../models';
 import { NamedComponent } from '../ui/decorators';
 
 declare var $: any;
@@ -12,15 +13,19 @@ const dataUrl = 'http://webtest.aquilon.ru:808/api/adkuserdto';
 })
 @NamedComponent('users-tree')
 export class UsersTreeView implements AfterViewInit, IGridView {
-
+    
     private id: string = 'tgrid';
     private tgridOptions: any; 
+    private tgridRef: any;   
 
     constructor() {
+
+        let self = this;
 
         this.tgridOptions = {                                    
             autoGenerateColumns: false,                
             childDataKey: "objects",            
+            create: e => self.tgridRef = $(e.target).data("igTreeGrid"),
             dataSource: [],
             dataSourceUrl: dataUrl,        
             enableRemoteLoadOnDemand: true,
@@ -45,6 +50,37 @@ export class UsersTreeView implements AfterViewInit, IGridView {
 	        rendered: (e, ui) => ui.owner.dataSource.settings.treeDS.customEncodeUrlFunc = (rec) => `${dataUrl}?groupid=${rec.id}`                            
         };            
     }
+
+    get buttons(): [ButtonItem] {
+        return [
+            {
+                id: "addItem",
+                iconCls: "ui-icon-circle-plus",
+                click: () => {
+                    console.log(1);    
+                },
+                title: "Создать"
+            },
+            {
+                id: "editItem",
+                iconCls: "ui-icon-circle-zoomin",
+                title: "Редактировать"
+            },
+            {
+                id: "delItem",
+                iconCls: "ui-icon-circle-close",
+                title: "Удалить"
+            },
+            {
+                id: "refresh",
+                iconCls: "ui-icon-circle-check",
+                click: () => this.tgridRef.dataBind(),
+                title: "Обновить"
+            }
+        ];
+    }
+
+    get models(): [any] { return ['']; }
 
     ngAfterViewInit() {
         

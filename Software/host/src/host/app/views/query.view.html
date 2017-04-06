@@ -1,18 +1,20 @@
 ﻿<ig-layout-manager widgetId="layout" [(options)]="layoutOptions">
     <div class="header">
-        <div class="toolbar" (click)="toolbarClick($event)">
-            <button id="addItem">Добавить</button><button id="editItem">Изменить</button><button id="delItem">Удалить</button><button id="refresh" >Обновить</button>
+        <div class="toolbar">
+            <button id="{{bi.id}}" *ngFor="let bi of buttons" (click)="toolbarClick($event, bi)">{{bi.title}}</button>
         </div>
         <div class="filterbar">
             <label>Панель рабочих элементов</label>
-            <button id="btnMode" (click)="togglePanel($event)"></button>
+            <button id="btnMode" (click)="togglePanel($event)">Выкл.</button>
         </div>
     </div>
-    <div class="footer" style="font-size:0" [ngClass]="{'ui-helper-hidden': panelMode !== PanelMode.Bottom}">footer</div>
+    <div class="footer" style="font-size: 0" [ngClass]="{'ui-helper-hidden': panelMode !== PanelMode.Bottom}">
+        <form-edit></form-edit>
+    </div>
     <div class="center">
         <div #dynamicComponentContainer></div>
     </div>
     <div class="right" [ngClass]="{'ui-helper-hidden': panelMode !== PanelMode.Right}">
-        right
+       <form-edit></form-edit>
     </div>
 </ig-layout-manager>
