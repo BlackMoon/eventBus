@@ -34,11 +34,19 @@ export class UsersTreeView implements AfterViewInit, IGridView {
             features: [
                 { name: "ColumnMoving" },
                 { name: "Resizing" },
-                { name: "RowSelectors" },
-                { name: "Selection" }
+                {
+                    name: "RowSelectors",
+                    enableRowNumbering: false,
+                    rowSelectorColumnWidth: 20
+                },
+                {
+                    name: "Selection",
+                    mode: 'row',
+                    rowSelectionChanged: (e, ui) => { debugger; }
+                }
             ],   
             initialExpandDepth: 1,         
-            primaryKey: "id",            
+            primaryKey: "id",       
             responseDataKey: "data",
             responseTotalRecCountKey: "total",            
             height: "100%",
