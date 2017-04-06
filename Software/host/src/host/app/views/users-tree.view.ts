@@ -1,4 +1,4 @@
-﻿import { AfterViewInit, Component } from '@angular/core';
+﻿import { AfterViewInit, Component, EventEmitter, Output } from '@angular/core';
 import { IGridView } from './grid.view';
 import { ButtonItem } from '../models';
 import { NamedComponent } from '../ui/decorators';
@@ -24,12 +24,12 @@ export class UsersTreeView implements AfterViewInit, IGridView {
 
         let self = this;
 
-        this.tgridOptions = {                                    
-            autoGenerateColumns: false,                
-            childDataKey: "objects",            
+        this.tgridOptions = {
+            autoGenerateColumns: false,
+            childDataKey: "objects",
             create: e => self.tgridRef = $(e.target).data("igTreeGrid"),
             dataSource: [],
-            dataSourceUrl: dataUrl,        
+            dataSourceUrl: dataUrl,
             enableRemoteLoadOnDemand: true,
             features: [
                 { name: "ColumnMoving" },
@@ -42,8 +42,8 @@ export class UsersTreeView implements AfterViewInit, IGridView {
                 {
                     name: "Selection",
                     mode: 'row',
-                    rowSelectionChanged: (e, ui) => { debugger; }
-                }
+                    rowSelectionChanged: (e, ui) => this.rowSelectionChanged.emit({ event: e, ui: ui })
+    }
             ],   
             initialExpandDepth: 1,         
             primaryKey: "id",       
@@ -95,6 +95,9 @@ export class UsersTreeView implements AfterViewInit, IGridView {
     }
 
     get models(): [any] { return ['']; }
+
+    // event Handlers
+    @Output() rowSelectionChanged: EventEmitter<any> = new EventEmitter<any>();
 
     ngAfterViewInit() {
         

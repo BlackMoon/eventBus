@@ -110,9 +110,16 @@ export class QueryView implements AfterViewInit, OnInit {
                 if (def) {
                     let factory = this.resolver.resolveComponentFactory(<any>def);
                     let component = factory.create(injector);
-                    
+
                     this.view = <IGridView>component.instance;
                     this.buttons = this.view.buttons;
+
+                    this.view.rowSelectionChanged
+                        .subscribe(next => {
+                            
+                            console.log(next);
+                        });
+
 
                     this.dynamicComponentContainer.insert(component.hostView);
                     (this.currentComponent) && this.currentComponent.destroy();
