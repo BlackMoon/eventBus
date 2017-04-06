@@ -18,6 +18,8 @@ export class UsersTreeView implements AfterViewInit, IGridView {
     private tgridOptions: any; 
     private tgridRef: any;   
 
+    private customEncodeUrlFunc = (r):string => `${dataUrl}?groupid=${r.id}`; 
+
     constructor() {
 
         let self = this;
@@ -47,11 +49,12 @@ export class UsersTreeView implements AfterViewInit, IGridView {
                 { key: "description", headerText: "Описание" },
                 { key: "role", headerText: "Роль" }                                
             ],
-	        rendered: (e, ui) => ui.owner.dataSource.settings.treeDS.customEncodeUrlFunc = (rec) => `${dataUrl}?groupid=${rec.id}`                            
+            rendered: (e, ui) => ui.owner.dataSource.settings.treeDS.customEncodeUrlFunc = this.customEncodeUrlFunc                            
         };            
     }
 
     get buttons(): [ButtonItem] {
+        
         return [
             {
                 id: "addItem",
@@ -64,7 +67,7 @@ export class UsersTreeView implements AfterViewInit, IGridView {
             {
                 id: "editItem",
                 iconCls: "ui-icon-circle-zoomin",
-                title: "Редактировать"
+                title: "Изменить"
             },
             {
                 id: "delItem",
@@ -74,7 +77,10 @@ export class UsersTreeView implements AfterViewInit, IGridView {
             {
                 id: "refresh",
                 iconCls: "ui-icon-circle-check",
-                click: () => this.tgridRef.dataBind(),
+                click: () => {
+                    this.tgridRef.dataBind();
+                    this.tgridRef.dataSource.settings.treeDS.customEncodeUrlFunc = this.customEncodeUrlFunc;
+                },
                 title: "Обновить"
             }
         ];
