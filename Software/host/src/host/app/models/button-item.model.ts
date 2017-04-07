@@ -1,12 +1,14 @@
 ﻿export class ButtonItem {
 
-    disabled?: boolean = false;
+    disabled: boolean;
+
+    dropdown?: boolean;
 
     id: string;
 
-    iconCls?: string;
+    icons?: { primary?: string, secondary?: string };
 
-    title: string;
+    label: string;
 
     click?: (e) => void;
 }

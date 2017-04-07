@@ -1,4 +1,4 @@
-﻿import { AfterViewInit, Component, EventEmitter, Output } from '@angular/core';
+﻿import { Component, EventEmitter, Output } from '@angular/core';
 import { IGridView } from './grid.view';
 import { ButtonItem } from '../models';
 import { NamedComponent } from '../ui/decorators';
@@ -8,26 +8,59 @@ declare var $: any;
 const dataUrl = 'http://webtest.aquilon.ru:808/api/adkuserdto';
 //const dataUrl = 'http://localhost:13908/api/adkuserdto';
 
-@Component({        
-    templateUrl: 'users-tree.view.html'    
+@Component({
+    templateUrl: 'users-tree.view.html'
 })
 @NamedComponent('users-tree')
-export class UsersTreeView implements AfterViewInit, IGridView {
-    
+export class UsersTreeView implements IGridView {
+
     private id: string = 'tgrid';
-    private tgridOptions: any; 
-    private tgridRef: any;   
+    private tgridOptions: any;
+    private tgridRef: any;
 
-    private customEncodeUrlFunc = (r):string => `${dataUrl}?groupid=${r.id}`; 
+    private customEncodeUrlFunc = (r): string => `${dataUrl}?groupid=${r.id}`;
 
-    constructor() {
+    buttons: [ButtonItem] =
+    [
+        <ButtonItem>{
+            id: "addItem",
+            
+            icons: { primary: "ui-icon-circle-plus", secondary: "ui-icon-triangle-1-s" },
+            label: "Создать",
+            click: () => {
+                console.log(1);
+            }
+        },
+        <ButtonItem>{
+            id: "editItem",
+            icons: { primary: "ui-icon-circle-zoomin" },
+            label: "Изменить"
+        },
+        <ButtonItem>{
+            id: "delItem",
+            icons: { primary: "ui-icon-circle-close" },
+            label: "Удалить"
+        },
+        <ButtonItem>{
+            id: "refresh",
+            icons: { primary: "ui-icon-circle-check" },
+            label: "Обновить",
+            click: () => {
+                this.tgridRef.dataBind();
+                this.tgridRef.dataSource.settings.treeDS.customEncodeUrlFunc = this.customEncodeUrlFunc;
+            }
+        }
+    ];
 
-        let self = this;
+
+    models: [any] = [''];
+
+    constructor() {        
 
         this.tgridOptions = {
             autoGenerateColumns: false,
             childDataKey: "objects",
-            create: e => self.tgridRef = $(e.target).data("igTreeGrid"),
+            create: e => this.tgridRef = $(e.target).data("igTreeGrid"),
             dataSource: [],
             dataSourceUrl: dataUrl,
             enableRemoteLoadOnDemand: true,
@@ -42,8 +75,13 @@ export class UsersTreeView implements AfterViewInit, IGridView {
                 {
                     name: "Selection",
                     mode: 'row',
-                    rowSelectionChanged: (e, ui) => this.rowSelectionChanged.emit({ event: e, ui: ui })
-    }
+                    rowSelectionChanged: (e, ui) => {
+                        let rec = this.tgridRef.findRecordByKey(ui.row.id);
+
+                        this.buttons[0].disabled = (rec.objects === undefined);
+                        this.rowSelectionChanged.emit({ event: e, ui: ui });
+                    }
+                }
             ],   
             initialExpandDepth: 1,         
             primaryKey: "id",       
@@ -57,49 +95,19 @@ export class UsersTreeView implements AfterViewInit, IGridView {
                 { key: "description", headerText: "Описание" },
                 { key: "role", headerText: "Роль" }                                
             ],
-            rendered: (e, ui) => ui.owner.dataSource.settings.treeDS.customEncodeUrlFunc = this.customEncodeUrlFunc                            
+            rendered: (e, ui) => {
+                ui.owner.dataSource.settings.treeDS.customEncodeUrlFunc = this.customEncodeUrlFunc;
+                ui.owner.element.igTreeGridSelection("selectRow", 0);
+            }                            
         };            
     }
 
-    get buttons(): [ButtonItem] {
-        
-        return [
-            {
-                id: "addItem",
-                iconCls: "ui-icon-circle-plus",
-                click: () => {
-                    console.log(1);    
-                },
-                title: "Создать"
-            },
-            {
-                id: "editItem",
-                iconCls: "ui-icon-circle-zoomin",
-                title: "Изменить"
-            },
-            {
-                id: "delItem",
-                iconCls: "ui-icon-circle-close",
-                title: "Удалить"
-            },
-            {
-                id: "refresh",
-                iconCls: "ui-icon-circle-check",
-                click: () => {
-                    this.tgridRef.dataBind();
-                    this.tgridRef.dataSource.settings.treeDS.customEncodeUrlFunc = this.customEncodeUrlFunc;
-                },
-                title: "Обновить"
-            }
-        ];
-    }
+    changeItem(): void { }
 
-    get models(): [any] { return ['']; }
+    delItem(): void { }
+
+    newItem(): void { }
 
     // event Handlers
     @Output() rowSelectionChanged: EventEmitter<any> = new EventEmitter<any>();
-
-    ngAfterViewInit() {
-        
-    }  
-}
+    }

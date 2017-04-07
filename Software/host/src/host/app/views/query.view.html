@@ -1,11 +1,11 @@
 ﻿<ig-layout-manager widgetId="layout" [(options)]="layoutOptions">
     <div class="header">
         <div class="toolbar">
-            <button id="{{bi.id}}" *ngFor="let bi of buttons" (click)="toolbarClick($event, bi)">{{bi.title}}</button>
+            <button id="{{bi.id}}" *ngFor="let bi of buttons" (click)="toolbarClick($event, bi)">{{bi.label}}</button>
         </div>
         <div class="filterbar">
             <label>Панель рабочих элементов</label>
-            <button id="btnMode" (click)="togglePanel($event)">Выкл.</button>
+            <button id="btnMode" (click)="togglePanel($event)">{{PanelMode.toName(this.panelMode)}}</button>
         </div>
     </div>
     <div class="footer" style="font-size: 0" [ngClass]="{'ui-helper-hidden': panelMode !== PanelMode.Bottom}">

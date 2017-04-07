@@ -80,17 +80,16 @@ export class QueryView implements AfterViewInit, OnInit {
     ngAfterViewInit() {
         this.$layout = $("#layout");
         this.$footer = this.$layout.find(".footer").css("font-size", "initial");
-
-        $(".toolbar, .filterbar").buttonset();
         
         for (let bi of this.buttons) {
             
-            if (bi.iconCls)
-                $(`#${bi.id}`).button("option", "icons", { primary: bi.iconCls });
+            $(`#${bi.id}`).button({
+                disabled: bi.disabled,
+                icons: bi.icons
+            });
         }
 
-        $("#btnMode .ui-button-text").text(PanelMode.toName(this.panelMode));
-        
+        $("#btnMode").button();
     }  
     
     ngOnInit() {
@@ -115,11 +114,7 @@ export class QueryView implements AfterViewInit, OnInit {
                     this.buttons = this.view.buttons;
 
                     this.view.rowSelectionChanged
-                        .subscribe(next => {
-                            
-                            console.log(next);
-                        });
-
+                        .subscribe(_ => this.toolbarRefresh());
 
                     this.dynamicComponentContainer.insert(component.hostView);
                     (this.currentComponent) && this.currentComponent.destroy();
@@ -129,9 +124,16 @@ export class QueryView implements AfterViewInit, OnInit {
         });
     }
 
+    toolbarRefresh() {
+        for (let bi of this.buttons) {
+           
+            $(`#${bi.id}`)
+                .button("option", "disabled", bi.disabled);
+        }
+    }
+
     toolbarClick(event, bi:ButtonItem) {
         $(".toolbar button").removeClass('ui-state-focus');
-
         bi.click && bi.click.call(bi, event);
     }
 
