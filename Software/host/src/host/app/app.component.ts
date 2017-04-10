@@ -1,6 +1,6 @@
 ﻿import { AfterViewInit, Component, OnInit, ViewChild } from '@angular/core';
 import { Http, RequestOptions, URLSearchParams } from '@angular/http';
-import { Params, Router } from '@angular/router';
+import { NavigationEnd, Params, Router } from '@angular/router';
 import { AuthService } from './auth/auth.service';
 import { LoginComponent } from './auth/login.component';
 import { RouterConfig } from './navigation/router.config';
@@ -36,7 +36,12 @@ export class AppComponent implements AfterViewInit, OnInit {
         private authService: AuthService,       
         private router: Router,
         private routerConfig: RouterConfig) {
-        this.startView = new URLSearchParams(window.location.search.slice(1)).get(startViewKey);         
+
+        this.startView = new URLSearchParams(window.location.search.slice(1)).get(startViewKey);
+
+        router.events
+            .filter(e => e instanceof NavigationEnd)
+            .subscribe(e => this.menu.forEach(mi => mi.active = mi.route.toLowerCase() === e.url.slice(1)));
     }
 
     ngAfterViewInit() {    
@@ -54,18 +59,14 @@ export class AppComponent implements AfterViewInit, OnInit {
         this.onResize();
 
         if (this.authService.isAuthenticated) {
-            // start redirect
-            if (this.startView != undefined) {
-                if (this.menu.length > 0) {
-                    let mi: MenuItem = this.menu.find(item => item.route.toLowerCase() === this.startView);
-                    this.menuItemClick(mi);
-                }
-                else
-                    this.router.navigate([this.startView]);
+            
+            // start page --> navigate
+            if (this.startView != undefined) 
+                this.router.navigate([this.startView]);
+            
+            else {
+                (this.menu.length > 0) && this.menuItemClick(this.menu[0]);
             }
-            else {                
-                (this.menu.length > 0) && this.menuItemClick(this.menu[0]);                
-            }            
         }
         else
             this.login();        
@@ -77,18 +78,13 @@ export class AppComponent implements AfterViewInit, OnInit {
         this.router.resetConfig(config);                       
 
         // Данные
-        (this.authService.isAuthenticated) && this.retrieveUser();       
+        (this.authService.isAuthenticated) && this.retrieveUser(); 
     }
 
     menuItemClick(item: MenuItem) {
       
         this.$navigation.switchClass('expanded', 'collapsed'); // collapse navigation        
-
-        if (item != null) {
-            this.router.navigateByUrl(item.route);
-            this.menu.forEach(mi => mi.active = false);
-            item.active = true;
-        }
+        this.router.navigateByUrl(item.route);
     }
 
     login() {        

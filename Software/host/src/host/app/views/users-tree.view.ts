@@ -32,11 +32,6 @@ export class UsersTreeView implements IGridView {
             }
         },
         <ButtonItem>{
-            id: "editItem",
-            icons: { primary: "ui-icon-circle-zoomin" },
-            label: "Изменить"
-        },
-        <ButtonItem>{
             id: "delItem",
             icons: { primary: "ui-icon-circle-close" },
             label: "Удалить"
