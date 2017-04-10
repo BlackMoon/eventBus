@@ -5,7 +5,7 @@
         </div>
         <div class="filterbar">
             <label>Панель рабочих элементов</label>
-            <button id="btnMode" (click)="togglePanel($event)">{{PanelMode.toName(this.panelMode)}}</button>
+            <button #btnMode class="ui-button" [options]="btnOptions" (click)="togglePanel($event)"></button>
         </div>
     </div>
     <div class="footer" style="font-size: 0" [ngClass]="{'ui-helper-hidden': panelMode !== PanelMode.Bottom}">

@@ -105,4 +105,4 @@ export class UsersTreeView implements IGridView {
 
     // event Handlers
     @Output() rowSelectionChanged: EventEmitter<any> = new EventEmitter<any>();
-    }
+}

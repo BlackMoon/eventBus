@@ -2,7 +2,7 @@
 import { ActivatedRoute } from '@angular/router';
 import { IGridView } from './grid.view';
 import { ButtonItem } from '../models';
-import { Display, NamedComponent, namedComponents } from '../ui/decorators';
+import { Display, NamedComponent, namedComponents, JqueryUiButtonComponent } from '../ui';
 
 declare var $: any;
 
@@ -49,11 +49,14 @@ export class QueryView implements AfterViewInit, OnInit {
     private $footer: any;
     private $layout: any;
 
+    private btnOptions: any;
     private layoutOptions: any;
 
 // ReSharper disable once InconsistentNaming
     private PanelMode = PanelMode;
     private panelMode = PanelMode.Off;
+
+    @ViewChild(JqueryUiButtonComponent) btnMode: JqueryUiButtonComponent;
 
     /**
      * dynamic component instance
@@ -66,7 +69,12 @@ export class QueryView implements AfterViewInit, OnInit {
     constructor(
         private route: ActivatedRoute,
         private resolver: ComponentFactoryResolver) {
-        
+
+        this.btnOptions = {
+            dropdown: true,
+            label: PanelMode.toName(this.panelMode)
+        };
+
         this.layoutOptions = {
             layoutMode: "border",
             height: '100%',
@@ -88,8 +96,6 @@ export class QueryView implements AfterViewInit, OnInit {
                 icons: bi.icons
             });
         }
-
-        $("#btnMode").button();
     }  
     
     ngOnInit() {
@@ -146,7 +152,8 @@ export class QueryView implements AfterViewInit, OnInit {
 
         this.$layout.css("padding-bottom", h);
         this.$footer.css("height", h);
-        
-        event.target.textContent = PanelMode.toName(this.panelMode);
+        debugger;
+        this.btnMode.options.label = PanelMode.toName(this.panelMode);
+        //event.target.textContent = PanelMode.toName(this.panelMode);
     }
 }
