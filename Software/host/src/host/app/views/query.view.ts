@@ -56,7 +56,7 @@ export class QueryView implements AfterViewInit, OnInit {
     private PanelMode = PanelMode;
     private panelMode = PanelMode.Off;
 
-    @ViewChild(JqueryUiButtonComponent) btnMode: JqueryUiButtonComponent;
+    @ViewChild('btnMode') btnMode: JqueryUiButtonComponent;
 
     /**
      * dynamic component instance
@@ -71,9 +71,8 @@ export class QueryView implements AfterViewInit, OnInit {
         private resolver: ComponentFactoryResolver) {
 
         this.btnOptions = {
-            dropdown: true,
-            label: PanelMode.toName(this.panelMode)
-        };
+            label: '1'
+        }
 
         this.layoutOptions = {
             layoutMode: "border",
@@ -88,14 +87,6 @@ export class QueryView implements AfterViewInit, OnInit {
     ngAfterViewInit() {
         this.$layout = $("#layout");
         this.$footer = this.$layout.find(".footer").css("font-size", "initial");
-        
-        for (let bi of this.buttons) {
-            
-            $(`#${bi.id}`).button({
-                disabled: bi.disabled,
-                icons: bi.icons
-            });
-        }
     }  
     
     ngOnInit() {
@@ -131,11 +122,13 @@ export class QueryView implements AfterViewInit, OnInit {
     }
 
     toolbarRefresh() {
-        for (let bi of this.buttons) {
+        debugger;
+        this.btnOptions.disabled = true;
+        /*for (let bi of this.buttons) {
            
             $(`#${bi.id}`)
                 .button("option", "disabled", bi.disabled);
-        }
+        }*/
     }
 
     toolbarClick(event, bi:ButtonItem) {
@@ -148,12 +141,11 @@ export class QueryView implements AfterViewInit, OnInit {
         this.panelMode++;
         (this.panelMode > PanelMode.Right) && (this.panelMode = PanelMode.Off);
 
+        this.btnMode['label'] = PanelMode.toName(this.panelMode);
+
         let h = this.panelMode === PanelMode.Bottom ? '300px' : 0;
 
         this.$layout.css("padding-bottom", h);
         this.$footer.css("height", h);
-        debugger;
-        this.btnMode.options.label = PanelMode.toName(this.panelMode);
-        //event.target.textContent = PanelMode.toName(this.panelMode);
     }
 }
