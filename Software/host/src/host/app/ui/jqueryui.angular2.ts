@@ -40,6 +40,7 @@ class JqControlBase<Model> implements DoCheck {
             delete this._opts.dataSource;
         }
     };
+
     public widgetId: string;
     public changeDetectionInterval: number;
 
@@ -249,32 +250,83 @@ class JqControlBase<Model> implements DoCheck {
 /**
  * jQuery UI Button
  */
-interface IJqueryUiButton {
+interface IJqButton {
     classes?: {};
     disabled: boolean;
     dropdown: boolean;
     icons?: { primary?: string, secondary?: string };
+    items?: [IJqMenuItem];
     label: string;    
     showLabel: false;
+    click: () => void;
+}
+
+/**
+ * jQuery UI Menu
+ */
+interface IJqMenuItem {
+    classes?: {};
+    disabled: boolean;
+    dropdown: boolean;
+    dropdownwidth: number;
+    label: string;    
+    icon?: string;
+    items?: [IJqMenuItem];
+    position: {};
+    click: () => void;
 }
 
 @Component({
     selector: '.ui-button',
     template: ``
 })
-export class JqButtonComponent extends JqControlBase<IJqueryUiButton>  {
-
+export class JqButtonComponent extends JqControlBase<IJqButton>  {
+// ReSharper disable InconsistentNaming
+    private _dropmenu:any;
+// ReSharper restore InconsistentNaming
     constructor(el: ElementRef, renderer: Renderer, differs: IterableDiffers) { super(el, renderer, differs, "button"); }
     
     ngOnInit() {
-        (this._config.dropdown) && (this._config.icons = $.extend(this._config.icons, { secondary: "ui-icon-triangle-1-s" }));
+        if (this._config.dropdown) {
+            this._config.icons = $.extend(this._config.icons, { secondary: "ui-icon-triangle-1-s" });
+
+            this._dropmenu = $(`<ul></ul>`)
+                .css("text-align", "left")
+                .menu();
+
+            let items: [IJqMenuItem] = this._config.items || [];
+
+            for (let item of items) {
+
+                let $li = $(`<li><div><span class="${item.icon}"></span>${item.label}</div></li>`).click(item.click);
+                this._dropmenu.append($li);
+            }
+            this._dropmenu.menu("refresh").hide();
+            this._el.parentNode.insertBefore(this._dropmenu[0], null);
+
+            document.onclick = e => {
+                
+                let buttonEl = <HTMLElement>e.target;
+                (buttonEl.className !== "ui-button") && (buttonEl = buttonEl.parentElement);
+                (buttonEl !== this._el) && this._dropmenu.hide();
+            };
+        }
         super.ngOnInit();
     }
-    /*
-    @HostListener('click', ['$event.target'])
-    onClick(event) {
-        if (this.config.dropdown) {
-            
+    
+    @HostListener('click', ['$event'])
+    onClick(e) {
+        
+        e.stopPropagation();
+
+        if (this._config.dropdown) {
+
+            if (this._config.dropdownwidth === undefined || this._config.dropdownwidth === null) 
+                this._config.dropdownwidth = this._el.offsetWidth;
+
+            this._dropmenu
+                .toggle()
+                .width(this._config.dropdownwidth);
         }
-    }*/
+    }
 }

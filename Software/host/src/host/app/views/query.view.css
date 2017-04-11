@@ -5,6 +5,7 @@
 .header {
     height: 36px;
     padding: 2px;
+    z-index: 1;
 }
 
 .filterbar {
