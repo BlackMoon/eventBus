@@ -24,8 +24,8 @@ export class UsersTreeView implements IGridView {
     [
         <ButtonItem>{
             id: "addItem",
-            
-            icons: { primary: "ui-icon-circle-plus", secondary: "ui-icon-triangle-1-s" },
+            dropdown: true,
+            icons: { primary: "ui-icon-circle-plus" },
             label: "Создать",
             click: () => {
                 console.log(1);

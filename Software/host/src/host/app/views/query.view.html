@@ -1,7 +1,7 @@
 ﻿<ig-layout-manager widgetId="layout" [(options)]="layoutOptions">
     <div class="header">
         <div class="toolbar">
-            <button  class="ui-button" [options]="btnOptions" (click)="toolbarClick($event, buttons[0])"></button>
+            <button id="{{bi.id}}" class="ui-button" [options]="bi" *ngFor="let bi of view.buttons" (click)="toolbarClick($event, bi)"></button>
         </div>
         <div class="filterbar">
             <label >Панель рабочих элементов</label>

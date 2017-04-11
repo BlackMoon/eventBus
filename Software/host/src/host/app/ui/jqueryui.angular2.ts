@@ -1,100 +1,253 @@
-﻿import { Component, DoCheck, ElementRef, EventEmitter, HostListener, Input, OnDestroy, OnInit } from '@angular/core';
+﻿import { Component, DoCheck, ElementRef, EventEmitter, HostListener, Input, IterableDiffers, Renderer, OnDestroy, OnInit } from '@angular/core';
 
 declare var $: any;
 
-class JqueryUiContolBase<T> implements DoCheck, OnDestroy, OnInit {
+/**
+ * jQuery UI control base
+ */
+// ReSharper disable once InconsistentNaming
+class JqControlBase<Model> implements DoCheck {
+// ReSharper disable InconsistentNaming
+    private _differs: any;
+    protected _opts: any = {};
+    protected _el: any;
+    protected _widgetName: string;
+    protected _differ: any;
+    protected _config: any;
+    protected _events: Map<string, string>;
+    protected _allowChangeDetection = true;
+    private _evtEmmiters: any = {};
+// ReSharper restore InconsistentNaming
 
-    protected allowChangeDetection = true;
-    protected config: any;
-    protected differ: any;
-    protected el: any;
-    protected opts: any = {};
-    protected widgetName: string;
-
-    public changeDetectionInterval: number;
+    @Input()
+    set options(v: Model) {
+        if (this._config !== undefined && this._config !== null) {
+            //if the options are alrealy set recreate the component
+            $(this._el)[this._widgetName]("destroy");
+            this._config = $.extend(false, this._config, v);
+            $(this._el)[this._widgetName](this._config);
+        } else {
+            this._config = $.extend(true, v, this._opts);
+            if (this._opts.dataSource) {
+                // _config.dataSource should reference the data if the data is set as a top-level opts
+                // to allow two-way data binding
+                this._config.dataSource = this._opts.dataSource;
+            }
+            this._differ = this._differs.find([]).create(null);
+        }
+        this._opts = $.extend(true, {}, this._config);
+        if (this._opts.dataSource) {
+            delete this._opts.dataSource;
+        }
+    };
     public widgetId: string;
+    public changeDetectionInterval: number;
 
-    constructor(element: ElementRef, widgetName: string) {
-        this.el = element.nativeElement;
-        this.widgetName = widgetName;
+    constructor(el: ElementRef, renderer: Renderer, differs: IterableDiffers, widgetName: string) {
+        this._differs = differs;
         
-        for (var opt in $.ui[this.widgetName].prototype.options) {
+        this._widgetName = widgetName;
+        this._el = el.nativeElement;
+
+        for (var opt in $.ui[this._widgetName].prototype.options) {
             Object.defineProperty(this, opt, {
                 set: this.createSetter(opt),
                 enumerable: true,
                 configurable: true
             });
         }
-    }
 
-    @Input()
-    set options(v: T) {
-        
-        if (this.config !== undefined && this.config !== null) {
-            //if the options are alrealy set recreate the component
-            $(this.el)[this.widgetName]("destroy");
-            this.config = $.extend(false, this.config, v);
-            $(this.el)[this.widgetName](this.config);
+        for (var propt in $.ui[this._widgetName].prototype.events) {
+            this[propt] = new EventEmitter();
+            //caching the event emmitters for cases when the event name is the same as a method name.
+            this._evtEmmiters[propt] = this[propt];
         }
-        else
-            this.config = $.extend(true, v, this.opts);
-        
-    };
+    }
 
     createSetter(name) {
         return function (value) {
-            debugger;
-            this.opts[name] = value;
-            (this.config) && (this.config[name] = value);
-            
-            if ($.ui[this.widgetName] &&
-                $.ui[this.widgetName].prototype.options &&
-                $.ui[this.widgetName].prototype.options.hasOwnProperty(name) &&
-                $(this.el).data(this.widgetName)) {
-                $(this.el)[this.widgetName]("option", name, value);
+            this._opts[name] = value;
+            if (this._config) {
+                this._config[name] = value;
+            }
+            if ($.ui[this._widgetName] &&
+                $.ui[this._widgetName].prototype.options &&
+                $.ui[this._widgetName].prototype.options.hasOwnProperty(name) &&
+                $(this._el).data(this._widgetName)) {
+                $(this._el)[this._widgetName]("option", name, value);
             }
         }
     }
 
-    ngDoCheck() {
-        if (this.allowChangeDetection) {
-            this.allowChangeDetection = false;
+    ngOnInit() {
+        var evtName;
+        this._events = new Map<string, string>();
 
-            let option;
-            for (let p in this.config) {
-                if (this.config.hasOwnProperty(p)) {
-                    option = this.config[p];
-                    debugger;
-                    if (this.opts.hasOwnProperty(p) && this.opts[p] !== option) {
-                        $(this.el)[this.widgetName]("option", p, option);
-                        this.opts[p] = option;
+        //events binding
+        let that = this;
+
+        for (var propt in $.ui[this._widgetName].prototype.events) {
+            evtName = this._widgetName.toLowerCase() + propt.toLowerCase();
+            this._events[evtName] = propt;
+
+            $(this._el).on(evtName, (evt, ui) => {
+                var emmiter = this._evtEmmiters[this._events[evt.type]];
+                emmiter.emit({ event: evt, ui: ui });
+            });
+        }
+        var propNames = Object.getOwnPropertyNames($.ui[this._widgetName].prototype);
+        for (var i = 0; i < propNames.length; i++) {
+            var name = propNames[i];
+            if (name.indexOf("_") !== 0 && typeof $.ui[this._widgetName].prototype[name] === "function") {
+                Object.defineProperty(that, name, {
+                    get: that.createMethodGetter(name)
+                });
+            }
+        }
+
+        if (this.changeDetectionInterval === undefined || this.changeDetectionInterval === null) {
+            this.changeDetectionInterval = 500;
+        }
+
+        setInterval(() => this._allowChangeDetection = true, this.changeDetectionInterval);
+
+        $(this._el).attr("id", this.widgetId);
+        if (this._config === null || this._config === undefined) {
+            //if there is no config specified in the component template use the defined top-level options for a configuration
+            //by invoking the setter of options property
+            this.options = this._opts;
+        }
+        $(this._el)[this._widgetName](this._config);
+    }
+    createMethodGetter(name) {
+        return function () {
+            var widget = $(this._el).data(this._widgetName);
+            return $.proxy(widget[name], widget);
+        }
+    }
+
+    ngDoCheck() {
+        if (this._allowChangeDetection) {
+            this._allowChangeDetection = false;
+            this.optionChange();
+        }
+    }
+
+    optionChange() {
+        if (this._differ != null) {
+            var diff = [];
+            var element = $(this._el);
+            var i, j, valKey = this._config.valueKey, option;
+            var opts = $.extend(true, {}, this._config);
+            if (opts.dataSource) {
+                delete opts.dataSource;
+            }
+
+            if (!this.equalsDiff(opts, this._opts, diff)) {
+                this._opts = $.extend(true, {}, opts);
+                for (i = 0; i < diff.length; i++) {
+                    option = diff[i].key;
+                    if ($.ui[this._widgetName] &&
+                        $.ui[this._widgetName].prototype.options &&
+                        $.ui[this._widgetName].prototype.options.hasOwnProperty(option) &&
+                        $(this._el).data(this._widgetName)) {
+                        $(this._el)[this._widgetName]("option", option, diff[i].newVal);
                     }
                 }
             }
         }
     }
-    
-    ngOnInit() {
-        if (this.changeDetectionInterval === undefined || this.changeDetectionInterval === null) 
-            this.changeDetectionInterval = 500;
-       
-        setInterval(() => this.allowChangeDetection = true, this.changeDetectionInterval);
 
-        $(this.el).attr("id", this.widgetId);
-
-        // store initial options for using in ngDoCheck
-        this.opts = $.extend({}, this.config);
-        $(this.el)[this.widgetName](this.config);
+    // Interrogation functions
+    isDate(value) {
+        return Object.prototype.toString.call(value) === "[object Date]";
     }
 
-    ngOnDestroy(): void {
-        $(this.el)[this.widgetName]("destroy");
+    isRegExp(value) {
+        return Object.prototype.toString.call(value) === "[object RegExp]";
     }
-}
+
+    isScope(obj) {
+        return obj && obj.$evalAsync && obj.$watch;
+    }
+
+    isWindow(obj) {
+        return obj && obj.document && obj.location && obj.alert && obj.setInterval;
+    }
+
+    isFunction(value) { return typeof value === "function"; }
+
+    isArray(value) {
+        return Object.prototype.toString.call(value) === "[object Array]";
+    }
+
+    equalsDiff(o1, o2, diff?) {
+        if (o1 === o2) { return true; }
+        if (o1 === null || o2 === null) { return false; }
+        if (o1 !== o1 && o2 !== o2) { return true; }// NaN === NaN
+        var t1 = typeof o1, t2 = typeof o2, length, key, keySet, dirty, skipDiff = false, changedVals = [];
+        if (t1 === t2) {
+            if (t1 === "object") {
+                if (this.isArray(o1)) {
+                    if (!this.isArray(o2)) { return false; }
+                    if ((length = o1.length) === o2.length) {
+                        if (!this.isArray(diff)) {
+                            skipDiff = true;
+                        }
+                        for (key = 0; key < length; key++) {
+                            // we are comparing objects here
+                            if (!this.equalsDiff(o1[key], o2[key], changedVals)) {
+                                dirty = true;
+                                if (!skipDiff) {
+                                    diff.push({ index: key, txlog: changedVals });
+                                }
+                            }
+                        }
+                        if (dirty) {
+                            return false;
+                        }
+                        return true;
+                    }
+                } else if (this.isDate(o1)) {
+                    return this.isDate(o2) && o1.getTime() === o2.getTime();
+                } else if (this.isRegExp(o1) && this.isRegExp(o2)) {
+                    return o1.toString() === o2.toString();
+                } else {
+                    if (this.isScope(o1) || this.isScope(o2) || this.isWindow(o1) || this.isWindow(o2) || this.isArray(o2)) { return false; }
+                    keySet = {};
+                    if (!this.isArray(diff)) {
+                        skipDiff = true;
+                    }
+                    for (key in o1) {
+                        if (key.charAt(0) === "$" || this.isFunction(o1[key])) { continue; }
+                        if (!this.equalsDiff(o1[key], o2[key])) {
+                            dirty = true;
+                            if (!skipDiff) {
+                                diff.push({ key: key, oldVal: o2[key], newVal: o1[key] });
+                            }
+                        }
+                        keySet[key] = true;
+                    }
+                    for (key in o2) {
+                        if (!keySet.hasOwnProperty(key) &&
+                            key.charAt(0) !== "$" &&
+                            o2[key] !== undefined &&
+                            !this.isFunction(o2[key])) { return false; }
+                    }
+                    if (dirty) {
+                        return false;
+                    }
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+    }
 
 
 /**
- * jQuery Button
+ * jQuery UI Button
  */
 interface IJqueryUiButton {
     classes?: {};
@@ -109,19 +262,19 @@ interface IJqueryUiButton {
     selector: '.ui-button',
     template: ``
 })
-export class JqueryUiButtonComponent extends JqueryUiContolBase<IJqueryUiButton>  {
-    
-    constructor(el: ElementRef) { super(el, "button"); }
+export class JqButtonComponent extends JqControlBase<IJqueryUiButton>  {
 
+    constructor(el: ElementRef, renderer: Renderer, differs: IterableDiffers) { super(el, renderer, differs, "button"); }
+    
     ngOnInit() {
-        (this.config.dropdown) && (this.config.icons = $.extend(this.config.icons, { secondary: "ui-icon-triangle-1-s" }));
+        (this._config.dropdown) && (this._config.icons = $.extend(this._config.icons, { secondary: "ui-icon-triangle-1-s" }));
         super.ngOnInit();
     }
-
+    /*
     @HostListener('click', ['$event.target'])
     onClick(event) {
         if (this.config.dropdown) {
             
         }
-    }
+    }*/
 }

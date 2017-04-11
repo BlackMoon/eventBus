@@ -2,7 +2,7 @@
 import { ActivatedRoute } from '@angular/router';
 import { IGridView } from './grid.view';
 import { ButtonItem } from '../models';
-import { Display, NamedComponent, namedComponents, JqueryUiButtonComponent } from '../ui';
+import { Display, NamedComponent, namedComponents, JqButtonComponent } from '../ui';
 
 declare var $: any;
 
@@ -44,35 +44,27 @@ namespace PanelMode {
 @NamedComponent()
 export class QueryView implements AfterViewInit, OnInit {
     private currentComponent = null;
-
-    private $btnMode: any;
+   
     private $footer: any;
     private $layout: any;
-
-    private btnOptions: any;
+   
     private layoutOptions: any;
 
 // ReSharper disable once InconsistentNaming
     private PanelMode = PanelMode;
     private panelMode = PanelMode.Off;
-
-    @ViewChild('btnMode') btnMode: JqueryUiButtonComponent;
-
+    
     /**
      * dynamic component instance
      */
     private view:IGridView;
-    @ViewChild('dynamicComponentContainer', { read: ViewContainerRef }) dynamicComponentContainer: ViewContainerRef;
 
-    private buttons: [ButtonItem]; 
+    @ViewChild('btnMode') btnMode: JqButtonComponent;
+    @ViewChild('dynamicComponentContainer', { read: ViewContainerRef }) dynamicComponentContainer: ViewContainerRef;
 
     constructor(
         private route: ActivatedRoute,
         private resolver: ComponentFactoryResolver) {
-
-        this.btnOptions = {
-            label: '1'
-        }
 
         this.layoutOptions = {
             layoutMode: "border",
@@ -108,10 +100,6 @@ export class QueryView implements AfterViewInit, OnInit {
                     let component = factory.create(injector);
 
                     this.view = <IGridView>component.instance;
-                    this.buttons = this.view.buttons;
-
-                    this.view.rowSelectionChanged
-                        .subscribe(_ => this.toolbarRefresh());
 
                     this.dynamicComponentContainer.insert(component.hostView);
                     (this.currentComponent) && this.currentComponent.destroy();
@@ -120,16 +108,7 @@ export class QueryView implements AfterViewInit, OnInit {
             }
         });
     }
-
-    toolbarRefresh() {
-        debugger;
-        this.btnOptions.disabled = true;
-        /*for (let bi of this.buttons) {
-           
-            $(`#${bi.id}`)
-                .button("option", "disabled", bi.disabled);
-        }*/
-    }
+    
 
     toolbarClick(event, bi:ButtonItem) {
         $(".toolbar button").removeClass('ui-state-focus');
