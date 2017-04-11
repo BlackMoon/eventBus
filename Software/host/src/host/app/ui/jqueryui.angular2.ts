@@ -265,9 +265,6 @@ interface IJqButton {
  * jQuery UI Menu
  */
 interface IJqMenuItem {
-    classes?: {};
-    disabled: boolean;
-    dropdown: boolean;
     dropdownwidth: number;
     label: string;    
     icon?: string;
