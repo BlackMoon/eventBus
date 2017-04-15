@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netcoreapp1.0</TargetFramework>
+    <TargetFramework>netcoreapp1.1</TargetFramework>
     <AssemblyName>domain</AssemblyName>
     <PackageId>domain</PackageId>
     <GenerateAssemblyConfigurationAttribute>false</GenerateAssemblyConfigurationAttribute>
@@ -19,7 +19,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\..\kit\src\Kit.Dal.Postgre\Kit.Dal.Postgre.csproj" />
+    <ProjectReference Include="..\..\..\kit\Kit.Dal.Postgre\Kit.Dal.Postgre.csproj" />
   </ItemGroup>
 
 </Project>

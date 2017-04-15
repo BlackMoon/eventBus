@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
-    <TargetFramework>netcoreapp1.0</TargetFramework>
+    <TargetFramework>netcoreapp1.1</TargetFramework>
     <PreserveCompilationContext>true</PreserveCompilationContext>
     <AssemblyName>Host</AssemblyName>
     <OutputType>Exe</OutputType>
@@ -31,8 +31,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\..\kit\src\Kit.Core.Web\Kit.Core.Web.csproj" />
-    <ProjectReference Include="..\..\..\kit\src\Kit.Dal\Kit.Dal.csproj" />
+    <ProjectReference Include="..\..\..\kit\Kit.Core\Kit.Core.csproj" />
+    <ProjectReference Include="..\..\..\kit\Kit.Dal\Kit.Dal.csproj" />
     <ProjectReference Include="..\domain\domain.csproj" />
   </ItemGroup>
 
